@@ -1,0 +1,98 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Next.js
+.next/
+out/
+
+# ============================================
+# SECURITY - NEVER COMMIT THESE
+# ============================================
+# Environment files
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# Private keys and secrets
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+**/secrets/
+!k8s/secrets.yaml
+
+# Wallets and keystores
+keystore/
+*.keystore.json
+wallet.json
+
+# API keys that might be saved locally
+api-keys.json
+credentials.json
+
+# Kubernetes secrets with real values
+k8s/secrets-*.yaml
+!k8s/secrets.yaml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Test coverage
+coverage/
+.vitest/
+
+# Drizzle
+drizzle/meta/
+
+# Docker volumes (local data)
+postgres_data/
+redis_data/
+pgadmin_data/
+
+# Redis dump
+*.rdb
+dump.rdb
+
+# Next.js (frontend)
+.next/
+frontend/.next/
+frontend/out/
+out/
+
+# Misc
+*.bak
+*.tmp
+.cache/
+
+# Turbo
+.turbo/
+
+# Vercel
+.vercel/
+
+# Netlify
+.netlify/

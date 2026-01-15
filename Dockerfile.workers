@@ -1,0 +1,55 @@
+# ============================================
+# Piggy Bank Queue Workers - Production Dockerfile
+# ============================================
+
+# Stage 1: Builder
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies for build)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Build TypeScript
+RUN npm run build
+
+# Prune dev dependencies
+RUN npm prune --production
+
+# ============================================
+# Stage 2: Runner
+# ============================================
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+# Add non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 piggybank
+
+# Copy built application
+COPY --from=builder --chown=piggybank:nodejs /app/dist ./dist
+COPY --from=builder --chown=piggybank:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=piggybank:nodejs /app/package.json ./
+
+# Set environment
+ENV NODE_ENV=production
+
+# Health check - check if process is running
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD pgrep -f "node dist/workers.js" || exit 1
+
+# Switch to non-root user
+USER piggybank
+
+# Start the workers
+CMD ["node", "dist/workers.js"]

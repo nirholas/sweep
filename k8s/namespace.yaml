@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: piggybank
+  labels:
+    app.kubernetes.io/name: piggybank
+    app.kubernetes.io/part-of: piggybank
