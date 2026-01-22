@@ -95,7 +95,28 @@ async function simulateWithTenderly(
     throw new Error(`Tenderly simulation failed: ${error}`);
   }
   
-  const result = await response.json();
+  const result = (await response.json()) as {
+    simulation?: {
+      status: boolean;
+      error_message?: string;
+      gas_used?: number;
+    };
+    transaction?: {
+      transaction_info?: {
+        state_changes?: Array<{
+          address?: string;
+          key?: string;
+          original?: string;
+          dirty?: string;
+        }>;
+        asset_changes?: Array<{
+          to?: string;
+          type?: string;
+          raw_amount?: string;
+        }>;
+      };
+    };
+  };
   
   if (!result.simulation?.status) {
     return {

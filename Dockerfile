@@ -1,32 +1,21 @@
 # ============================================
 # Piggy Bank API Server - Production Dockerfile
-# Multi-stage build for minimal image size
+# Using tsx for direct TypeScript execution
 # ============================================
 
-# Stage 1: Dependencies
-FROM node:20-alpine AS deps
+# Single stage build - simpler and faster
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Install build dependencies needed for native modules
-RUN apk add --no-cache python3 make g++
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++ dumb-init wget
 
-# Copy package files for layer caching
+# Copy package files
 COPY package*.json ./
 
-# Install all dependencies
+# Install all dependencies (including tsx for runtime)
 RUN npm ci --legacy-peer-deps
-
-# ============================================
-# Stage 2: Builder
-# ============================================
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
-COPY package*.json ./
 
 # Copy source code
 COPY tsconfig.json ./
@@ -34,29 +23,10 @@ COPY drizzle.config.ts ./
 COPY src ./src
 COPY drizzle ./drizzle
 
-# Build TypeScript
-RUN npm run build
-
-# Prune dev dependencies for smaller image
-RUN npm prune --production --legacy-peer-deps
-
-# ============================================
-# Stage 3: Runner (minimal production image)
-# ============================================
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-# Add security updates and create non-root user
-RUN apk add --no-cache dumb-init wget \
-    && addgroup --system --gid 1001 nodejs \
-    && adduser --system --uid 1001 piggybank
-
-# Copy only production artifacts
-COPY --from=builder --chown=piggybank:nodejs /app/dist ./dist
-COPY --from=builder --chown=piggybank:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=piggybank:nodejs /app/package.json ./
-COPY --from=builder --chown=piggybank:nodejs /app/drizzle ./drizzle
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 piggybank \
+    && chown -R piggybank:nodejs /app
 
 # Set environment
 ENV NODE_ENV=production
@@ -75,5 +45,5 @@ USER piggybank
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the server
-CMD ["node", "dist/api/index.js"]
+# Start with tsx (direct TypeScript execution)
+CMD ["npx", "tsx", "src/api/index.ts"]

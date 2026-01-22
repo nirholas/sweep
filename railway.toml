@@ -1,9 +1,9 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm install --legacy-peer-deps && npm run build"
+buildCommand = "npm install --legacy-peer-deps"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "npx tsx src/api/index.ts"
 healthcheckPath = "/health"
 healthcheckTimeout = 30
 restartPolicyType = "on_failure"
@@ -17,8 +17,8 @@ internalPort = 3000
 # Worker service for background jobs (BullMQ)
 [[services]]
 name = "sweep-workers"
-buildCommand = "npm install --legacy-peer-deps && npm run build"
-startCommand = "npm run workers"
+buildCommand = "npm install --legacy-peer-deps"
+startCommand = "npx tsx src/workers.ts"
 numReplicas = 1
 
 # ============================================================================

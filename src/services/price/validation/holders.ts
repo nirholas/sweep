@@ -67,7 +67,14 @@ async function fetchTokenHolders(
       throw new Error(`Explorer API error: ${response.status}`);
     }
     
-    const data = await response.json();
+    const data = (await response.json()) as {
+      status: string;
+      result?: Array<{
+        TokenHolderAddress: string;
+        TokenHolderQuantity?: string;
+        TokenHolderPercentage?: string;
+      }>;
+    };
     
     if (data.status !== "1" || !Array.isArray(data.result)) {
       // Fallback: try to get holder info from alternative source
@@ -106,7 +113,9 @@ async function fetchSolanaTokenHolders(tokenAddress: string): Promise<TokenHolde
       return [];
     }
     
-    const data = await response.json();
+    const data = (await response.json()) as {
+      tokens?: Array<{ owner?: string; amount?: string }>;
+    };
     
     // This is a simplified implementation - actual Helius response format may differ
     if (!data.tokens || !Array.isArray(data.tokens)) {
@@ -155,7 +164,13 @@ async function fetchHoldersFromAlternativeSource(
       return [];
     }
     
-    const data = await response.json();
+    const data = (await response.json()) as {
+      result?: Record<string, {
+        holders?: unknown;
+        holder_count?: string;
+        lp_holders?: Array<{ address: string; percent?: string }>;
+      }>;
+    };
     const tokenData = data.result?.[tokenAddress.toLowerCase()];
     
     if (!tokenData || !tokenData.holders) {

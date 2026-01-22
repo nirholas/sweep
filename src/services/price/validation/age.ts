@@ -123,7 +123,10 @@ async function getCreationFromFirstTx(
     const url = `${apiBase}?module=account&action=txlist&address=${tokenAddress}&startblock=0&endblock=99999999&page=1&offset=1&sort=asc&apikey=${apiKey}`;
     
     const response = await fetch(url);
-    const data = await response.json();
+    const data = (await response.json()) as {
+      status: string;
+      result?: Array<{ timeStamp?: string; hash: string }>;
+    };
     
     if (data.status !== "1" || !Array.isArray(data.result) || data.result.length === 0) {
       return null;
@@ -170,7 +173,9 @@ async function getSolanaTokenCreationInfo(
       }),
     });
     
-    const data = await response.json();
+    const data = (await response.json()) as {
+      result?: Array<{ blockTime?: number; signature: string }>;
+    };
     
     if (!data.result || data.result.length === 0) {
       return null;
