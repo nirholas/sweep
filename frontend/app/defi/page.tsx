@@ -183,7 +183,7 @@ export default function DeFiPage() {
                       key={vault.id}
                       vault={vault}
                       showDepositButton
-                      onDeposit={() => handleVaultSelect(vault)}
+                      onDeposit={() => handleVaultSelect(vault.id)}
                     />
                   ))}
                 </div>
@@ -202,7 +202,7 @@ export default function DeFiPage() {
                   vault={vault}
                   compact
                   showDepositButton
-                  onDeposit={() => handleVaultSelect(vault)}
+                  onDeposit={() => handleVaultSelect(vault.id)}
                 />
               ))}
             </div>
