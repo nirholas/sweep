@@ -1,11 +1,14 @@
 // Components
 export { ChainSelector } from "./ChainSelector";
 export { DeFiDestinations } from "./DeFiDestinations";
+export { DeFiVaultCard, DeFiVaultList, APYComparisonTable, DeFiVaultCardSkeleton } from "./DeFiVaultCard";
 export { DustTokenList } from "./DustTokenList";
 export { ErrorBoundary, WithErrorBoundary } from "./ErrorBoundary";
+export { FeeBreakdown, FeeBreakdownSkeleton } from "./FeeBreakdown";
 export { Header } from "./Header";
 export { PortfolioSummary } from "./PortfolioSummary";
 export { Providers } from "./Providers";
+export { RecentActivity, QuickActions, ActivityFeed } from "./RecentActivity";
 export { SwapSettings } from "./SwapSettings";
 export { SweepExecute } from "./SweepExecute";
 export { SweepPreview } from "./SweepPreview";
@@ -24,4 +27,16 @@ export {
   StatCardSkeleton,
   TableRowSkeleton,
   PageSkeleton,
+  ConsolidationRouteSkeleton,
+  ConsolidationSkeleton,
+  SubscriptionCardSkeleton,
+  SubscriptionListSkeleton,
+  TransactionProgressSkeleton,
+  DefiPositionSkeleton,
+  DefiPositionListSkeleton,
+  ChainBalanceSkeleton,
+  MultiChainBalanceSkeleton,
+  InlineSpinner,
+  LoadingDots,
+  PulsingText,
 } from "./Skeletons";

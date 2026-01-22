@@ -7,8 +7,10 @@ import { WalletConnect } from "./WalletConnect";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/history", label: "History" },
+  { href: "/consolidate", label: "Consolidate" },
+  { href: "/subscriptions", label: "Subscriptions" },
   { href: "/defi", label: "DeFi" },
+  { href: "/history", label: "History" },
   { href: "/settings", label: "Settings" },
 ];
 

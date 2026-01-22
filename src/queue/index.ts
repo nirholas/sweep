@@ -1,6 +1,7 @@
 import { Queue, QueueEvents } from "bullmq";
 import type { Job } from "bullmq";
 import type { BridgeProvider } from "../services/bridge/types.js";
+import type { ConsolidationJobData } from "../services/consolidation/types.js";
 
 // Queue names
 export const QUEUE_NAMES = {
@@ -10,6 +11,9 @@ export const QUEUE_NAMES = {
   SWEEP_TRACK: "sweep-track",
   BRIDGE_EXECUTE: "bridge-execute",
   BRIDGE_TRACK: "bridge-track",
+  CONSOLIDATION_EXECUTE: "consolidation-execute",
+  SUBSCRIPTION_MONITOR: "subscription-monitor",
+  SUBSCRIPTION_SWEEP: "subscription-sweep",
 } as const;
 
 export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES];
@@ -72,6 +76,34 @@ export interface BridgeTrackJobData {
   sourceChain: string;
   destinationChain: string;
   provider: BridgeProvider;
+}
+
+// Subscription monitoring job data
+export interface SubscriptionMonitorJobData {
+  // Empty for cron job - processes all active subscriptions
+  batchId?: string; // Optional batch ID for tracking
+}
+
+// Subscription sweep job data (triggered by monitor)
+export interface SubscriptionSweepJobData {
+  subscriptionId: string;
+  userId: string;
+  walletAddress: string;
+  tokens: {
+    address: string;
+    chain: string;
+    amount: string;
+    symbol: string;
+    valueUsd: number;
+  }[];
+  destinationChain: number;
+  destinationAsset: string;
+  destinationProtocol?: string;
+  destinationVault?: string;
+  spendPermissionSignature: string;
+  triggeredBy: "threshold" | "schedule" | "manual";
+  estimatedDustValueUsd: number;
+  estimatedCostUsd: number;
 }
 
 // Queue instances (lazily initialized)
@@ -153,6 +185,38 @@ export function getQueues(): Record<QueueName, Queue> {
           attempts: 1, // Single attempt, will requeue manually
         },
       }),
+      [QUEUE_NAMES.CONSOLIDATION_EXECUTE]: new Queue(QUEUE_NAMES.CONSOLIDATION_EXECUTE, {
+        connection,
+        ...defaultQueueOptions,
+        defaultJobOptions: {
+          ...defaultQueueOptions.defaultJobOptions,
+          attempts: 3,
+          backoff: {
+            type: "exponential" as const,
+            delay: 5000, // 5 second initial delay
+          },
+        },
+      }),
+      [QUEUE_NAMES.SUBSCRIPTION_MONITOR]: new Queue(QUEUE_NAMES.SUBSCRIPTION_MONITOR, {
+        connection,
+        ...defaultQueueOptions,
+        defaultJobOptions: {
+          ...defaultQueueOptions.defaultJobOptions,
+          attempts: 1, // Cron job, don't retry
+        },
+      }),
+      [QUEUE_NAMES.SUBSCRIPTION_SWEEP]: new Queue(QUEUE_NAMES.SUBSCRIPTION_SWEEP, {
+        connection,
+        ...defaultQueueOptions,
+        defaultJobOptions: {
+          ...defaultQueueOptions.defaultJobOptions,
+          attempts: 3,
+          backoff: {
+            type: "exponential" as const,
+            delay: 10000, // 10 second initial delay for subscription sweeps
+          },
+        },
+      }),
     };
   }
 
@@ -173,6 +237,9 @@ export function getQueueEvents(): Record<QueueName, QueueEvents> {
       [QUEUE_NAMES.SWEEP_TRACK]: new QueueEvents(QUEUE_NAMES.SWEEP_TRACK, { connection }),
       [QUEUE_NAMES.BRIDGE_EXECUTE]: new QueueEvents(QUEUE_NAMES.BRIDGE_EXECUTE, { connection }),
       [QUEUE_NAMES.BRIDGE_TRACK]: new QueueEvents(QUEUE_NAMES.BRIDGE_TRACK, { connection }),
+      [QUEUE_NAMES.CONSOLIDATION_EXECUTE]: new QueueEvents(QUEUE_NAMES.CONSOLIDATION_EXECUTE, { connection }),
+      [QUEUE_NAMES.SUBSCRIPTION_MONITOR]: new QueueEvents(QUEUE_NAMES.SUBSCRIPTION_MONITOR, { connection }),
+      [QUEUE_NAMES.SUBSCRIPTION_SWEEP]: new QueueEvents(QUEUE_NAMES.SUBSCRIPTION_SWEEP, { connection }),
     };
   }
 
@@ -266,6 +333,76 @@ export async function addBridgeTrackJob(
 }
 
 /**
+ * Add a job to execute a multi-chain consolidation
+ */
+export async function addConsolidationJob(
+  data: ConsolidationJobData,
+  options?: { priority?: number }
+): Promise<Job<ConsolidationJobData>> {
+  const queues = getQueues();
+  return queues[QUEUE_NAMES.CONSOLIDATION_EXECUTE].add("execute", data, {
+    priority: options?.priority ?? 0,
+    jobId: `consolidation-${data.consolidationId}`,
+  });
+}
+
+/**
+ * Add a subscription monitor job (cron-triggered)
+ */
+export async function addSubscriptionMonitorJob(
+  data: SubscriptionMonitorJobData = {}
+): Promise<Job<SubscriptionMonitorJobData>> {
+  const queues = getQueues();
+  return queues[QUEUE_NAMES.SUBSCRIPTION_MONITOR].add("monitor", data, {
+    jobId: `subscription-monitor-${data.batchId ?? Date.now()}`,
+  });
+}
+
+/**
+ * Add a subscription sweep job (triggered by monitor when conditions are met)
+ */
+export async function addSubscriptionSweepJob(
+  data: SubscriptionSweepJobData,
+  options?: { priority?: number }
+): Promise<Job<SubscriptionSweepJobData>> {
+  const queues = getQueues();
+  return queues[QUEUE_NAMES.SUBSCRIPTION_SWEEP].add("sweep", data, {
+    priority: options?.priority ?? 0,
+    jobId: `subscription-sweep-${data.subscriptionId}-${Date.now()}`,
+  });
+}
+
+/**
+ * Schedule recurring subscription monitor jobs (called on startup)
+ */
+export async function scheduleSubscriptionMonitorCron(): Promise<void> {
+  const queues = getQueues();
+  const monitorQueue = queues[QUEUE_NAMES.SUBSCRIPTION_MONITOR];
+
+  // Remove any existing repeatable jobs first
+  const existingJobs = await monitorQueue.getRepeatableJobs();
+  for (const job of existingJobs) {
+    if (job.name === "monitor") {
+      await monitorQueue.removeRepeatableByKey(job.key);
+    }
+  }
+
+  // Add repeatable job that runs every 15 minutes
+  await monitorQueue.add(
+    "monitor",
+    { batchId: "cron" },
+    {
+      repeat: {
+        pattern: "*/15 * * * *", // Every 15 minutes
+      },
+      jobId: "subscription-monitor-cron",
+    }
+  );
+
+  console.log("[Queue] Scheduled subscription monitor cron job (every 15 minutes)");
+}
+
+/**
  * Add bulk bridge tracking jobs
  */
 export async function addBulkBridgeTrackJobs(
@@ -351,3 +488,4 @@ export async function closeQueues(): Promise<void> {
 
 // Export types for workers
 export type { Job };
+export type { ConsolidationJobData };

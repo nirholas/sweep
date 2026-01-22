@@ -2,6 +2,13 @@
 
 > **⚠️ CRITICAL: API endpoints that execute transactions handle user funds. Implement proper error handling and validation.**
 
+## OpenAPI Specification
+
+The complete API is documented in OpenAPI 3.1 format:
+
+- **Spec file**: [openapi.yaml](./openapi.yaml)
+- **View online**: Import the spec into [Swagger Editor](https://editor.swagger.io/) or [Redocly](https://redocly.github.io/redoc/)
+
 ## Table of Contents
 
 1. [Overview](#overview)

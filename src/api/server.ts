@@ -4,6 +4,7 @@ import { logger } from "hono/logger";
 import { serve } from "@hono/node-server";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
+import { rateLimiter } from "hono-rate-limiter";
 
 import { scanAllChains, getWalletTokenBalancesAlchemy } from "../services/wallet.service.js";
 import { filterDustTokens } from "../services/validation.service.js";
@@ -11,22 +12,59 @@ import { getValidatedPrice } from "../services/price.service.js";
 import type { SupportedChain } from "../config/chains.js";
 import defiRoutes from "./routes/defi.js";
 import bridgeRoutes from "./routes/bridge.js";
+import { consolidateRoutes } from "./routes/consolidate.js";
+import paymentsRoutes from "./routes/payments.js";
 import { metricsMiddleware, metricsHandler } from "./middleware/metrics.js";
+import {
+  x402Middleware,
+  isX402Configured,
+  getX402ReceiverAddress,
+  quotePaymentMiddleware,
+  sweepPaymentMiddleware,
+  defiDepositMiddleware,
+  defiPositionsMiddleware,
+  consolidateExecuteMiddleware,
+} from "./middleware/x402.js";
+import { getEndpointPrice } from "../services/payments/pricing.js";
 
 const app = new Hono();
 
+// ============================================================
 // Middleware
+// ============================================================
 app.use("*", logger());
 app.use("*", cors());
 app.use("*", metricsMiddleware());
 
-// Health check endpoints
+// Rate limiting (even for paying users to prevent abuse)
+const limiter = rateLimiter({
+  windowMs: 60 * 1000, // 1 minute
+  limit: 100, // 100 requests per minute per IP
+  standardHeaders: "draft-6",
+  keyGenerator: (c) =>
+    c.req.header("x-forwarded-for")?.split(",")[0] ||
+    c.req.header("x-real-ip") ||
+    "unknown",
+});
+app.use("*", limiter);
+
+// Get x402 receiver address if configured
+const x402Receiver = isX402Configured() ? getX402ReceiverAddress() : null;
+
+// ============================================================
+// Health check endpoints (always free)
+// ============================================================
 app.get("/health", (c) => c.json({ status: "ok", timestamp: Date.now() }));
 app.get("/health/live", (c) => c.json({ status: "ok", live: true }));
 app.get("/health/ready", (c) => c.json({ status: "ok", ready: true }));
 
 // Metrics endpoint (Prometheus format)
 app.get("/metrics", metricsHandler);
+
+// ============================================================
+// Payments Routes (mostly free)
+// ============================================================
+app.route("/api/payments", paymentsRoutes);
 
 // ============================================================
 // Wallet Endpoints
@@ -40,7 +78,7 @@ const chainQuerySchema = z.object({
   chain: z.enum(["ethereum", "base", "arbitrum", "polygon", "bsc", "linea", "optimism"]).optional(),
 });
 
-// GET /api/wallet/:address/balances
+// GET /api/wallet/:address/balances (free)
 // Get all token balances for a wallet
 app.get(
   "/api/wallet/:address/balances",
@@ -150,27 +188,52 @@ app.get("/api/price", zValidator("query", priceQuerySchema), async (c) => {
 });
 
 // ============================================================
-// Sweep Endpoints (placeholder for now)
+// Sweep Endpoints (monetized via x402)
 // ============================================================
 
-// POST /api/sweep/quote
+// POST /api/sweep/quote ($0.05)
 // Get a quote for sweeping dust tokens
-app.post("/api/sweep/quote", async (c) => {
-  // TODO: Implement sweep quote generation
-  // This will call 1inch/Jupiter/Li.Fi for swap quotes
-  return c.json({ message: "Not implemented yet" }, 501);
-});
+app.post(
+  "/api/sweep/quote",
+  ...(x402Receiver
+    ? [quotePaymentMiddleware(x402Receiver)]
+    : []),
+  async (c) => {
+    // TODO: Implement sweep quote generation
+    // This will call 1inch/Jupiter/Li.Fi for swap quotes
+    return c.json({ message: "Not implemented yet" }, 501);
+  }
+);
 
-// POST /api/sweep/execute
+// POST /api/sweep/execute ($0.10)
 // Execute a sweep transaction
-app.post("/api/sweep/execute", async (c) => {
-  // TODO: Implement sweep execution
-  // This will use the account abstraction layer
-  return c.json({ message: "Not implemented yet" }, 501);
-});
+app.post(
+  "/api/sweep/execute",
+  ...(x402Receiver
+    ? [sweepPaymentMiddleware(x402Receiver)]
+    : []),
+  async (c) => {
+    // TODO: Implement sweep execution
+    // This will use the account abstraction layer
+    return c.json({ message: "Not implemented yet" }, 501);
+  }
+);
+
+// POST /api/consolidate/execute ($0.25)
+// Execute a multi-chain consolidation
+app.post(
+  "/api/consolidate/execute",
+  ...(x402Receiver
+    ? [consolidateExecuteMiddleware(x402Receiver)]
+    : []),
+  async (c) => {
+    // TODO: Implement consolidation execution
+    return c.json({ message: "Not implemented yet" }, 501);
+  }
+);
 
 // ============================================================
-// DeFi Routes
+// DeFi Routes (some endpoints monetized)
 // ============================================================
 
 app.route("/api/defi", defiRoutes);
@@ -180,6 +243,12 @@ app.route("/api/defi", defiRoutes);
 // ============================================================
 
 app.route("/api/bridge", bridgeRoutes);
+
+// ============================================================
+// Consolidation Routes (Multi-Chain Sweep)
+// ============================================================
+
+app.route("/api/consolidate", consolidateRoutes);
 
 // ============================================================
 // Error Handling

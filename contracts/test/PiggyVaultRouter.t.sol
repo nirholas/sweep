@@ -509,7 +509,7 @@ contract PiggyVaultRouterTest is Test {
         assertEq(router.getLido(), LIDO);
     }
 
-    function test_isVaultApproved() public view {
+    function test_isVaultApproved() public {
         assertTrue(router.isVaultApproved(AAVE_V3_POOL));
         assertTrue(router.isVaultApproved(LIDO));
         assertFalse(router.isVaultApproved(makeAddr("random")));

@@ -13,6 +13,7 @@ import {
   recordJobCompletion,
   setProtocolHealth,
 } from './api/middleware/metrics.js';
+import { createConsolidationWorker } from './queue/workers/consolidation.js';
 
 // Redis connection
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
@@ -184,6 +185,24 @@ healthCheckWorker.on('failed', (job, error) => {
 });
 
 // ============================================
+// Consolidation Worker
+// ============================================
+const consolidationWorker = createConsolidationWorker();
+
+consolidationWorker.on('completed', (job, result) => {
+  const status = result.success
+    ? 'completed'
+    : result.partialSuccess
+      ? 'partial success'
+      : 'failed';
+  console.log(`[Consolidation] Job ${job.id} ${status}`);
+});
+
+consolidationWorker.on('failed', (job, error) => {
+  console.error(`[Consolidation] Job ${job?.id} failed:`, error.message);
+});
+
+// ============================================
 // Graceful Shutdown
 // ============================================
 async function shutdown() {
@@ -195,6 +214,7 @@ async function shutdown() {
     sweepWorker.close(),
     priceUpdateWorker.close(),
     healthCheckWorker.close(),
+    consolidationWorker.close(),
   ]);
 
   await connection.quit();
@@ -214,6 +234,7 @@ console.log('Workers ready:');
 console.log(`  - Sweep worker (concurrency: ${process.env.QUEUE_CONCURRENCY || 5})`);
 console.log('  - Price update worker (concurrency: 2)');
 console.log('  - Health check worker (concurrency: 5)');
+console.log('  - Consolidation worker (concurrency: 3)');
 
 // Initial metrics update
 updateAllQueueMetrics();

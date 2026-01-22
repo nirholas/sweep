@@ -10,5 +10,8 @@ export * from "./chains";
 // Utils
 export * from "./utils";
 
+// WebSocket
+export { PiggyWebSocket, getWebSocket, type ConnectionState } from "./websocket";
+
 // Wagmi Config
 export { config, wagmiConfig, supportedChains, ChainIds, isSupportedChain, type SupportedChainId } from "./wagmi";

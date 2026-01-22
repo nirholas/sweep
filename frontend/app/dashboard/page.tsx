@@ -12,6 +12,7 @@ import { TransactionStatus } from "@/components/TransactionStatus";
 import { PortfolioSummary } from "@/components/PortfolioSummary";
 import { TokenSearch } from "@/components/TokenSearch";
 import { SwapSettings } from "@/components/SwapSettings";
+import { RecentActivity, QuickActions } from "@/components/RecentActivity";
 import { useDustTokens } from "@/hooks/useDustTokens";
 import { getSweepQuote } from "@/lib/api";
 import { useToast } from "@/components/Toast";
@@ -178,6 +179,9 @@ export default function DashboardPage() {
         <div className="max-w-4xl mx-auto">
           {step === "select" && (
             <div className="space-y-6">
+              {/* Quick Actions */}
+              <QuickActions />
+
               {/* Portfolio Summary */}
               <PortfolioSummary tokens={dustTokens || []} isLoading={isLoading} />
               
@@ -211,6 +215,7 @@ export default function DashboardPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={handleSelectAll}
+                        data-action="select-all"
                         className="text-sm text-primary hover:underline"
                       >
                         Select All
@@ -283,6 +288,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Recent Activity */}
+              <RecentActivity limit={5} showViewAll={true} />
             </div>
           )}
 

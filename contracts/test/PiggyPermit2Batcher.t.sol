@@ -270,7 +270,7 @@ contract PiggyPermit2BatcherTest is Test {
         assertEq(batcher.getNonce(user), 0);
     }
 
-    function test_getNonce_differentUsers() public view {
+    function test_getNonce_differentUsers() public {
         address user2 = makeAddr("user2");
         
         assertEq(batcher.getNonce(user), 0);

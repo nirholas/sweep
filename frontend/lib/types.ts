@@ -195,3 +195,231 @@ export const OUTPUT_TOKEN_OPTIONS: OutputTokenOption[] = [
     logoUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png",
   },
 ];
+
+// ============================================
+// Consolidation Types
+// ============================================
+
+/** Request to consolidate assets from multiple chains to a single destination */
+export interface ConsolidationRequest {
+  wallet: string;
+  sourceChains: number[];
+  destinationChainId: number;
+  destinationToken: string;
+  minValueUsd?: number;
+  slippage?: number;
+}
+
+/** A route for bridging assets from one chain to another */
+export interface BridgeRoute {
+  id: string;
+  sourceChainId: number;
+  destinationChainId: number;
+  bridge: string;
+  inputToken: string;
+  inputAmount: string;
+  outputToken: string;
+  estimatedOutput: string;
+  fee: number;
+  estimatedTimeMinutes: number;
+  steps: BridgeStep[];
+}
+
+/** A single step in a bridge route */
+export interface BridgeStep {
+  type: "swap" | "bridge" | "approve";
+  chainId: number;
+  protocol: string;
+  tokenIn: string;
+  tokenOut: string;
+  amountIn: string;
+  estimatedAmountOut: string;
+}
+
+/** Quote for a consolidation operation */
+export interface ConsolidationQuote {
+  id: string;
+  sourceChains: number[];
+  destinationChainId: number;
+  destinationToken: OutputTokenOption;
+  routes: BridgeRoute[];
+  totalInputUsd: number;
+  estimatedOutputUsd: number;
+  totalFees: ConsolidationFees;
+  estimatedTimeMinutes: number;
+  expiresAt: number;
+}
+
+/** Fee breakdown for consolidation */
+export interface ConsolidationFees {
+  bridgeFees: number;
+  gasFees: number;
+  protocolFees: number;
+  total: number;
+}
+
+/** Status of an ongoing consolidation */
+export interface ConsolidationStatus {
+  id: string;
+  status: "pending" | "bridging" | "swapping" | "completed" | "failed";
+  routes: ConsolidationRouteStatus[];
+  startedAt: number;
+  completedAt?: number;
+  error?: string;
+}
+
+/** Status of a single route in a consolidation */
+export interface ConsolidationRouteStatus {
+  routeId: string;
+  sourceChainId: number;
+  status: "pending" | "submitted" | "bridging" | "completed" | "failed";
+  txHash?: string;
+  bridgeTxHash?: string;
+  progress: number; // 0-100
+  estimatedTimeRemaining?: number;
+}
+
+// ============================================
+// Subscription Types
+// ============================================
+
+/** Auto-sweep subscription configuration */
+export interface Subscription {
+  id: string;
+  wallet: string;
+  chainIds: number[];
+  minDustValue: number;
+  outputToken: string;
+  outputChainId: number;
+  frequency: SubscriptionFrequency;
+  status: SubscriptionStatus;
+  spendPermission?: SpendPermission;
+  lastRun?: number;
+  nextRun?: number;
+  createdAt: number;
+  stats: SubscriptionStats;
+}
+
+/** Subscription run frequency */
+export type SubscriptionFrequency = "daily" | "weekly" | "monthly" | "on_threshold";
+
+/** Subscription status */
+export type SubscriptionStatus = "active" | "paused" | "expired" | "cancelled";
+
+/** EIP-7715 spend permission for auto-sweeps */
+export interface SpendPermission {
+  token: string;
+  allowance: string;
+  period: number;
+  start: number;
+  end: number;
+  salt: string;
+  extraData: string;
+  signature?: string;
+}
+
+/** Statistics for a subscription */
+export interface SubscriptionStats {
+  totalSweeps: number;
+  totalTokensSwept: number;
+  totalValueUsd: number;
+  totalGasSaved: number;
+}
+
+/** Request to create a subscription */
+export interface CreateSubscriptionRequest {
+  chainIds: number[];
+  minDustValue: number;
+  outputToken: string;
+  outputChainId: number;
+  frequency: SubscriptionFrequency;
+  thresholdValueUsd?: number; // For on_threshold frequency
+}
+
+/** Subscription run history entry */
+export interface SubscriptionRun {
+  id: string;
+  subscriptionId: string;
+  status: "success" | "failed" | "partial";
+  tokensSwept: number;
+  valueUsd: number;
+  outputAmount: string;
+  gasSaved: number;
+  transactions: TransactionInfo[];
+  executedAt: number;
+  error?: string;
+}
+
+// ============================================
+// WebSocket Event Types
+// ============================================
+
+/** WebSocket message types */
+export type WebSocketMessageType =
+  | "connected"
+  | "transaction_update"
+  | "price_update"
+  | "subscription_trigger"
+  | "consolidation_update"
+  | "error";
+
+/** Base WebSocket message */
+export interface WebSocketMessage<T = unknown> {
+  type: WebSocketMessageType;
+  timestamp: number;
+  data: T;
+}
+
+/** Transaction update event */
+export interface TransactionUpdateEvent {
+  sweepId: string;
+  chainId: number;
+  txHash: string;
+  status: "submitted" | "confirmed" | "failed";
+  confirmations?: number;
+}
+
+/** Price update event */
+export interface PriceUpdateEvent {
+  tokenAddress: string;
+  chainId: number;
+  priceUsd: number;
+  change24h: number;
+}
+
+/** Subscription trigger event */
+export interface SubscriptionTriggerEvent {
+  subscriptionId: string;
+  reason: "scheduled" | "threshold_reached";
+  dustValueUsd: number;
+}
+
+/** Consolidation update event */
+export interface ConsolidationUpdateEvent {
+  consolidationId: string;
+  routeId: string;
+  status: ConsolidationRouteStatus["status"];
+  progress: number;
+  txHash?: string;
+}
+
+// ============================================
+// Multi-Chain Balance Types
+// ============================================
+
+/** Aggregated balance across chains */
+export interface MultiChainBalance {
+  totalValueUsd: number;
+  chainBreakdown: ChainBalance[];
+  lastUpdated: number;
+}
+
+/** Balance for a single chain */
+export interface ChainBalance {
+  chainId: number;
+  chainName: string;
+  tokenCount: number;
+  totalValueUsd: number;
+  nativeBalance: string;
+  nativeValueUsd: number;
+}

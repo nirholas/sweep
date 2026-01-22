@@ -455,6 +455,87 @@ export class JitoProvider implements DeFiProvider {
       tokenAmount,
     };
   }
+
+  /**
+   * Build stake transaction for frontend
+   * Returns serialized transaction data for signing
+   */
+  async buildStakeTransaction(
+    solAmount: string,
+    userAddress: string
+  ): Promise<{
+    instructions: Array<{
+      programId: string;
+      keys: Array<{ pubkey: string; isSigner: boolean; isWritable: boolean }>;
+      data: string;
+    }>;
+    expectedJitoSOL: string;
+    estimatedApy: number;
+  }> {
+    const lamports = BigInt(Math.floor(Number(solAmount) * 1e9));
+    const exchangeRate = await fetchJitoExchangeRate();
+    const expectedJitoSOL = (Number(solAmount) * exchangeRate).toFixed(9);
+    const apyData = await fetchJitoApy();
+
+    // Build the stake instruction
+    // Note: This is a simplified representation
+    // Actual implementation would use the Jito SDK
+    const stakeInstruction = {
+      programId: JITO_ADDRESSES.stakePoolProgram,
+      keys: [
+        { pubkey: JITO_ADDRESSES.stakePool, isSigner: false, isWritable: true },
+        { pubkey: userAddress, isSigner: true, isWritable: true },
+        { pubkey: JITO_ADDRESSES.jitoSOL, isSigner: false, isWritable: true },
+      ],
+      data: Buffer.from([
+        1, // Stake instruction discriminator
+        ...this.bigIntToBytes(lamports, 8),
+      ]).toString("base64"),
+    };
+
+    return {
+      instructions: [stakeInstruction],
+      expectedJitoSOL,
+      estimatedApy: apyData.apy,
+    };
+  }
+
+  /**
+   * Get current Jito stats
+   */
+  async getStats(): Promise<{
+    totalStaked: number;
+    validators: number;
+    apy: number;
+    apyMev: number;
+    exchangeRate: number;
+  }> {
+    const [apyData, tvl, exchangeRate] = await Promise.all([
+      fetchJitoApy(),
+      fetchJitoTvl(),
+      fetchJitoExchangeRate(),
+    ]);
+
+    return {
+      totalStaked: tvl,
+      validators: 0, // Would need to fetch from validator list
+      apy: apyData.apy,
+      apyMev: apyData.apyMev,
+      exchangeRate,
+    };
+  }
+
+  /**
+   * Convert BigInt to byte array
+   */
+  private bigIntToBytes(value: bigint, length: number): number[] {
+    const bytes: number[] = [];
+    for (let i = 0; i < length; i++) {
+      bytes.push(Number(value & 0xffn));
+      value >>= 8n;
+    }
+    return bytes;
+  }
 }
 
 // ============================================================

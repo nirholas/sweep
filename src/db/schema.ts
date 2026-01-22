@@ -203,12 +203,116 @@ export const priceCache = pgTable(
 );
 
 // ============================================================
+// Subscriptions Table (auto-sweep subscriptions)
+// ============================================================
+export const subscriptions = pgTable(
+  "subscriptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    walletAddress: varchar("wallet_address", { length: 66 }).notNull(),
+    smartWalletAddress: varchar("smart_wallet_address", { length: 66 }),
+    
+    // Source configuration
+    sourceChains: jsonb("source_chains").$type<number[]>().default([]).notNull(),
+    
+    // Destination configuration
+    destinationChain: numeric("destination_chain").notNull().$type<number>(),
+    destinationAsset: varchar("destination_asset", { length: 30 }).notNull(),
+    destinationProtocol: varchar("destination_protocol", { length: 50 }),
+    destinationVault: varchar("destination_vault", { length: 66 }),
+    
+    // Trigger configuration
+    triggerType: varchar("trigger_type", { length: 20 }).notNull().$type<"threshold" | "schedule">(),
+    thresholdUsd: decimal("threshold_usd", { precision: 20, scale: 8 }),
+    schedulePattern: varchar("schedule_pattern", { length: 50 }),
+    
+    // Cost limits
+    minSweepValueUsd: decimal("min_sweep_value_usd", { precision: 20, scale: 8 }).default("5"),
+    maxSweepCostPercent: decimal("max_sweep_cost_percent", { precision: 5, scale: 2 }).default("10"),
+    
+    // Spend permission (Coinbase)
+    spendPermissionSignature: text("spend_permission_signature").notNull(),
+    spendPermissionHash: varchar("spend_permission_hash", { length: 66 }),
+    spendPermissionExpiry: timestamp("spend_permission_expiry", { withTimezone: true }).notNull(),
+    spendPermissionMaxAmount: numeric("spend_permission_max_amount", { precision: 78, scale: 0 }),
+    spendPermissionData: jsonb("spend_permission_data").$type<{
+      account: string;
+      spender: string;
+      token: string;
+      allowance: string;
+      period: number;
+      start: number;
+      end: number;
+      salt: string;
+      extraData: string;
+    }>(),
+    
+    // Status
+    status: varchar("status", { length: 20 }).default("active").notNull().$type<"active" | "paused" | "cancelled" | "expired">(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+    lastSweepAt: timestamp("last_sweep_at", { withTimezone: true }),
+    nextScheduledAt: timestamp("next_scheduled_at", { withTimezone: true }),
+    
+    // Stats
+    totalSweeps: numeric("total_sweeps").default("0").$type<number>(),
+    totalValueSwept: decimal("total_value_swept", { precision: 20, scale: 8 }).default("0"),
+  },
+  (table) => ({
+    userIdx: index("idx_subscriptions_user").on(table.userId),
+    walletIdx: index("idx_subscriptions_wallet").on(table.walletAddress),
+    statusIdx: index("idx_subscriptions_status").on(table.status),
+    triggerTypeIdx: index("idx_subscriptions_trigger_type").on(table.triggerType),
+    nextScheduledIdx: index("idx_subscriptions_next_scheduled").on(table.nextScheduledAt),
+    expiryIdx: index("idx_subscriptions_expiry").on(table.spendPermissionExpiry),
+  })
+);
+
+// ============================================================
+// Subscription Sweeps Table (history of auto-sweeps)
+// ============================================================
+export const subscriptionSweeps = pgTable(
+  "subscription_sweeps",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    subscriptionId: uuid("subscription_id").references(() => subscriptions.id).notNull(),
+    sweepId: uuid("sweep_id").references(() => sweeps.id),
+    
+    // Trigger info
+    triggeredBy: varchar("triggered_by", { length: 20 }).$type<"threshold" | "schedule" | "manual">(),
+    
+    // Value info
+    dustValueUsd: decimal("dust_value_usd", { precision: 20, scale: 8 }),
+    sweepCostUsd: decimal("sweep_cost_usd", { precision: 20, scale: 8 }),
+    netValueUsd: decimal("net_value_usd", { precision: 20, scale: 8 }),
+    tokensSwept: numeric("tokens_swept").$type<number>(),
+    chains: jsonb("chains").$type<number[]>().default([]),
+    
+    // Status
+    status: varchar("status", { length: 20 }).default("pending").$type<"pending" | "executing" | "completed" | "failed">(),
+    errorMessage: text("error_message"),
+    
+    // Timestamps
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+  },
+  (table) => ({
+    subscriptionIdx: index("idx_subscription_sweeps_subscription").on(table.subscriptionId),
+    sweepIdx: index("idx_subscription_sweeps_sweep").on(table.sweepId),
+    statusIdx: index("idx_subscription_sweeps_status").on(table.status),
+    createdIdx: index("idx_subscription_sweeps_created").on(table.createdAt),
+  })
+);
+
+// ============================================================
 // Relations
 // ============================================================
 export const usersRelations = relations(users, ({ many }) => ({
   sweeps: many(sweeps),
   dustTokens: many(dustTokens),
   quotes: many(sweepQuotes),
+  subscriptions: many(subscriptions),
 }));
 
 export const sweepsRelations = relations(sweeps, ({ one, many }) => ({
@@ -237,6 +341,120 @@ export const sweepQuotesRelations = relations(sweepQuotes, ({ one }) => ({
   }),
 }));
 
+export const subscriptionsRelations = relations(subscriptions, ({ one, many }) => ({
+  user: one(users, {
+    fields: [subscriptions.userId],
+    references: [users.id],
+  }),
+  sweeps: many(subscriptionSweeps),
+}));
+
+export const subscriptionSweepsRelations = relations(subscriptionSweeps, ({ one }) => ({
+  subscription: one(subscriptions, {
+    fields: [subscriptionSweeps.subscriptionId],
+    references: [subscriptions.id],
+  }),
+  sweep: one(sweeps, {
+    fields: [subscriptionSweeps.sweepId],
+    references: [sweeps.id],
+  }),
+}));
+
+// ============================================================
+// API Payments Table (x402 payment history)
+// ============================================================
+export const apiPayments = pgTable(
+  "api_payments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    receiptId: varchar("receipt_id", { length: 100 }).notNull().unique(),
+    payerAddress: varchar("payer_address", { length: 66 }).notNull(),
+    payeeAddress: varchar("payee_address", { length: 66 }).notNull(),
+    amountUsdc: varchar("amount_usdc", { length: 78 }).notNull(),
+    network: varchar("network", { length: 50 }).notNull(),
+    txHash: varchar("tx_hash", { length: 66 }),
+    endpoint: varchar("endpoint", { length: 200 }).notNull(),
+    method: varchar("method", { length: 10 }).notNull(),
+    paymentType: varchar("payment_type", { length: 20 }).notNull().$type<"x402" | "credits" | "free_tier">(),
+    status: varchar("status", { length: 20 }).notNull().$type<"pending" | "completed" | "failed" | "refunded">(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => ({
+    receiptIdx: uniqueIndex("idx_api_payments_receipt").on(table.receiptId),
+    payerIdx: index("idx_api_payments_payer").on(table.payerAddress),
+    txHashIdx: index("idx_api_payments_tx").on(table.txHash),
+    statusIdx: index("idx_api_payments_status").on(table.status),
+    createdIdx: index("idx_api_payments_created").on(table.createdAt),
+  })
+);
+
+// ============================================================
+// API Credits Table (prepaid credit balances)
+// ============================================================
+export const apiCredits = pgTable(
+  "api_credits",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    walletAddress: varchar("wallet_address", { length: 66 }).notNull().unique(),
+    balanceCents: varchar("balance_cents", { length: 20 }).notNull().default("0"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => ({
+    walletIdx: uniqueIndex("idx_api_credits_wallet").on(table.walletAddress),
+    expiresIdx: index("idx_api_credits_expires").on(table.expiresAt),
+  })
+);
+
+// ============================================================
+// API Credit Transactions Table (credit history)
+// ============================================================
+export const apiCreditTransactions = pgTable(
+  "api_credit_transactions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    walletAddress: varchar("wallet_address", { length: 66 }).notNull(),
+    type: varchar("type", { length: 20 }).notNull().$type<"deposit" | "deduction" | "refund" | "expiry" | "adjustment">(),
+    amountCents: varchar("amount_cents", { length: 20 }).notNull(),
+    balanceAfter: varchar("balance_after", { length: 20 }).notNull(),
+    endpoint: varchar("endpoint", { length: 200 }),
+    txHash: varchar("tx_hash", { length: 66 }),
+    description: text("description"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => ({
+    walletIdx: index("idx_api_credit_transactions_wallet").on(table.walletAddress),
+    typeIdx: index("idx_api_credit_transactions_type").on(table.type),
+    createdIdx: index("idx_api_credit_transactions_created").on(table.createdAt),
+  })
+);
+
+// ============================================================
+// API Usage Table (request logs)
+// ============================================================
+export const apiUsage = pgTable(
+  "api_usage",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userIdentifier: varchar("user_identifier", { length: 100 }).notNull(),
+    endpoint: varchar("endpoint", { length: 200 }).notNull(),
+    method: varchar("method", { length: 10 }).notNull(),
+    priceCents: numeric("price_cents").notNull().default("0"),
+    paymentType: varchar("payment_type", { length: 20 }).notNull().$type<"x402" | "credits" | "free_tier">(),
+    responseStatus: numeric("response_status"),
+    responseTimeMs: numeric("response_time_ms"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => ({
+    userIdx: index("idx_api_usage_user").on(table.userIdentifier),
+    endpointIdx: index("idx_api_usage_endpoint").on(table.endpoint),
+    createdIdx: index("idx_api_usage_created").on(table.createdAt),
+    paymentTypeIdx: index("idx_api_usage_payment_type").on(table.paymentType),
+  })
+);
+
 // ============================================================
 // Types
 // ============================================================
@@ -257,3 +475,21 @@ export type NewDustToken = typeof dustTokens.$inferInsert;
 
 export type PriceCache = typeof priceCache.$inferSelect;
 export type NewPriceCache = typeof priceCache.$inferInsert;
+
+export type Subscription = typeof subscriptions.$inferSelect;
+export type NewSubscription = typeof subscriptions.$inferInsert;
+
+export type SubscriptionSweep = typeof subscriptionSweeps.$inferSelect;
+export type NewSubscriptionSweep = typeof subscriptionSweeps.$inferInsert;
+
+export type ApiPayment = typeof apiPayments.$inferSelect;
+export type NewApiPayment = typeof apiPayments.$inferInsert;
+
+export type ApiCredit = typeof apiCredits.$inferSelect;
+export type NewApiCredit = typeof apiCredits.$inferInsert;
+
+export type ApiCreditTransaction = typeof apiCreditTransactions.$inferSelect;
+export type NewApiCreditTransaction = typeof apiCreditTransactions.$inferInsert;
+
+export type ApiUsage = typeof apiUsage.$inferSelect;
+export type NewApiUsage = typeof apiUsage.$inferInsert;

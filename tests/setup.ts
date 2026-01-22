@@ -88,6 +88,72 @@ export function createMockRedis(): Partial<Redis> {
       return "OK";
     }),
 
+    lpush: vi.fn(async (key: string, ...values: string[]) => {
+      const entry = mockRedisStore.get(key);
+      let list: string[] = [];
+      if (entry) {
+        try {
+          list = JSON.parse(entry.value);
+        } catch {
+          list = [entry.value];
+        }
+      }
+      // lpush adds to the front
+      list.unshift(...values.reverse());
+      mockRedisStore.set(key, { value: JSON.stringify(list) });
+      return list.length;
+    }),
+
+    ltrim: vi.fn(async (key: string, start: number, stop: number) => {
+      const entry = mockRedisStore.get(key);
+      if (entry) {
+        try {
+          const list = JSON.parse(entry.value) as string[];
+          const trimmed = list.slice(start, stop + 1);
+          mockRedisStore.set(key, { value: JSON.stringify(trimmed) });
+        } catch {
+          // Not a list, ignore
+        }
+      }
+      return "OK";
+    }),
+
+    lrange: vi.fn(async (key: string, start: number, stop: number) => {
+      const entry = mockRedisStore.get(key);
+      if (!entry) return [];
+      try {
+        const list = JSON.parse(entry.value) as string[];
+        if (stop < 0) stop = list.length + stop + 1;
+        return list.slice(start, stop + 1);
+      } catch {
+        return [];
+      }
+    }),
+
+    rpush: vi.fn(async (key: string, ...values: string[]) => {
+      const entry = mockRedisStore.get(key);
+      let list: string[] = [];
+      if (entry) {
+        try {
+          list = JSON.parse(entry.value);
+        } catch {
+          list = [entry.value];
+        }
+      }
+      list.push(...values);
+      mockRedisStore.set(key, { value: JSON.stringify(list) });
+      return list.length;
+    }),
+
+    publish: vi.fn(async (_channel: string, _message: string) => {
+      // No-op for testing, just return subscriber count (0)
+      return 0;
+    }),
+
+    subscribe: vi.fn(async (..._channels: string[]) => {
+      return 0;
+    }),
+
     quit: vi.fn(async () => "OK"),
     disconnect: vi.fn(),
   };

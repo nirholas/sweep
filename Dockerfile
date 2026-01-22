@@ -1,42 +1,58 @@
 # ============================================
 # Piggy Bank API Server - Production Dockerfile
+# Multi-stage build for minimal image size
 # ============================================
 
-# Stage 1: Builder
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+
+WORKDIR /app
+
+# Install build dependencies needed for native modules
+RUN apk add --no-cache python3 make g++
+
+# Copy package files for layer caching
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm ci --legacy-peer-deps
+
+# ============================================
+# Stage 2: Builder
+# ============================================
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install build dependencies
-RUN apk add --no-cache python3 make g++
-
-# Copy package files
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
 COPY package*.json ./
 
-# Install all dependencies (including devDependencies for build)
-RUN npm ci
-
 # Copy source code
-COPY . .
+COPY tsconfig.json ./
+COPY drizzle.config.ts ./
+COPY src ./src
+COPY drizzle ./drizzle
 
 # Build TypeScript
 RUN npm run build
 
-# Prune dev dependencies
-RUN npm prune --production
+# Prune dev dependencies for smaller image
+RUN npm prune --production --legacy-peer-deps
 
 # ============================================
-# Stage 2: Runner
+# Stage 3: Runner (minimal production image)
 # ============================================
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Add non-root user for security
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 piggybank
+# Add security updates and create non-root user
+RUN apk add --no-cache dumb-init wget \
+    && addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 piggybank
 
-# Copy built application
+# Copy only production artifacts
 COPY --from=builder --chown=piggybank:nodejs /app/dist ./dist
 COPY --from=builder --chown=piggybank:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=piggybank:nodejs /app/package.json ./
@@ -55,6 +71,9 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 # Switch to non-root user
 USER piggybank
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
 
 # Start the server
 CMD ["node", "dist/api/index.js"]
