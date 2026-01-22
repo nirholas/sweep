@@ -7,13 +7,13 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IPermit2} from "./interfaces/IPermit2.sol";
-import {PiggyBatchSwap} from "./PiggyBatchSwap.sol";
+import {SweepBatchSwap} from "./SweepBatchSwap.sol";
 
-/// @title PiggyPermit2Batcher
+/// @title SweepPermit2Batcher
 /// @author Sweep Team
 /// @notice Batch Permit2 transfers and swaps with a single signature
-/// @dev Integrates with PiggyBatchSwap for executing swaps after transfers
-contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
+/// @dev Integrates with SweepBatchSwap for executing swaps after transfers
+contract SweepPermit2Batcher is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     // ============================================================
@@ -25,17 +25,17 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
 
     /// @notice EIP-712 domain separator name
     string public constant WITNESS_TYPE_STRING =
-        "PiggyBatchWitness witness)PiggyBatchWitness(address outputToken,uint256 minTotalOutput,uint256 deadline,bytes32 swapsHash)TokenPermissions(address token,uint256 amount)";
+        "SweepBatchWitness witness)SweepBatchWitness(address outputToken,uint256 minTotalOutput,uint256 deadline,bytes32 swapsHash)TokenPermissions(address token,uint256 amount)";
 
     bytes32 public constant WITNESS_TYPEHASH =
-        keccak256("PiggyBatchWitness(address outputToken,uint256 minTotalOutput,uint256 deadline,bytes32 swapsHash)");
+        keccak256("SweepBatchWitness(address outputToken,uint256 minTotalOutput,uint256 deadline,bytes32 swapsHash)");
 
     // ============================================================
     // STATE VARIABLES
     // ============================================================
 
-    /// @notice PiggyBatchSwap contract
-    PiggyBatchSwap public immutable batchSwap;
+    /// @notice SweepBatchSwap contract
+    SweepBatchSwap public immutable batchSwap;
 
     /// @notice Permit2 contract interface
     IPermit2 public immutable permit2;
@@ -54,7 +54,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
     }
 
     /// @notice Witness data included in permit signature
-    struct PiggyBatchWitness {
+    struct SweepBatchWitness {
         address outputToken;
         uint256 minTotalOutput;
         uint256 deadline;
@@ -67,7 +67,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
         IPermit2.PermitBatchTransferFrom permit;
         bytes signature;
         // Swap data
-        PiggyBatchSwap.SwapParams[] swaps;
+        SweepBatchSwap.SwapParams[] swaps;
         // Output params
         address outputToken;
         uint256 minTotalOutput;
@@ -132,7 +132,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
     constructor(address _batchSwap) Ownable(msg.sender) {
         if (_batchSwap == address(0)) revert InvalidBatchSwapAddress();
         
-        batchSwap = PiggyBatchSwap(payable(_batchSwap));
+        batchSwap = SweepBatchSwap(payable(_batchSwap));
         permit2 = IPermit2(PERMIT2);
     }
 
@@ -156,7 +156,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
         bytes32 swapsHash = keccak256(abi.encode(params.swaps));
         
         // Build witness
-        PiggyBatchWitness memory witness = PiggyBatchWitness({
+        SweepBatchWitness memory witness = SweepBatchWitness({
             outputToken: params.outputToken,
             minTotalOutput: params.minTotalOutput,
             deadline: params.deadline,
@@ -217,7 +217,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
     /// @return totalOutput Total output token received
     function executeBatchWithERC2612(
         ERC2612Permit[] calldata permits,
-        PiggyBatchSwap.SwapParams[] calldata swaps,
+        SweepBatchSwap.SwapParams[] calldata swaps,
         address outputToken,
         uint256 minTotalOutput,
         address recipient,
@@ -271,7 +271,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
     /// @param deadline Deadline timestamp
     /// @return totalOutput Total output received
     function executeSwapsOnly(
-        PiggyBatchSwap.SwapParams[] calldata swaps,
+        SweepBatchSwap.SwapParams[] calldata swaps,
         address outputToken,
         uint256 minTotalOutput,
         address recipient,
@@ -289,21 +289,21 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
     // INTERNAL FUNCTIONS
     // ============================================================
 
-    /// @notice Execute swaps through PiggyBatchSwap
+    /// @notice Execute swaps through SweepBatchSwap
     /// @param swaps Array of swap parameters
     /// @param outputToken Output token address
     /// @param recipient Recipient address
     /// @param deadline Deadline timestamp
     /// @return totalOutput Total output received
     function _executeSwaps(
-        PiggyBatchSwap.SwapParams[] calldata swaps,
+        SweepBatchSwap.SwapParams[] calldata swaps,
         address outputToken,
         address recipient,
         uint256 deadline
     ) internal returns (uint256 totalOutput) {
         // Approve tokens for batch swap
         for (uint256 i = 0; i < swaps.length;) {
-            if (swaps[i].tokenIn != PiggyBatchSwap(payable(address(batchSwap))).ETH_ADDRESS()) {
+            if (swaps[i].tokenIn != SweepBatchSwap(payable(address(batchSwap))).ETH_ADDRESS()) {
                 uint256 balance = IERC20(swaps[i].tokenIn).balanceOf(address(this));
                 if (balance > 0) {
                     IERC20(swaps[i].tokenIn).forceApprove(address(batchSwap), balance);
@@ -313,7 +313,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
         }
 
         // Build batch swap params
-        PiggyBatchSwap.BatchSwapParams memory batchParams = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory batchParams = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: outputToken,
             recipient: recipient,
@@ -345,7 +345,7 @@ contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {
         address outputToken,
         uint256 minTotalOutput,
         uint256 deadline,
-        PiggyBatchSwap.SwapParams[] calldata swaps
+        SweepBatchSwap.SwapParams[] calldata swaps
     ) external pure returns (bytes32) {
         bytes32 swapsHash = keccak256(abi.encode(swaps));
         

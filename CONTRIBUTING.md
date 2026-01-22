@@ -1,8 +1,8 @@
-# Contributing to Piggy Bank
+# Contributing to Sweep
 
 > **⚠️ CRITICAL: This application handles user funds. All contributions must follow strict security practices.**
 
-Thank you for your interest in contributing to Piggy Bank! This guide will help you get started.
+Thank you for your interest in contributing to Sweep! This guide will help you get started.
 
 ## Table of Contents
 
@@ -45,7 +45,7 @@ Thank you for your interest in contributing to Piggy Bank! This guide will help 
 
 ### Finding Issues
 
-- Check [GitHub Issues](https://github.com/nirholas/piggy-bank/issues)
+- Check [GitHub Issues](https://github.com/nirholas/sweep/issues)
 - Look for `good first issue` labels for beginner-friendly tasks
 - Check `help wanted` for issues needing contributors
 - Review `priority` labels for important work
@@ -71,9 +71,9 @@ Thank you for your interest in contributing to Piggy Bank! This guide will help 
 
 ```bash
 # Fork the repository on GitHub, then:
-git clone https://github.com/YOUR_USERNAME/piggy-bank.git
-cd piggy-bank
-git remote add upstream https://github.com/nirholas/piggy-bank.git
+git clone https://github.com/YOUR_USERNAME/sweep.git
+cd sweep
+git remote add upstream https://github.com/nirholas/sweep.git
 ```
 
 ### 2. Create Branch
@@ -450,7 +450,7 @@ Before submitting a PR that touches:
 **DO NOT** open a public issue for security vulnerabilities.
 
 Instead:
-1. Email security@piggy.bank
+1. Email security@sweep.bank
 2. Include detailed reproduction steps
 3. Allow 72 hours for initial response
 
@@ -486,9 +486,9 @@ Instead:
 
 ## Getting Help
 
-- **Questions**: Open a [Discussion](https://github.com/nirholas/piggy-bank/discussions)
-- **Bugs**: Open an [Issue](https://github.com/nirholas/piggy-bank/issues)
-- **Security**: Email security@piggy.bank
+- **Questions**: Open a [Discussion](https://github.com/nirholas/sweep/discussions)
+- **Bugs**: Open an [Issue](https://github.com/nirholas/sweep/issues)
+- **Security**: Email security@sweep.bank
 - **Chat**: Join our Discord (link in README)
 
 ---
@@ -500,4 +500,4 @@ Contributors are recognized in:
 - CHANGELOG.md release notes
 - Project documentation
 
-Thank you for contributing to Piggy Bank! 🐷
+Thank you for contributing to Sweep! 🐷

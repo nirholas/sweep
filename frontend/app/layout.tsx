@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "Sweep | Multi-Chain Dust Sweeper",
   description: "Sweep your dust tokens across multiple chains and convert them into DeFi positions",
   icons: {
-    icon: "/piggy.svg",
+    icon: "/sweep.svg",
   },
   manifest: "/manifest.json",
   appleWebApp: {

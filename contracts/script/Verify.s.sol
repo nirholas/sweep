@@ -39,12 +39,12 @@ contract Verify is Script {
         console2.log("");
 
         // FeeCollector
-        console2.log("# PiggyFeeCollector");
+        console2.log("# SweepFeeCollector");
         console2.log(
             string.concat(
                 "forge verify-contract ",
                 _toHexString(feeCollector),
-                " src/PiggyFeeCollector.sol:PiggyFeeCollector ",
+                " src/SweepFeeCollector.sol:SweepFeeCollector ",
                 "--constructor-args $(cast abi-encode 'constructor(address,uint256)' ",
                 _toHexString(treasury),
                 " ",
@@ -56,12 +56,12 @@ contract Verify is Script {
         console2.log("");
 
         // BatchSwap
-        console2.log("# PiggyBatchSwap");
+        console2.log("# SweepBatchSwap");
         console2.log(
             string.concat(
                 "forge verify-contract ",
                 _toHexString(batchSwap),
-                " src/PiggyBatchSwap.sol:PiggyBatchSwap ",
+                " src/SweepBatchSwap.sol:SweepBatchSwap ",
                 "--constructor-args $(cast abi-encode 'constructor(address,uint256)' ",
                 _toHexString(feeCollector),
                 " 0) ",
@@ -71,12 +71,12 @@ contract Verify is Script {
         console2.log("");
 
         // Permit2Batcher
-        console2.log("# PiggyPermit2Batcher");
+        console2.log("# SweepPermit2Batcher");
         console2.log(
             string.concat(
                 "forge verify-contract ",
                 _toHexString(permit2Batcher),
-                " src/PiggyPermit2Batcher.sol:PiggyPermit2Batcher ",
+                " src/SweepPermit2Batcher.sol:SweepPermit2Batcher ",
                 "--constructor-args $(cast abi-encode 'constructor(address)' ",
                 _toHexString(batchSwap),
                 ") ",
@@ -86,24 +86,24 @@ contract Verify is Script {
         console2.log("");
 
         // VaultRouter
-        console2.log("# PiggyVaultRouter");
+        console2.log("# SweepVaultRouter");
         console2.log(
             string.concat(
                 "forge verify-contract ",
                 _toHexString(vaultRouter),
-                " src/PiggyVaultRouter.sol:PiggyVaultRouter ",
+                " src/SweepVaultRouter.sol:SweepVaultRouter ",
                 "--chain mainnet --etherscan-api-key $ETHERSCAN_API_KEY"
             )
         );
         console2.log("");
 
         // DustSweeper
-        console2.log("# PiggyDustSweeper");
+        console2.log("# SweepDustSweeper");
         console2.log(
             string.concat(
                 "forge verify-contract ",
                 _toHexString(dustSweeper),
-                " src/PiggyDustSweeper.sol:PiggyDustSweeper ",
+                " src/SweepDustSweeper.sol:SweepDustSweeper ",
                 "--constructor-args $(cast abi-encode 'constructor(address,address,address)' ",
                 _toHexString(batchSwap),
                 " ",
@@ -189,7 +189,7 @@ contract VerifyWithAddresses is Script {
             string.concat(
                 "forge verify-contract ",
                 vm.toString(feeCollector),
-                " PiggyFeeCollector --constructor-args $(cast abi-encode 'constructor(address,uint256)' ",
+                " SweepFeeCollector --constructor-args $(cast abi-encode 'constructor(address,uint256)' ",
                 vm.toString(treasury),
                 " 30) --chain ",
                 network,

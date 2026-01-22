@@ -167,10 +167,10 @@ describe("API Integration", () => {
     it("should validate SIWE signature", async () => {
       const validateSiweMessage = (message: string, signature: string) => {
         // Simplified validation for test
-        return message.includes("piggy.bank") && signature.startsWith("0x");
+        return message.includes("sweep.bank") && signature.startsWith("0x");
       };
       
-      const validMessage = "piggy.bank wants you to sign in";
+      const validMessage = "sweep.bank wants you to sign in";
       const validSignature = "0x" + "a".repeat(130);
       
       expect(validateSiweMessage(validMessage, validSignature)).toBe(true);
@@ -304,11 +304,11 @@ describe("API Integration", () => {
 
   describe("CORS Configuration", () => {
     it("should allow configured origins", async () => {
-      const allowedOrigins = ["https://piggy.bank", "https://app.piggy.bank"];
+      const allowedOrigins = ["https://sweep.bank", "https://app.sweep.bank"];
       
       const isOriginAllowed = (origin: string) => allowedOrigins.includes(origin);
       
-      expect(isOriginAllowed("https://piggy.bank")).toBe(true);
+      expect(isOriginAllowed("https://sweep.bank")).toBe(true);
       expect(isOriginAllowed("https://evil.com")).toBe(false);
     });
 
@@ -316,7 +316,7 @@ describe("API Integration", () => {
       const app = new Hono();
       
       app.options("*", (c) => {
-        c.header("Access-Control-Allow-Origin", "https://piggy.bank");
+        c.header("Access-Control-Allow-Origin", "https://sweep.bank");
         c.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
         c.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         c.header("Access-Control-Max-Age", "86400");
@@ -326,7 +326,7 @@ describe("API Integration", () => {
       const res = await app.request("/quote", { method: "OPTIONS" });
       
       expect(res.status).toBe(204);
-      expect(res.headers.get("Access-Control-Allow-Origin")).toBe("https://piggy.bank");
+      expect(res.headers.get("Access-Control-Allow-Origin")).toBe("https://sweep.bank");
     });
   });
 

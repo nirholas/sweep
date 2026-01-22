@@ -25,7 +25,7 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: https://api.piggy.bank
+  - url: https://api.sweep.exchange
     description: Production
   - url: http://localhost:3000
     description: Development

@@ -56,7 +56,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                            🧹 PIGGY BANK ARCHITECTURE                            │
+│                            🧹 SWEEP ARCHITECTURE                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
 │  ┌──────────────────────────────────────────────────────────────────────────┐   │
@@ -255,7 +255,7 @@ async function signPaymasterData(
     precheckBalance: true,
     prepaymentRequired: false,
     token: gasToken,
-    receiver: PIGGY_TREASURY_ADDRESS,
+    receiver: SWEEP_TREASURY_ADDRESS,
     exchangeRate: config.supportedTokens[gasToken].exchangeRate,
     postOpGas: 50000n,
   };
@@ -563,7 +563,7 @@ async function createCowOrder(
     sellAmount: quote.quote.sellAmount,
     buyAmount: quote.quote.buyAmount,
     validTo: Math.floor(Date.now() / 1000) + 1800, // 30 min
-    appData: PIGGY_APP_DATA,
+    appData: SWEEP_APP_DATA,
     feeAmount: quote.quote.feeAmount,
     kind: "sell",
     partiallyFillable: false,

@@ -1019,7 +1019,7 @@ const status = await client.sweep.getStatus(sweep.sweepId);
 ### Python
 
 ```python
-from piggy_bank import SweepClient
+from sweep_bank import SweepClient
 
 client = SweepClient(api_key="your-api-key")
 

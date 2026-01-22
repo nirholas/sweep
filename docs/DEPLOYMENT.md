@@ -20,7 +20,7 @@
 
 ## Overview
 
-Piggy Bank is deployed as a containerized application on Kubernetes with the following components:
+Sweep is deployed as a containerized application on Kubernetes with the following components:
 
 | Component | Replicas | Description |
 |-----------|----------|-------------|
@@ -288,11 +288,11 @@ kubectl run db-migrate \
 ```bash
 # Create backup
 kubectl exec -n sweep deployment/postgres -- \
-  pg_dump -U piggy sweep > backup-$(date +%Y%m%d).sql
+  pg_dump -U sweep sweep > backup-$(date +%Y%m%d).sql
 
 # Restore backup
 cat backup-20260122.sql | kubectl exec -i -n sweep deployment/postgres -- \
-  psql -U piggy sweep
+  psql -U sweep sweep
 ```
 
 ---
@@ -326,7 +326,7 @@ kubectl rollout status deployment/sweep-api -n sweep
 
 # 4. Verify health
 kubectl get pods -n sweep
-curl https://api.piggybank.xyz/health
+curl https://api.sweep.xyz/health
 ```
 
 ### Blue/Green Deployment
@@ -392,10 +392,10 @@ kubectl rollout status deployment/sweep-api -n sweep
 
 ```bash
 # Check health
-./scripts/health-check.sh https://api.piggybank.xyz
+./scripts/health-check.sh https://api.sweep.xyz
 
 # Or directly
-curl -f https://api.piggybank.xyz/health
+curl -f https://api.sweep.xyz/health
 ```
 
 ### Kubernetes Probes
@@ -551,7 +551,7 @@ jobs:
 |---------|-------|
 | Namespace | `sweep-staging` |
 | Replicas | 1-2 |
-| Domain | `staging-api.piggybank.xyz` |
+| Domain | `staging-api.sweep.xyz` |
 | Database | Shared test DB |
 
 ### Production
@@ -560,7 +560,7 @@ jobs:
 |---------|-------|
 | Namespace | `sweep` |
 | Replicas | 3-10 |
-| Domain | `api.piggybank.xyz` |
+| Domain | `api.sweep.xyz` |
 | Database | Dedicated managed DB |
 
 ---

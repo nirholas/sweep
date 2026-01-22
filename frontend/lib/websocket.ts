@@ -37,7 +37,7 @@ interface EventListeners {
  * WebSocket client for real-time updates
  * Handles connection management, reconnection, and event dispatching
  */
-export class PiggyWebSocket {
+export class SweepWebSocket {
   private ws: WebSocket | null = null;
   private state: ConnectionState = "disconnected";
   private reconnectAttempts = 0;
@@ -345,14 +345,14 @@ export class PiggyWebSocket {
 }
 
 // Singleton instance for use across the app
-let instance: PiggyWebSocket | null = null;
+let instance: SweepWebSocket | null = null;
 
 /**
  * Get the singleton WebSocket instance
  */
-export function getWebSocket(): PiggyWebSocket {
+export function getWebSocket(): SweepWebSocket {
   if (!instance) {
-    instance = new PiggyWebSocket();
+    instance = new SweepWebSocket();
   }
   return instance;
 }

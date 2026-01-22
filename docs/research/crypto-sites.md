@@ -389,7 +389,7 @@ https://kinza.finance
 https://layerbank.finance
 https://moonwell.fi
 https://seamlessprotocol.com
-https://wepiggy.com
+https://wesweep.com
 https://homora.alpacafinance.org
 https://dforce.network
 https://ironbank.finance

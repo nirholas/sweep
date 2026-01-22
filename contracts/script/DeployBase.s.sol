@@ -2,11 +2,11 @@
 pragma solidity ^0.8.24;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {PiggyBatchSwap} from "../src/PiggyBatchSwap.sol";
-import {PiggyPermit2Batcher} from "../src/PiggyPermit2Batcher.sol";
-import {PiggyVaultRouter} from "../src/PiggyVaultRouter.sol";
-import {PiggyFeeCollector} from "../src/PiggyFeeCollector.sol";
-import {PiggyDustSweeper} from "../src/PiggyDustSweeper.sol";
+import {SweepBatchSwap} from "../src/SweepBatchSwap.sol";
+import {SweepPermit2Batcher} from "../src/SweepPermit2Batcher.sol";
+import {SweepVaultRouter} from "../src/SweepVaultRouter.sol";
+import {SweepFeeCollector} from "../src/SweepFeeCollector.sol";
+import {SweepDustSweeper} from "../src/SweepDustSweeper.sol";
 
 /// @title DeployBase
 /// @notice Full deployment script for Base
@@ -36,11 +36,11 @@ contract DeployBase is Script {
     // DEPLOYED CONTRACTS
     // ============================================================
 
-    PiggyBatchSwap public batchSwap;
-    PiggyPermit2Batcher public permit2Batcher;
-    PiggyVaultRouter public vaultRouter;
-    PiggyFeeCollector public feeCollector;
-    PiggyDustSweeper public dustSweeper;
+    SweepBatchSwap public batchSwap;
+    SweepPermit2Batcher public permit2Batcher;
+    SweepVaultRouter public vaultRouter;
+    SweepFeeCollector public feeCollector;
+    SweepDustSweeper public dustSweeper;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
@@ -57,28 +57,28 @@ contract DeployBase is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // 1. Deploy Fee Collector first
-        feeCollector = new PiggyFeeCollector(treasury, INITIAL_FEE_BPS);
-        console2.log("PiggyFeeCollector:", address(feeCollector));
+        feeCollector = new SweepFeeCollector(treasury, INITIAL_FEE_BPS);
+        console2.log("SweepFeeCollector:", address(feeCollector));
 
         // 2. Deploy BatchSwap
-        batchSwap = new PiggyBatchSwap(address(feeCollector), 0);
-        console2.log("PiggyBatchSwap:", address(batchSwap));
+        batchSwap = new SweepBatchSwap(address(feeCollector), 0);
+        console2.log("SweepBatchSwap:", address(batchSwap));
 
         // 3. Deploy Permit2Batcher
-        permit2Batcher = new PiggyPermit2Batcher(address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(permit2Batcher));
+        permit2Batcher = new SweepPermit2Batcher(address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(permit2Batcher));
 
         // 4. Deploy VaultRouter
-        vaultRouter = new PiggyVaultRouter();
-        console2.log("PiggyVaultRouter:", address(vaultRouter));
+        vaultRouter = new SweepVaultRouter();
+        console2.log("SweepVaultRouter:", address(vaultRouter));
 
         // 5. Deploy DustSweeper
-        dustSweeper = new PiggyDustSweeper(
+        dustSweeper = new SweepDustSweeper(
             address(batchSwap),
             address(vaultRouter),
             address(feeCollector)
         );
-        console2.log("PiggyDustSweeper:", address(dustSweeper));
+        console2.log("SweepDustSweeper:", address(dustSweeper));
 
         // Configure
         _configureRouters();
@@ -105,7 +105,7 @@ contract DeployBase is Script {
 
     function _configureVaults() internal {
         // Aave V3
-        vaultRouter.setVaultApproval(AAVE_V3_POOL, PiggyVaultRouter.VaultType.AAVE_V3, true);
+        vaultRouter.setVaultApproval(AAVE_V3_POOL, SweepVaultRouter.VaultType.AAVE_V3, true);
 
         console2.log("Vaults configured");
     }
@@ -113,10 +113,10 @@ contract DeployBase is Script {
     function _logDeploymentSummary() internal view {
         console2.log("");
         console2.log("=== Base Deployment Summary ===");
-        console2.log("PiggyFeeCollector:", address(feeCollector));
-        console2.log("PiggyBatchSwap:", address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(permit2Batcher));
-        console2.log("PiggyVaultRouter:", address(vaultRouter));
-        console2.log("PiggyDustSweeper:", address(dustSweeper));
+        console2.log("SweepFeeCollector:", address(feeCollector));
+        console2.log("SweepBatchSwap:", address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(permit2Batcher));
+        console2.log("SweepVaultRouter:", address(vaultRouter));
+        console2.log("SweepDustSweeper:", address(dustSweeper));
     }
 }

@@ -18,7 +18,7 @@
 
 ## Overview
 
-Piggy Bank uses **Vitest** as the testing framework with a comprehensive test suite covering unit, integration, API, and end-to-end tests.
+Sweep uses **Vitest** as the testing framework with a comprehensive test suite covering unit, integration, API, and end-to-end tests.
 
 ### Technology Stack
 

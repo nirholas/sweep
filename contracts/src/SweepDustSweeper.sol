@@ -8,15 +8,15 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IPermit2} from "./interfaces/IPermit2.sol";
-import {PiggyBatchSwap} from "./PiggyBatchSwap.sol";
-import {PiggyVaultRouter} from "./PiggyVaultRouter.sol";
-import {PiggyFeeCollector} from "./PiggyFeeCollector.sol";
+import {SweepBatchSwap} from "./SweepBatchSwap.sol";
+import {SweepVaultRouter} from "./SweepVaultRouter.sol";
+import {SweepFeeCollector} from "./SweepFeeCollector.sol";
 
-/// @title PiggyDustSweeper
+/// @title SweepDustSweeper
 /// @author Sweep Team
 /// @notice Main entry point for dust sweeping: Permit2 approvals → Swaps → DeFi routing → Fee collection
 /// @dev Combines all Sweep contracts into a single transaction
-contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
+contract SweepDustSweeper is Ownable2Step, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     // ============================================================
@@ -34,10 +34,10 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
 
     /// @notice EIP-712 type strings for Permit2 witness
     string public constant WITNESS_TYPE_STRING =
-        "PiggySweepWitness witness)PiggySweepWitness(address outputToken,uint256 minOutput,address vaultDestination,uint256 deadline,bytes32 swapsHash)TokenPermissions(address token,uint256 amount)";
+        "SweepWitness witness)SweepWitness(address outputToken,uint256 minOutput,address vaultDestination,uint256 deadline,bytes32 swapsHash)TokenPermissions(address token,uint256 amount)";
 
     bytes32 public constant WITNESS_TYPEHASH =
-        keccak256("PiggySweepWitness(address outputToken,uint256 minOutput,address vaultDestination,uint256 deadline,bytes32 swapsHash)");
+        keccak256("SweepWitness(address outputToken,uint256 minOutput,address vaultDestination,uint256 deadline,bytes32 swapsHash)");
 
     // ============================================================
     // ENUMS
@@ -56,14 +56,14 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
     // STATE VARIABLES
     // ============================================================
 
-    /// @notice PiggyBatchSwap contract
-    PiggyBatchSwap public immutable batchSwap;
+    /// @notice SweepBatchSwap contract
+    SweepBatchSwap public immutable batchSwap;
 
-    /// @notice PiggyVaultRouter contract
-    PiggyVaultRouter public immutable vaultRouter;
+    /// @notice SweepVaultRouter contract
+    SweepVaultRouter public immutable vaultRouter;
 
-    /// @notice PiggyFeeCollector contract
-    PiggyFeeCollector public immutable feeCollector;
+    /// @notice SweepFeeCollector contract
+    SweepFeeCollector public immutable feeCollector;
 
     /// @notice Permit2 interface
     IPermit2 public immutable permit2;
@@ -79,7 +79,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
     // ============================================================
 
     /// @notice Witness data for Permit2 signature
-    struct PiggySweepWitness {
+    struct SweepWitness {
         address outputToken;
         uint256 minOutput;
         address vaultDestination;
@@ -93,7 +93,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
         IPermit2.PermitBatchTransferFrom permit;
         bytes signature;
         // Swap data
-        PiggyBatchSwap.SwapParams[] swaps;
+        SweepBatchSwap.SwapParams[] swaps;
         // Output configuration
         address outputToken;
         uint256 minTotalOutput;
@@ -110,7 +110,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
     struct SimpleSweepParams {
         address[] tokensIn;
         uint256[] amountsIn;
-        PiggyBatchSwap.SwapParams[] swaps;
+        SweepBatchSwap.SwapParams[] swaps;
         address outputToken;
         uint256 minTotalOutput;
         SweepDestination destination;
@@ -133,7 +133,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
     /// @notice Sweep with ERC-2612 permits
     struct ERC2612SweepParams {
         ERC2612Permit[] permits;
-        PiggyBatchSwap.SwapParams[] swaps;
+        SweepBatchSwap.SwapParams[] swaps;
         address outputToken;
         uint256 minTotalOutput;
         SweepDestination destination;
@@ -226,9 +226,9 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
     // ============================================================
 
     /// @notice Initialize the dust sweeper
-    /// @param _batchSwap PiggyBatchSwap contract address
-    /// @param _vaultRouter PiggyVaultRouter contract address
-    /// @param _feeCollector PiggyFeeCollector contract address
+    /// @param _batchSwap SweepBatchSwap contract address
+    /// @param _vaultRouter SweepVaultRouter contract address
+    /// @param _feeCollector SweepFeeCollector contract address
     constructor(
         address _batchSwap,
         address _vaultRouter,
@@ -238,9 +238,9 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
         if (_vaultRouter == address(0)) revert ZeroAddress();
         if (_feeCollector == address(0)) revert ZeroAddress();
 
-        batchSwap = PiggyBatchSwap(payable(_batchSwap));
-        vaultRouter = PiggyVaultRouter(payable(_vaultRouter));
-        feeCollector = PiggyFeeCollector(payable(_feeCollector));
+        batchSwap = SweepBatchSwap(payable(_batchSwap));
+        vaultRouter = SweepVaultRouter(payable(_vaultRouter));
+        feeCollector = SweepFeeCollector(payable(_feeCollector));
         permit2 = IPermit2(PERMIT2);
     }
 
@@ -266,7 +266,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
 
         // Build and verify witness
         bytes32 swapsHash = keccak256(abi.encode(params.swaps));
-        PiggySweepWitness memory witness = PiggySweepWitness({
+        SweepWitness memory witness = SweepWitness({
             outputToken: params.outputToken,
             minOutput: params.minTotalOutput,
             vaultDestination: params.vaultAddress,
@@ -433,7 +433,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
     function _executePermit2Transfers(
         IPermit2.PermitBatchTransferFrom calldata permit,
         bytes calldata signature,
-        PiggySweepWitness memory witness
+        SweepWitness memory witness
     ) internal {
         uint256 tokenCount = permit.permitted.length;
         IPermit2.SignatureTransferDetails[] memory transferDetails =
@@ -459,7 +459,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
 
     /// @notice Execute the full sweep operation
     function _executeSweep(
-        PiggyBatchSwap.SwapParams[] calldata swaps,
+        SweepBatchSwap.SwapParams[] calldata swaps,
         address outputToken,
         uint256 minTotalOutput,
         SweepDestination destination,
@@ -482,7 +482,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
         uint256 balanceBefore = _getBalance(outputToken);
 
         // Build batch swap params - output goes to this contract
-        PiggyBatchSwap.BatchSwapParams memory batchParams = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory batchParams = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: outputToken,
             recipient: address(this),
@@ -541,22 +541,22 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
         }
 
         // Determine vault type and deposit
-        PiggyVaultRouter.VaultType vaultType;
+        SweepVaultRouter.VaultType vaultType;
 
         if (destination == SweepDestination.AAVE) {
-            vaultType = PiggyVaultRouter.VaultType.AAVE_V3;
+            vaultType = SweepVaultRouter.VaultType.AAVE_V3;
         } else if (destination == SweepDestination.YEARN) {
-            vaultType = PiggyVaultRouter.VaultType.YEARN_V3;
+            vaultType = SweepVaultRouter.VaultType.YEARN_V3;
         } else if (destination == SweepDestination.BEEFY) {
-            vaultType = PiggyVaultRouter.VaultType.BEEFY;
+            vaultType = SweepVaultRouter.VaultType.BEEFY;
         } else if (destination == SweepDestination.LIDO) {
-            vaultType = PiggyVaultRouter.VaultType.LIDO;
+            vaultType = SweepVaultRouter.VaultType.LIDO;
         } else {
             revert InvalidDestination();
         }
 
         // Build deposit params
-        PiggyVaultRouter.DepositParams memory depositParams = PiggyVaultRouter.DepositParams({
+        SweepVaultRouter.DepositParams memory depositParams = SweepVaultRouter.DepositParams({
             vault: vaultAddress,
             token: token,
             amount: amount,
@@ -636,7 +636,7 @@ contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
         uint256 minOutput,
         address vaultDestination,
         uint256 deadline,
-        PiggyBatchSwap.SwapParams[] calldata swaps
+        SweepBatchSwap.SwapParams[] calldata swaps
     ) external pure returns (bytes32) {
         bytes32 swapsHash = keccak256(abi.encode(swaps));
 

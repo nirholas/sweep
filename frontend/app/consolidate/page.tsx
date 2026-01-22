@@ -267,7 +267,7 @@ function SelectChainsStep({
       {hasSuggestions && sourceChains.length === 0 && (
         <button
           onClick={onApplySuggestions}
-          className="w-full p-4 bg-piggy/10 border border-piggy/20 rounded-lg text-left hover:bg-piggy/20 transition-colors"
+          className="w-full p-4 bg-primary/10 border border-primary/20 rounded-lg text-left hover:bg-primary/20 transition-colors"
         >
           <div className="flex items-center gap-3">
             <span className="text-2xl">💡</span>

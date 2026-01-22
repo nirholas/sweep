@@ -40,7 +40,7 @@
 
 2. **Deploy from GitHub**
    - Click "New Project" → "Deploy from GitHub repo"
-   - Select `nirholas/piggy-bank` (or your fork)
+   - Select `nirholas/sweep` (or your fork)
    - Railway auto-detects the Node.js project
 
 3. **Add PostgreSQL**

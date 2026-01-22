@@ -17,7 +17,7 @@
 
 ## Overview
 
-Piggy Bank uses a comprehensive observability stack:
+Sweep uses a comprehensive observability stack:
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|

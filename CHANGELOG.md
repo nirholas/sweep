@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Piggy Bank will be documented in this file.
+All notable changes to Sweep will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -35,11 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DeFi routing to Aave V3, Yearn V3, Beefy, Lido
 
 #### Smart Contracts
-- `PiggyDustSweeper` - Main entry point contract
-- `PiggyBatchSwap` - Batch swap execution
-- `PiggyPermit2Batcher` - Permit2 integration
-- `PiggyVaultRouter` - DeFi vault routing
-- `PiggyFeeCollector` - Protocol fee management
+- `SweepDustSweeper` - Main entry point contract
+- `SweepBatchSwap` - Batch swap execution
+- `SweepPermit2Batcher` - Permit2 integration
+- `SweepVaultRouter` - DeFi vault routing
+- `SweepFeeCollector` - Protocol fee management
 
 #### Backend API
 - REST API with Hono framework
@@ -117,9 +117,9 @@ We use [Semantic Versioning](https://semver.org/):
 
 ## Links
 
-- [GitHub Releases](https://github.com/nirholas/piggy-bank/releases)
-- [GitHub Issues](https://github.com/nirholas/piggy-bank/issues)
+- [GitHub Releases](https://github.com/nirholas/sweep/releases)
+- [GitHub Issues](https://github.com/nirholas/sweep/issues)
 - [Documentation](./docs/README.md)
 
-[Unreleased]: https://github.com/nirholas/piggy-bank/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/nirholas/piggy-bank/releases/tag/v0.1.0
+[Unreleased]: https://github.com/nirholas/sweep/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/nirholas/sweep/releases/tag/v0.1.0

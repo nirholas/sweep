@@ -1,5 +1,5 @@
 # ============================================
-# Piggy Bank API Server - Production Dockerfile
+# Sweep API Server - Production Dockerfile
 # Using tsx for direct TypeScript execution
 # ============================================
 
@@ -25,8 +25,8 @@ COPY drizzle ./drizzle
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs \
-    && adduser --system --uid 1001 piggybank \
-    && chown -R piggybank:nodejs /app
+    && adduser --system --uid 1001 sweepbank \
+    && chown -R sweepbank:nodejs /app
 
 # Set environment
 ENV NODE_ENV=production
@@ -40,7 +40,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
 
 # Switch to non-root user
-USER piggybank
+USER sweepbank
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]

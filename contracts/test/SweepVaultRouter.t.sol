@@ -2,13 +2,13 @@
 pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {PiggyVaultRouter} from "../src/PiggyVaultRouter.sol";
+import {SweepVaultRouter} from "../src/SweepVaultRouter.sol";
 import {IAaveV3Pool, IYearnVault, ILido, IWstETH} from "../src/interfaces/IDefiProtocols.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title PiggyVaultRouterTest
-/// @notice Fork tests for PiggyVaultRouter against mainnet
-contract PiggyVaultRouterTest is Test {
+/// @title SweepVaultRouterTest
+/// @notice Fork tests for SweepVaultRouter against mainnet
+contract SweepVaultRouterTest is Test {
     // ============================================================
     // CONSTANTS - Mainnet Addresses
     // ============================================================
@@ -35,7 +35,7 @@ contract PiggyVaultRouterTest is Test {
     // STATE
     // ============================================================
 
-    PiggyVaultRouter public router;
+    SweepVaultRouter public router;
 
     address public owner;
     address public user;
@@ -54,12 +54,12 @@ contract PiggyVaultRouterTest is Test {
         feeCollector = makeAddr("feeCollector");
 
         vm.startPrank(owner);
-        router = new PiggyVaultRouter();
+        router = new SweepVaultRouter();
 
         // Approve vaults
-        router.setVaultApproval(AAVE_V3_POOL, PiggyVaultRouter.VaultType.AAVE_V3, true);
-        router.setVaultApproval(LIDO, PiggyVaultRouter.VaultType.LIDO, true);
-        router.setVaultApproval(WSTETH, PiggyVaultRouter.VaultType.LIDO_WSTETH, true);
+        router.setVaultApproval(AAVE_V3_POOL, SweepVaultRouter.VaultType.AAVE_V3, true);
+        router.setVaultApproval(LIDO, SweepVaultRouter.VaultType.LIDO, true);
+        router.setVaultApproval(WSTETH, SweepVaultRouter.VaultType.LIDO_WSTETH, true);
         
         vm.stopPrank();
 
@@ -146,7 +146,7 @@ contract PiggyVaultRouterTest is Test {
         vm.startPrank(user);
         IERC20(USDC).approve(address(router), amount);
 
-        vm.expectRevert(PiggyVaultRouter.DeadlineExpired.selector);
+        vm.expectRevert(SweepVaultRouter.DeadlineExpired.selector);
         router.depositToAave(
             USDC,
             amount,
@@ -159,13 +159,13 @@ contract PiggyVaultRouterTest is Test {
 
     function test_depositToAave_reverts_zeroAmount() public {
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.ZeroAmount.selector);
+        vm.expectRevert(SweepVaultRouter.ZeroAmount.selector);
         router.depositToAave(USDC, 0, user, 0, block.timestamp + 1800);
     }
 
     function test_depositToAave_reverts_zeroRecipient() public {
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.ZeroAddress.selector);
+        vm.expectRevert(SweepVaultRouter.ZeroAddress.selector);
         router.depositToAave(USDC, 1000 * 1e6, address(0), 0, block.timestamp + 1800);
     }
 
@@ -195,25 +195,25 @@ contract PiggyVaultRouterTest is Test {
 
     function test_depositToLido_reverts_zeroAmount() public {
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.ZeroAmount.selector);
+        vm.expectRevert(SweepVaultRouter.ZeroAmount.selector);
         router.depositToLido{value: 0}(user, 0, block.timestamp + 1800);
     }
 
     function test_depositToLido_reverts_zeroRecipient() public {
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.ZeroAddress.selector);
+        vm.expectRevert(SweepVaultRouter.ZeroAddress.selector);
         router.depositToLido{value: 1 ether}(address(0), 0, block.timestamp + 1800);
     }
 
     function test_depositToLido_reverts_deadlineExpired() public {
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.DeadlineExpired.selector);
+        vm.expectRevert(SweepVaultRouter.DeadlineExpired.selector);
         router.depositToLido{value: 1 ether}(user, 0, block.timestamp - 1);
     }
 
     function test_depositToLido_reverts_slippage() public {
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.InsufficientOutput.selector);
+        vm.expectRevert(SweepVaultRouter.InsufficientOutput.selector);
         router.depositToLido{value: 1 ether}(
             user,
             2 ether, // Impossible minimum
@@ -228,7 +228,7 @@ contract PiggyVaultRouterTest is Test {
     function test_deposit_toAave() public {
         uint256 amount = 5000 * 1e6;
 
-        PiggyVaultRouter.DepositParams memory params = PiggyVaultRouter.DepositParams({
+        SweepVaultRouter.DepositParams memory params = SweepVaultRouter.DepositParams({
             vault: AAVE_V3_POOL,
             token: USDC,
             amount: amount,
@@ -249,7 +249,7 @@ contract PiggyVaultRouterTest is Test {
     function test_deposit_toLido() public {
         uint256 amount = 2 ether;
 
-        PiggyVaultRouter.DepositParams memory params = PiggyVaultRouter.DepositParams({
+        SweepVaultRouter.DepositParams memory params = SweepVaultRouter.DepositParams({
             vault: LIDO,
             token: router.ETH_ADDRESS(),
             amount: amount,
@@ -268,7 +268,7 @@ contract PiggyVaultRouterTest is Test {
     function test_deposit_reverts_vaultNotApproved() public {
         address randomVault = makeAddr("randomVault");
 
-        PiggyVaultRouter.DepositParams memory params = PiggyVaultRouter.DepositParams({
+        SweepVaultRouter.DepositParams memory params = SweepVaultRouter.DepositParams({
             vault: randomVault,
             token: USDC,
             amount: 1000 * 1e6,
@@ -280,7 +280,7 @@ contract PiggyVaultRouterTest is Test {
         vm.startPrank(user);
         IERC20(USDC).approve(address(router), 1000 * 1e6);
 
-        vm.expectRevert(PiggyVaultRouter.VaultNotApproved.selector);
+        vm.expectRevert(SweepVaultRouter.VaultNotApproved.selector);
         router.deposit(params);
         vm.stopPrank();
     }
@@ -293,9 +293,9 @@ contract PiggyVaultRouterTest is Test {
         uint256 usdcAmount = 5000 * 1e6;
         uint256 ethAmount = 1 ether;
 
-        PiggyVaultRouter.DepositParams[] memory deposits = new PiggyVaultRouter.DepositParams[](2);
+        SweepVaultRouter.DepositParams[] memory deposits = new SweepVaultRouter.DepositParams[](2);
 
-        deposits[0] = PiggyVaultRouter.DepositParams({
+        deposits[0] = SweepVaultRouter.DepositParams({
             vault: AAVE_V3_POOL,
             token: USDC,
             amount: usdcAmount,
@@ -304,7 +304,7 @@ contract PiggyVaultRouterTest is Test {
             deadline: block.timestamp + 1800
         });
 
-        deposits[1] = PiggyVaultRouter.DepositParams({
+        deposits[1] = SweepVaultRouter.DepositParams({
             vault: LIDO,
             token: router.ETH_ADDRESS(),
             amount: ethAmount,
@@ -313,7 +313,7 @@ contract PiggyVaultRouterTest is Test {
             deadline: block.timestamp + 1800
         });
 
-        PiggyVaultRouter.BatchDepositParams memory params = PiggyVaultRouter.BatchDepositParams({
+        SweepVaultRouter.BatchDepositParams memory params = SweepVaultRouter.BatchDepositParams({
             deposits: deposits,
             deadline: block.timestamp + 1800
         });
@@ -352,7 +352,7 @@ contract PiggyVaultRouterTest is Test {
     // ============================================================
 
     function test_deposit_reverts_deadlineExpired() public {
-        PiggyVaultRouter.DepositParams memory params = PiggyVaultRouter.DepositParams({
+        SweepVaultRouter.DepositParams memory params = SweepVaultRouter.DepositParams({
             vault: AAVE_V3_POOL,
             token: USDC,
             amount: 1000 * 1e6,
@@ -362,13 +362,13 @@ contract PiggyVaultRouterTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.DeadlineExpired.selector);
+        vm.expectRevert(SweepVaultRouter.DeadlineExpired.selector);
         router.deposit(params);
     }
 
     function test_batchDeposit_reverts_deadlineExpired() public {
-        PiggyVaultRouter.DepositParams[] memory deposits = new PiggyVaultRouter.DepositParams[](1);
-        deposits[0] = PiggyVaultRouter.DepositParams({
+        SweepVaultRouter.DepositParams[] memory deposits = new SweepVaultRouter.DepositParams[](1);
+        deposits[0] = SweepVaultRouter.DepositParams({
             vault: AAVE_V3_POOL,
             token: USDC,
             amount: 1000 * 1e6,
@@ -377,13 +377,13 @@ contract PiggyVaultRouterTest is Test {
             deadline: block.timestamp + 1800
         });
 
-        PiggyVaultRouter.BatchDepositParams memory params = PiggyVaultRouter.BatchDepositParams({
+        SweepVaultRouter.BatchDepositParams memory params = SweepVaultRouter.BatchDepositParams({
             deposits: deposits,
             deadline: block.timestamp - 1 // Expired
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.DeadlineExpired.selector);
+        vm.expectRevert(SweepVaultRouter.DeadlineExpired.selector);
         router.batchDeposit(params);
     }
 
@@ -395,16 +395,16 @@ contract PiggyVaultRouterTest is Test {
         address newVault = makeAddr("newVault");
 
         vm.prank(owner);
-        router.setVaultApproval(newVault, PiggyVaultRouter.VaultType.YEARN_V3, true);
+        router.setVaultApproval(newVault, SweepVaultRouter.VaultType.YEARN_V3, true);
 
         assertTrue(router.isVaultApproved(newVault));
-        assertEq(uint256(router.getVaultType(newVault)), uint256(PiggyVaultRouter.VaultType.YEARN_V3));
+        assertEq(uint256(router.getVaultType(newVault)), uint256(SweepVaultRouter.VaultType.YEARN_V3));
     }
 
     function test_setVaultApproval_reverts_notOwner() public {
         vm.prank(user);
         vm.expectRevert();
-        router.setVaultApproval(makeAddr("vault"), PiggyVaultRouter.VaultType.AAVE_V3, true);
+        router.setVaultApproval(makeAddr("vault"), SweepVaultRouter.VaultType.AAVE_V3, true);
     }
 
     function test_setVaultApprovalBatch() public {
@@ -412,9 +412,9 @@ contract PiggyVaultRouterTest is Test {
         vaults[0] = makeAddr("vault1");
         vaults[1] = makeAddr("vault2");
 
-        PiggyVaultRouter.VaultType[] memory types = new PiggyVaultRouter.VaultType[](2);
-        types[0] = PiggyVaultRouter.VaultType.YEARN_V2;
-        types[1] = PiggyVaultRouter.VaultType.BEEFY;
+        SweepVaultRouter.VaultType[] memory types = new SweepVaultRouter.VaultType[](2);
+        types[0] = SweepVaultRouter.VaultType.YEARN_V2;
+        types[1] = SweepVaultRouter.VaultType.BEEFY;
 
         vm.prank(owner);
         router.setVaultApprovalBatch(vaults, types, true);
@@ -432,7 +432,7 @@ contract PiggyVaultRouterTest is Test {
 
     function test_setDefaultSlippage_reverts_tooHigh() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyVaultRouter.InvalidSlippage.selector);
+        vm.expectRevert(SweepVaultRouter.InvalidSlippage.selector);
         router.setDefaultSlippage(5001); // > 50%
     }
 
@@ -450,7 +450,7 @@ contract PiggyVaultRouterTest is Test {
         assertTrue(router.paused());
 
         // Try to deposit when paused
-        PiggyVaultRouter.DepositParams memory params = PiggyVaultRouter.DepositParams({
+        SweepVaultRouter.DepositParams memory params = SweepVaultRouter.DepositParams({
             vault: AAVE_V3_POOL,
             token: USDC,
             amount: 1000 * 1e6,
@@ -460,7 +460,7 @@ contract PiggyVaultRouterTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyVaultRouter.ContractPaused.selector);
+        vm.expectRevert(SweepVaultRouter.ContractPaused.selector);
         router.deposit(params);
     }
 

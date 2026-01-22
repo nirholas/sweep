@@ -2,9 +2,8 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
-import { useSweepHistory } from "@/hooks/useTransactionStatus";
+import { useSweepHistory, type SweepHistoryItem } from "@/hooks/useTransactionStatus";
 import { SUPPORTED_CHAINS } from "@/lib/chains";
-import type { SweepStatus } from "@/lib/types";
 
 interface RecentActivityProps {
   limit?: number;
@@ -77,7 +76,7 @@ export function RecentActivity({ limit = 5, showViewAll = true }: RecentActivity
         </div>
       ) : (
         <div className="space-y-3">
-          {recentItems.map((item: SweepStatus) => (
+          {recentItems.map((item: SweepHistoryItem) => (
             <ActivityItem key={item.id} item={item} />
           ))}
         </div>
@@ -86,8 +85,9 @@ export function RecentActivity({ limit = 5, showViewAll = true }: RecentActivity
   );
 }
 
-function ActivityItem({ item }: { item: SweepStatus }) {
-  const chain = item.chainId ? SUPPORTED_CHAINS.find((c) => c.id === item.chainId) : null;
+function ActivityItem({ item }: { item: SweepHistoryItem }) {
+  // Get the first chain from chainIds array
+  const chain = item.chainIds?.length ? SUPPORTED_CHAINS.find((c) => c.id === item.chainIds[0]) : null;
   
   const statusConfig = {
     pending: { icon: "⏳", color: "text-yellow-500", label: "Pending" },
@@ -97,11 +97,11 @@ function ActivityItem({ item }: { item: SweepStatus }) {
     failed: { icon: "❌", color: "text-red-500", label: "Failed" },
   }[item.status] || { icon: "❓", color: "text-muted-foreground", label: "Unknown" };
 
-  // Calculate time ago
+  // Calculate time ago using createdAt
   const timeAgo = useMemo(() => {
-    if (!item.timestamp) return "";
+    if (!item.createdAt) return "";
     const now = new Date();
-    const then = new Date(item.timestamp);
+    const then = new Date(item.createdAt);
     const diffMs = now.getTime() - then.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMins / 60);
@@ -111,7 +111,7 @@ function ActivityItem({ item }: { item: SweepStatus }) {
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     return `${diffDays}d ago`;
-  }, [item.timestamp]);
+  }, [item.createdAt]);
 
   return (
     <div className="flex items-center gap-4 p-3 rounded-lg bg-background border border-border/50 hover:border-border transition-colors">
@@ -124,7 +124,7 @@ function ActivityItem({ item }: { item: SweepStatus }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
           <span className="font-medium truncate">
-            {item.type === "consolidation" ? "Consolidation" : "Dust Sweep"}
+            {item.chainIds?.length > 1 ? "Consolidation" : "Dust Sweep"}
           </span>
           {chain && (
             <span className="text-xs px-2 py-0.5 bg-muted rounded flex-shrink-0">
@@ -134,10 +134,8 @@ function ActivityItem({ item }: { item: SweepStatus }) {
         </div>
         <p className="text-sm text-muted-foreground truncate">
           {item.outputToken 
-            ? `→ ${item.outputToken}`
-            : item.hash 
-              ? `${item.hash.slice(0, 6)}...${item.hash.slice(-4)}`
-              : "Processing..."
+            ? `${item.tokensSwept} tokens → ${item.outputAmount} ${item.outputToken}`
+            : `${item.tokensSwept} tokens swept`
           }
         </p>
       </div>
@@ -269,7 +267,7 @@ export function ActivityFeed({ maxItems = 3 }: { maxItems?: number }) {
 
   return (
     <div className="space-y-2">
-      {items.map((item: SweepStatus) => (
+      {items.map((item: SweepHistoryItem) => (
         <div
           key={item.id}
           className="flex items-center gap-2 p-2 rounded-lg bg-muted/50 text-sm"
@@ -278,10 +276,10 @@ export function ActivityFeed({ maxItems = 3 }: { maxItems?: number }) {
             {item.status === "confirmed" ? "✅" : item.status === "failed" ? "❌" : "⏳"}
           </span>
           <span className="flex-1 truncate">
-            {item.type === "consolidation" ? "Consolidation" : "Sweep"}
+            {item.chainIds?.length > 1 ? "Consolidation" : "Sweep"}
           </span>
           <span className="text-muted-foreground text-xs">
-            {item.hash ? `${item.hash.slice(0, 6)}...` : "..."}
+            {item.tokensSwept} tokens
           </span>
         </div>
       ))}

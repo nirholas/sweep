@@ -2,8 +2,8 @@
 pragma solidity ^0.8.24;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {PiggyBatchSwap} from "../src/PiggyBatchSwap.sol";
-import {PiggyPermit2Batcher} from "../src/PiggyPermit2Batcher.sol";
+import {SweepBatchSwap} from "../src/SweepBatchSwap.sol";
+import {SweepPermit2Batcher} from "../src/SweepPermit2Batcher.sol";
 
 /// @title Deploy
 /// @notice Deployment script for Sweep contracts
@@ -61,7 +61,7 @@ contract Deploy is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy contracts
-        (PiggyBatchSwap batchSwap, PiggyPermit2Batcher batcher) = deploy(feeCollector);
+        (SweepBatchSwap batchSwap, SweepPermit2Batcher batcher) = deploy(feeCollector);
 
         // Configure routers based on chain
         configureRouters(batchSwap);
@@ -70,28 +70,28 @@ contract Deploy is Script {
 
         // Log deployed addresses
         console2.log("=== Deployment Complete ===");
-        console2.log("PiggyBatchSwap:", address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(batcher));
+        console2.log("SweepBatchSwap:", address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(batcher));
     }
 
     /// @notice Deploy all contracts
     function deploy(address feeCollector)
         public
-        returns (PiggyBatchSwap batchSwap, PiggyPermit2Batcher batcher)
+        returns (SweepBatchSwap batchSwap, SweepPermit2Batcher batcher)
     {
-        // Deploy PiggyBatchSwap
-        batchSwap = new PiggyBatchSwap(feeCollector, INITIAL_FEE_BPS);
-        console2.log("PiggyBatchSwap deployed at:", address(batchSwap));
+        // Deploy SweepBatchSwap
+        batchSwap = new SweepBatchSwap(feeCollector, INITIAL_FEE_BPS);
+        console2.log("SweepBatchSwap deployed at:", address(batchSwap));
 
-        // Deploy PiggyPermit2Batcher
-        batcher = new PiggyPermit2Batcher(address(batchSwap));
-        console2.log("PiggyPermit2Batcher deployed at:", address(batcher));
+        // Deploy SweepPermit2Batcher
+        batcher = new SweepPermit2Batcher(address(batchSwap));
+        console2.log("SweepPermit2Batcher deployed at:", address(batcher));
 
         return (batchSwap, batcher);
     }
 
     /// @notice Configure approved routers for the current chain
-    function configureRouters(PiggyBatchSwap batchSwap) internal {
+    function configureRouters(SweepBatchSwap batchSwap) internal {
         address[] memory routers = getRoutersForChain();
         
         for (uint256 i = 0; i < routers.length; i++) {
@@ -152,14 +152,14 @@ contract DeployBase is Deploy {
         
         vm.startBroadcast(deployerPrivateKey);
         
-        (PiggyBatchSwap batchSwap, PiggyPermit2Batcher batcher) = deploy(feeCollector);
+        (SweepBatchSwap batchSwap, SweepPermit2Batcher batcher) = deploy(feeCollector);
         configureRouters(batchSwap);
         
         vm.stopBroadcast();
 
         console2.log("=== Base Deployment Complete ===");
-        console2.log("PiggyBatchSwap:", address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(batcher));
+        console2.log("SweepBatchSwap:", address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(batcher));
     }
 }
 
@@ -174,14 +174,14 @@ contract DeployArbitrum is Deploy {
         
         vm.startBroadcast(deployerPrivateKey);
         
-        (PiggyBatchSwap batchSwap, PiggyPermit2Batcher batcher) = deploy(feeCollector);
+        (SweepBatchSwap batchSwap, SweepPermit2Batcher batcher) = deploy(feeCollector);
         configureRouters(batchSwap);
         
         vm.stopBroadcast();
 
         console2.log("=== Arbitrum Deployment Complete ===");
-        console2.log("PiggyBatchSwap:", address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(batcher));
+        console2.log("SweepBatchSwap:", address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(batcher));
     }
 }
 
@@ -196,14 +196,14 @@ contract DeployPolygon is Deploy {
         
         vm.startBroadcast(deployerPrivateKey);
         
-        (PiggyBatchSwap batchSwap, PiggyPermit2Batcher batcher) = deploy(feeCollector);
+        (SweepBatchSwap batchSwap, SweepPermit2Batcher batcher) = deploy(feeCollector);
         configureRouters(batchSwap);
         
         vm.stopBroadcast();
 
         console2.log("=== Polygon Deployment Complete ===");
-        console2.log("PiggyBatchSwap:", address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(batcher));
+        console2.log("SweepBatchSwap:", address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(batcher));
     }
 }
 
@@ -223,13 +223,13 @@ contract DeployAllChains is Deploy {
             
             vm.startBroadcast(deployerPrivateKey);
             
-            (PiggyBatchSwap batchSwap, PiggyPermit2Batcher batcher) = deploy(feeCollector);
+            (SweepBatchSwap batchSwap, SweepPermit2Batcher batcher) = deploy(feeCollector);
             configureRouters(batchSwap);
             
             vm.stopBroadcast();
 
-            console2.log("  PiggyBatchSwap:", address(batchSwap));
-            console2.log("  PiggyPermit2Batcher:", address(batcher));
+            console2.log("  SweepBatchSwap:", address(batchSwap));
+            console2.log("  SweepPermit2Batcher:", address(batcher));
         }
 
         console2.log("=== All Chains Deployed ===");

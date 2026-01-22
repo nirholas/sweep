@@ -4,11 +4,11 @@ pragma solidity ^0.8.24;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
 
-/// @title PiggyPausable
+/// @title SweepPausable
 /// @author Sweep Team
 /// @notice Enhanced pausable functionality with granular control
 /// @dev Extends OpenZeppelin's pausable pattern with multi-level pause
-abstract contract PiggyPausable is Ownable2Step {
+abstract contract SweepPausable is Ownable2Step {
     // ============================================================
     // STATE VARIABLES
     // ============================================================
@@ -151,9 +151,9 @@ abstract contract PiggyPausable is Ownable2Step {
     }
 }
 
-/// @title PiggyRateLimiter
+/// @title SweepRateLimiter
 /// @notice Rate limiting for sensitive operations
-abstract contract PiggyRateLimiter {
+abstract contract SweepRateLimiter {
     // ============================================================
     // STATE VARIABLES
     // ============================================================
@@ -229,9 +229,9 @@ abstract contract PiggyRateLimiter {
     }
 }
 
-/// @title PiggyCircuitBreaker
+/// @title SweepCircuitBreaker
 /// @notice Automatic circuit breaker for anomaly detection
-abstract contract PiggyCircuitBreaker {
+abstract contract SweepCircuitBreaker {
     // ============================================================
     // STATE VARIABLES
     // ============================================================

@@ -20,8 +20,8 @@ const COW_API_ENDPOINTS: Record<number, string> = {
 };
 
 // CoW Protocol app data (identifies Sweep orders)
-const PIGGY_APP_DATA =
-  "0x0000000000000000000000000000000000000000000000000000000070696767"; // "pigg" in hex
+const SWEEP_APP_DATA =
+  "0x0000000000000000000000000000000000000000000000000000007377656570"; // "swep" in hex
 
 interface CowQuoteRequest {
   sellToken: string;
@@ -125,7 +125,7 @@ export class CowSwapAggregator implements IDexAggregator {
         from: request.userAddress,
         receiver: request.receiver || request.userAddress,
         validTo: Math.floor(Date.now() / 1000) + 1800, // 30 minutes
-        appData: PIGGY_APP_DATA,
+        appData: SWEEP_APP_DATA,
         partiallyFillable: false,
         priceQuality: "optimal",
         signingScheme: "eip712",

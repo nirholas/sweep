@@ -239,7 +239,7 @@ function SubscriptionCard({
     >
       <div className="flex items-start justify-between mb-4">
         <button onClick={onSelect} className="flex items-center gap-3 text-left">
-          <div className="w-12 h-12 bg-piggy/20 rounded-full flex items-center justify-center">
+          <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
             <span className="text-2xl">🧹</span>
           </div>
           <div>
@@ -673,7 +673,7 @@ function CreateSubscriptionModal({ onClose }: CreateSubscriptionModalProps) {
                 </dl>
               </div>
 
-              <div className="bg-piggy/10 border border-piggy/20 rounded-lg p-4">
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
                 <div className="flex gap-3">
                   <span className="text-2xl">🔐</span>
                   <div>

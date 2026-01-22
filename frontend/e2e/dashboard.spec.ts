@@ -10,7 +10,7 @@ test.describe("Dashboard", () => {
     await expect(page.getByRole("heading", { name: "Connect Your Wallet" })).toBeVisible();
     await expect(page.getByText("Connect your wallet to scan for dust tokens")).toBeVisible();
     
-    // Should show the piggy emoji
+    // Should show the sweep emoji
     await expect(page.getByText("🧹")).toBeVisible();
   });
 

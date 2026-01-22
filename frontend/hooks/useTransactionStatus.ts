@@ -183,7 +183,7 @@ export function useTransactionStatus(sweepId: string | null) {
 // Transaction History Hook
 // ============================================
 
-interface SweepHistoryItem {
+export interface SweepHistoryItem {
   id: string;
   status: SweepStatus["status"];
   tokensSwept: number;

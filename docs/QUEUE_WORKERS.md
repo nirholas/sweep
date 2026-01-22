@@ -17,7 +17,7 @@
 
 ## Overview
 
-Piggy Bank uses **BullMQ** for background job processing, backed by **Redis**. Workers handle async operations like:
+Sweep uses **BullMQ** for background job processing, backed by **Redis**. Workers handle async operations like:
 
 - Wallet scanning
 - Price updates

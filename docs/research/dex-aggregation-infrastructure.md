@@ -1120,7 +1120,7 @@ const dustOrder = {
   feeAmount: '0', // Fee taken from sellAmount
   kind: 'sell',
   partiallyFillable: false, // Atomic for dust
-  appData: PIGGY_BANK_APP_DATA, // Your app identifier
+  appData: SWEEP_BANK_APP_DATA, // Your app identifier
 };
 ```
 
@@ -1275,7 +1275,7 @@ function analyzePriceImpact(
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           PIGGY BANK ARCHITECTURE                           │
+│                           SWEEP ARCHITECTURE                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐                │
@@ -1570,7 +1570,7 @@ async function rateLimitedQuote(
 
 ```typescript
 // Recommended fee structure
-const PIGGY_BANK_FEES = {
+const SWEEP_BANK_FEES = {
   // Same-chain swaps
   sameChain: {
     '1inch': { bps: 30, share: 0.5 },  // 0.3%, you keep 50%
@@ -1585,7 +1585,7 @@ const PIGGY_BANK_FEES = {
 
 // Example revenue calculation
 function calculateRevenue(swapValueUsd: number, aggregator: string, type: 'sameChain' | 'crossChain'): number {
-  const fee = PIGGY_BANK_FEES[type][aggregator];
+  const fee = SWEEP_BANK_FEES[type][aggregator];
   const grossFee = swapValueUsd * (fee.bps / 10000);
   return grossFee * fee.share;
 }

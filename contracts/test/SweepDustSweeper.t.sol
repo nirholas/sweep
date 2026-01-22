@@ -2,16 +2,16 @@
 pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {PiggyDustSweeper} from "../src/PiggyDustSweeper.sol";
-import {PiggyBatchSwap} from "../src/PiggyBatchSwap.sol";
-import {PiggyVaultRouter} from "../src/PiggyVaultRouter.sol";
-import {PiggyFeeCollector} from "../src/PiggyFeeCollector.sol";
+import {SweepDustSweeper} from "../src/SweepDustSweeper.sol";
+import {SweepBatchSwap} from "../src/SweepBatchSwap.sol";
+import {SweepVaultRouter} from "../src/SweepVaultRouter.sol";
+import {SweepFeeCollector} from "../src/SweepFeeCollector.sol";
 import {IPermit2} from "../src/interfaces/IPermit2.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title PiggyDustSweeperTest
-/// @notice E2E tests for PiggyDustSweeper
-contract PiggyDustSweeperTest is Test {
+/// @title SweepDustSweeperTest
+/// @notice E2E tests for SweepDustSweeper
+contract SweepDustSweeperTest is Test {
     // ============================================================
     // CONSTANTS
     // ============================================================
@@ -31,10 +31,10 @@ contract PiggyDustSweeperTest is Test {
     // STATE
     // ============================================================
 
-    PiggyBatchSwap public batchSwap;
-    PiggyVaultRouter public vaultRouter;
-    PiggyFeeCollector public feeCollector;
-    PiggyDustSweeper public sweeper;
+    SweepBatchSwap public batchSwap;
+    SweepVaultRouter public vaultRouter;
+    SweepFeeCollector public feeCollector;
+    SweepDustSweeper public sweeper;
 
     address public owner;
     address public treasury;
@@ -56,10 +56,10 @@ contract PiggyDustSweeperTest is Test {
         vm.startPrank(owner);
 
         // Deploy all contracts
-        feeCollector = new PiggyFeeCollector(treasury, 30); // 0.3%
-        batchSwap = new PiggyBatchSwap(address(feeCollector), 0); // Fee handled by sweeper
-        vaultRouter = new PiggyVaultRouter();
-        sweeper = new PiggyDustSweeper(
+        feeCollector = new SweepFeeCollector(treasury, 30); // 0.3%
+        batchSwap = new SweepBatchSwap(address(feeCollector), 0); // Fee handled by sweeper
+        vaultRouter = new SweepVaultRouter();
+        sweeper = new SweepDustSweeper(
             address(batchSwap),
             address(vaultRouter),
             address(feeCollector)
@@ -69,8 +69,8 @@ contract PiggyDustSweeperTest is Test {
         batchSwap.setRouterApproval(UNISWAP_V3_ROUTER, true);
 
         // Configure vault router
-        vaultRouter.setVaultApproval(AAVE_V3_POOL, PiggyVaultRouter.VaultType.AAVE_V3, true);
-        vaultRouter.setVaultApproval(LIDO, PiggyVaultRouter.VaultType.LIDO, true);
+        vaultRouter.setVaultApproval(AAVE_V3_POOL, SweepVaultRouter.VaultType.AAVE_V3, true);
+        vaultRouter.setVaultApproval(LIDO, SweepVaultRouter.VaultType.LIDO, true);
 
         // Configure fee collector
         feeCollector.setDepositorApproval(address(sweeper), true);
@@ -97,18 +97,18 @@ contract PiggyDustSweeperTest is Test {
     }
 
     function test_deployment_reverts_zeroBatchSwap() public {
-        vm.expectRevert(PiggyDustSweeper.ZeroAddress.selector);
-        new PiggyDustSweeper(address(0), address(vaultRouter), address(feeCollector));
+        vm.expectRevert(SweepDustSweeper.ZeroAddress.selector);
+        new SweepDustSweeper(address(0), address(vaultRouter), address(feeCollector));
     }
 
     function test_deployment_reverts_zeroVaultRouter() public {
-        vm.expectRevert(PiggyDustSweeper.ZeroAddress.selector);
-        new PiggyDustSweeper(address(batchSwap), address(0), address(feeCollector));
+        vm.expectRevert(SweepDustSweeper.ZeroAddress.selector);
+        new SweepDustSweeper(address(batchSwap), address(0), address(feeCollector));
     }
 
     function test_deployment_reverts_zeroFeeCollector() public {
-        vm.expectRevert(PiggyDustSweeper.ZeroAddress.selector);
-        new PiggyDustSweeper(address(batchSwap), address(vaultRouter), address(0));
+        vm.expectRevert(SweepDustSweeper.ZeroAddress.selector);
+        new SweepDustSweeper(address(batchSwap), address(vaultRouter), address(0));
     }
 
     // ============================================================
@@ -127,8 +127,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1);
         amountsIn[0] = wethAmount;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: wethAmount,
@@ -137,13 +137,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: swapData
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.WALLET,
+            destination: SweepDustSweeper.SweepDestination.WALLET,
             vaultAddress: address(0),
             minVaultSharesOut: 0,
             recipient: user,
@@ -155,7 +155,7 @@ contract PiggyDustSweeperTest is Test {
 
         vm.startPrank(user);
         IERC20(WETH).approve(address(sweeper), wethAmount);
-        PiggyDustSweeper.SweepResult memory result = sweeper.sweep(params);
+        SweepDustSweeper.SweepResult memory result = sweeper.sweep(params);
         vm.stopPrank();
 
         uint256 userUsdcAfter = IERC20(USDC).balanceOf(user);
@@ -185,8 +185,8 @@ contract PiggyDustSweeperTest is Test {
         amountsIn[0] = wethAmount;
         amountsIn[1] = daiAmount;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](2);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](2);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: wethAmount,
@@ -194,7 +194,7 @@ contract PiggyDustSweeperTest is Test {
             router: UNISWAP_V3_ROUTER,
             routerData: swap1Data
         });
-        swaps[1] = PiggyBatchSwap.SwapParams({
+        swaps[1] = SweepBatchSwap.SwapParams({
             tokenIn: DAI,
             tokenOut: USDC,
             amountIn: daiAmount,
@@ -203,13 +203,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: swap2Data
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.WALLET,
+            destination: SweepDustSweeper.SweepDestination.WALLET,
             vaultAddress: address(0),
             minVaultSharesOut: 0,
             recipient: user,
@@ -219,7 +219,7 @@ contract PiggyDustSweeperTest is Test {
         vm.startPrank(user);
         IERC20(WETH).approve(address(sweeper), wethAmount);
         IERC20(DAI).approve(address(sweeper), daiAmount);
-        PiggyDustSweeper.SweepResult memory result = sweeper.sweep(params);
+        SweepDustSweeper.SweepResult memory result = sweeper.sweep(params);
         vm.stopPrank();
 
         assertGt(result.totalSwapOutput, 0);
@@ -241,8 +241,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1);
         amountsIn[0] = wethAmount;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: wethAmount,
@@ -251,13 +251,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: swapData
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.AAVE,
+            destination: SweepDustSweeper.SweepDestination.AAVE,
             vaultAddress: AAVE_V3_POOL,
             minVaultSharesOut: 1,
             recipient: user,
@@ -268,7 +268,7 @@ contract PiggyDustSweeperTest is Test {
 
         vm.startPrank(user);
         IERC20(WETH).approve(address(sweeper), wethAmount);
-        PiggyDustSweeper.SweepResult memory result = sweeper.sweep(params);
+        SweepDustSweeper.SweepResult memory result = sweeper.sweep(params);
         vm.stopPrank();
 
         uint256 aUsdcAfter = IERC20(A_USDC).balanceOf(user);
@@ -302,8 +302,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1);
         amountsIn[0] = wethAmount;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: wethAmount,
@@ -312,13 +312,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: swapData
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.WALLET,
+            destination: SweepDustSweeper.SweepDestination.WALLET,
             vaultAddress: address(0),
             minVaultSharesOut: 0,
             recipient: user,
@@ -329,7 +329,7 @@ contract PiggyDustSweeperTest is Test {
 
         vm.startPrank(user);
         IERC20(WETH).approve(address(sweeper), wethAmount);
-        PiggyDustSweeper.SweepResult memory result = sweeper.sweep(params);
+        SweepDustSweeper.SweepResult memory result = sweeper.sweep(params);
         vm.stopPrank();
 
         uint256 feesAfter = feeCollector.accumulatedFees(USDC);
@@ -348,8 +348,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1);
         amountsIn[0] = 1 ether;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -358,13 +358,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: ""
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.WALLET,
+            destination: SweepDustSweeper.SweepDestination.WALLET,
             vaultAddress: address(0),
             minVaultSharesOut: 0,
             recipient: user,
@@ -372,7 +372,7 @@ contract PiggyDustSweeperTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyDustSweeper.DeadlineExpired.selector);
+        vm.expectRevert(SweepDustSweeper.DeadlineExpired.selector);
         sweeper.sweep(params);
     }
 
@@ -383,8 +383,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1);
         amountsIn[0] = 1 ether;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -393,13 +393,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: ""
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.WALLET,
+            destination: SweepDustSweeper.SweepDestination.WALLET,
             vaultAddress: address(0),
             minVaultSharesOut: 0,
             recipient: address(0),
@@ -407,7 +407,7 @@ contract PiggyDustSweeperTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyDustSweeper.ZeroAddress.selector);
+        vm.expectRevert(SweepDustSweeper.ZeroAddress.selector);
         sweeper.sweep(params);
     }
 
@@ -419,8 +419,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1); // Mismatch!
         amountsIn[0] = 1 ether;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -429,13 +429,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: ""
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.WALLET,
+            destination: SweepDustSweeper.SweepDestination.WALLET,
             vaultAddress: address(0),
             minVaultSharesOut: 0,
             recipient: user,
@@ -443,7 +443,7 @@ contract PiggyDustSweeperTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyDustSweeper.LengthMismatch.selector);
+        vm.expectRevert(SweepDustSweeper.LengthMismatch.selector);
         sweeper.sweep(params);
     }
 
@@ -454,8 +454,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1);
         amountsIn[0] = 1 ether;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -464,13 +464,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: ""
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.AAVE,
+            destination: SweepDustSweeper.SweepDestination.AAVE,
             vaultAddress: address(0), // Missing vault!
             minVaultSharesOut: 0,
             recipient: user,
@@ -478,7 +478,7 @@ contract PiggyDustSweeperTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyDustSweeper.VaultRequired.selector);
+        vm.expectRevert(SweepDustSweeper.VaultRequired.selector);
         sweeper.sweep(params);
     }
 
@@ -503,8 +503,8 @@ contract PiggyDustSweeperTest is Test {
         uint256[] memory amountsIn = new uint256[](1);
         amountsIn[0] = 1 ether;
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -513,13 +513,13 @@ contract PiggyDustSweeperTest is Test {
             routerData: ""
         });
 
-        PiggyDustSweeper.SimpleSweepParams memory params = PiggyDustSweeper.SimpleSweepParams({
+        SweepDustSweeper.SimpleSweepParams memory params = SweepDustSweeper.SimpleSweepParams({
             tokensIn: tokensIn,
             amountsIn: amountsIn,
             swaps: swaps,
             outputToken: USDC,
             minTotalOutput: 1,
-            destination: PiggyDustSweeper.SweepDestination.WALLET,
+            destination: SweepDustSweeper.SweepDestination.WALLET,
             vaultAddress: address(0),
             minVaultSharesOut: 0,
             recipient: user,
@@ -527,7 +527,7 @@ contract PiggyDustSweeperTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyDustSweeper.ContractPaused.selector);
+        vm.expectRevert(SweepDustSweeper.ContractPaused.selector);
         sweeper.sweep(params);
     }
 
@@ -551,8 +551,8 @@ contract PiggyDustSweeperTest is Test {
     }
 
     function test_buildWitnessHash() public view {
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,

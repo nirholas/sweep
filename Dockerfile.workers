@@ -1,5 +1,5 @@
 # ============================================
-# Piggy Bank Queue Workers - Production Dockerfile
+# Sweep Queue Workers - Production Dockerfile
 # Using tsx for direct TypeScript execution
 # ============================================
 
@@ -22,8 +22,8 @@ COPY src ./src
 
 # Add non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 piggybank && \
-    chown -R piggybank:nodejs /app
+    adduser --system --uid 1001 sweepbank && \
+    chown -R sweepbank:nodejs /app
 
 # Set environment
 ENV NODE_ENV=production
@@ -33,7 +33,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD pgrep -f "tsx" || exit 1
 
 # Switch to non-root user
-USER piggybank
+USER sweepbank
 
 # Use dumb-init
 ENTRYPOINT ["dumb-init", "--"]

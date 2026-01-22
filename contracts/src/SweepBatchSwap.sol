@@ -7,11 +7,11 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
-/// @title PiggyBatchSwap
+/// @title SweepBatchSwap
 /// @author Sweep Team
 /// @notice Batch multiple ERC20 token swaps into a single transaction
 /// @dev Supports 1inch, Uniswap, 0x, and generic DEX calldata
-contract PiggyBatchSwap is Ownable, ReentrancyGuard {
+contract SweepBatchSwap is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
     using Address for address;
 

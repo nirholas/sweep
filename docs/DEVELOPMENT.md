@@ -50,8 +50,8 @@ foundryup
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/nirholas/piggy-bank.git
-cd piggy-bank
+git clone https://github.com/nirholas/sweep.git
+cd sweep
 ```
 
 ### 2. Create Environment File
@@ -68,7 +68,7 @@ Edit `.env` with your API keys:
 # ============================================
 # Database (local defaults work out of box)
 # ============================================
-DATABASE_URL="postgresql://piggy:piggy@localhost:5432/sweep"
+DATABASE_URL="postgresql://sweep:sweep@localhost:5432/sweep"
 
 # ============================================
 # Redis (local defaults work out of box)
@@ -225,14 +225,14 @@ npm run dev
    - Host: `postgres`
    - Port: `5432`
    - Database: `sweep`
-   - User: `piggy`
-   - Password: `piggy`
+   - User: `sweep`
+   - Password: `sweep`
 
 ### Direct Database Access
 
 ```bash
 # Connect to PostgreSQL
-docker exec -it sweep-postgres psql -U piggy -d sweep
+docker exec -it sweep-postgres psql -U sweep -d sweep
 
 # Common commands
 \dt           # List tables
@@ -454,7 +454,7 @@ npm run typecheck
 
 ### Getting Help
 
-1. Check existing issues: https://github.com/nirholas/piggy-bank/issues
+1. Check existing issues: https://github.com/nirholas/sweep/issues
 2. Review documentation in `/docs`
 3. Ask in team Slack/Discord
 

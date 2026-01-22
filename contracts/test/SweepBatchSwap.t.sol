@@ -2,15 +2,15 @@
 pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {PiggyBatchSwap} from "../src/PiggyBatchSwap.sol";
-import {PiggyPermit2Batcher} from "../src/PiggyPermit2Batcher.sol";
+import {SweepBatchSwap} from "../src/SweepBatchSwap.sol";
+import {SweepPermit2Batcher} from "../src/SweepPermit2Batcher.sol";
 import {IPermit2} from "../src/interfaces/IPermit2.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 
-/// @title PiggyBatchSwapTest
-/// @notice Fork tests for PiggyBatchSwap against mainnet
-contract PiggyBatchSwapTest is Test {
+/// @title SweepBatchSwapTest
+/// @notice Fork tests for SweepBatchSwap against mainnet
+contract SweepBatchSwapTest is Test {
     // ============================================================
     // CONSTANTS
     // ============================================================
@@ -33,8 +33,8 @@ contract PiggyBatchSwapTest is Test {
     uint256 public userPrivateKey;
 
     // Contracts
-    PiggyBatchSwap public batchSwap;
-    PiggyPermit2Batcher public batcher;
+    SweepBatchSwap public batchSwap;
+    SweepPermit2Batcher public batcher;
 
     // ============================================================
     // SETUP
@@ -53,8 +53,8 @@ contract PiggyBatchSwapTest is Test {
         // Deploy contracts
         vm.startPrank(owner);
         
-        batchSwap = new PiggyBatchSwap(feeCollector, 50); // 0.5% fee
-        batcher = new PiggyPermit2Batcher(address(batchSwap));
+        batchSwap = new SweepBatchSwap(feeCollector, 50); // 0.5% fee
+        batcher = new SweepPermit2Batcher(address(batchSwap));
         
         // Approve routers
         batchSwap.setRouterApproval(UNISWAP_V3_ROUTER, true);
@@ -115,7 +115,7 @@ contract PiggyBatchSwapTest is Test {
 
     function test_setFee_reverts_tooHigh() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyBatchSwap.FeeTooHigh.selector);
+        vm.expectRevert(SweepBatchSwap.FeeTooHigh.selector);
         batchSwap.setFee(501); // > 5%
     }
 
@@ -166,7 +166,7 @@ contract PiggyBatchSwapTest is Test {
             0  // no price limit
         );
 
-        PiggyBatchSwap.SwapParams memory swap = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams memory swap = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -189,7 +189,7 @@ contract PiggyBatchSwapTest is Test {
     function test_singleSwap_reverts_routerNotApproved() public {
         address badRouter = makeAddr("badRouter");
         
-        PiggyBatchSwap.SwapParams memory swap = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams memory swap = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -201,7 +201,7 @@ contract PiggyBatchSwapTest is Test {
         vm.startPrank(user);
         IERC20(WETH).approve(address(batchSwap), 1 ether);
         
-        vm.expectRevert(PiggyBatchSwap.RouterNotApproved.selector);
+        vm.expectRevert(SweepBatchSwap.RouterNotApproved.selector);
         batchSwap.singleSwap(swap);
         vm.stopPrank();
     }
@@ -210,7 +210,7 @@ contract PiggyBatchSwapTest is Test {
         vm.prank(owner);
         batchSwap.setPaused(true);
 
-        PiggyBatchSwap.SwapParams memory swap = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams memory swap = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -220,7 +220,7 @@ contract PiggyBatchSwapTest is Test {
         });
 
         vm.startPrank(user);
-        vm.expectRevert(PiggyBatchSwap.ContractPaused.selector);
+        vm.expectRevert(SweepBatchSwap.ContractPaused.selector);
         batchSwap.singleSwap(swap);
         vm.stopPrank();
     }
@@ -256,8 +256,8 @@ contract PiggyBatchSwapTest is Test {
             0
         );
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](2);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](2);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 0.5 ether,
@@ -265,7 +265,7 @@ contract PiggyBatchSwapTest is Test {
             router: UNISWAP_V3_ROUTER,
             routerData: swap1Data
         });
-        swaps[1] = PiggyBatchSwap.SwapParams({
+        swaps[1] = SweepBatchSwap.SwapParams({
             tokenIn: USDT,
             tokenOut: USDC,
             amountIn: 1000 * 1e6,
@@ -274,7 +274,7 @@ contract PiggyBatchSwapTest is Test {
             routerData: swap2Data
         });
 
-        PiggyBatchSwap.BatchSwapParams memory params = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory params = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: USDC,
             recipient: user,
@@ -294,8 +294,8 @@ contract PiggyBatchSwapTest is Test {
     }
 
     function test_batchSwap_reverts_deadlineExpired() public {
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -304,7 +304,7 @@ contract PiggyBatchSwapTest is Test {
             routerData: ""
         });
 
-        PiggyBatchSwap.BatchSwapParams memory params = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory params = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: USDC,
             recipient: user,
@@ -312,13 +312,13 @@ contract PiggyBatchSwapTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyBatchSwap.DeadlineExpired.selector);
+        vm.expectRevert(SweepBatchSwap.DeadlineExpired.selector);
         batchSwap.batchSwap(params);
     }
 
     function test_batchSwap_reverts_zeroAddress() public {
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -327,7 +327,7 @@ contract PiggyBatchSwapTest is Test {
             routerData: ""
         });
 
-        PiggyBatchSwap.BatchSwapParams memory params = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory params = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: USDC,
             recipient: address(0),
@@ -335,7 +335,7 @@ contract PiggyBatchSwapTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyBatchSwap.ZeroAddress.selector);
+        vm.expectRevert(SweepBatchSwap.ZeroAddress.selector);
         batchSwap.batchSwap(params);
     }
 
@@ -357,7 +357,7 @@ contract PiggyBatchSwapTest is Test {
             0
         );
 
-        PiggyBatchSwap.SwapParams memory swap = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams memory swap = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -395,8 +395,8 @@ contract PiggyBatchSwapTest is Test {
     }
 
     function test_batcher_buildWitnessHash() public view {
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -445,7 +445,7 @@ contract PiggyBatchSwapTest is Test {
     // ============================================================
 
     function test_swapWithZeroAmount_reverts() public {
-        PiggyBatchSwap.SwapParams memory swap = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams memory swap = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 0,
@@ -455,14 +455,14 @@ contract PiggyBatchSwapTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyBatchSwap.ZeroAmount.selector);
+        vm.expectRevert(SweepBatchSwap.ZeroAmount.selector);
         batchSwap.singleSwap(swap);
     }
 
     function test_emptyBatchSwap_reverts() public {
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](0);
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](0);
 
-        PiggyBatchSwap.BatchSwapParams memory params = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory params = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: USDC,
             recipient: user,
@@ -470,7 +470,7 @@ contract PiggyBatchSwapTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyBatchSwap.InvalidParams.selector);
+        vm.expectRevert(SweepBatchSwap.InvalidParams.selector);
         batchSwap.batchSwap(params);
     }
 
@@ -509,9 +509,9 @@ contract PiggyBatchSwapTest is Test {
     }
 }
 
-/// @title PiggyPermit2Test
+/// @title SweepPermit2Test
 /// @notice Tests for Permit2 integration
-contract PiggyPermit2Test is Test {
+contract SweepPermit2Test is Test {
     // Add Permit2 specific tests here
     // These require more complex signature generation
     

@@ -301,4 +301,4 @@ export const SPEND_PERMISSION_MANAGER: Record<number, Address> = {
 export const NATIVE_TOKEN_ADDRESS: Address = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 // Sweep executor address (the spender in spend permissions)
-export const PIGGY_EXECUTOR_ADDRESS: Address = "0x1234567890123456789012345678901234567890" as Address;
+export const SWEEP_EXECUTOR_ADDRESS: Address = "0x1234567890123456789012345678901234567890" as Address;

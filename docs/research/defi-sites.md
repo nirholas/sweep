@@ -2126,7 +2126,7 @@ https://granary.finance
 https://sonne.finance
 https://exactly.finance
 https://beethovenx.io
-https://wepiggy.com
+https://wesweep.com
 https://rubicon.finance
 https://stargate.finance
 https://across.to

@@ -15,7 +15,7 @@
 
 ## Overview
 
-Piggy Bank uses **PostgreSQL 16** with **Drizzle ORM** for type-safe database operations.
+Sweep uses **PostgreSQL 16** with **Drizzle ORM** for type-safe database operations.
 
 ### Technology Stack
 
@@ -38,7 +38,7 @@ Piggy Bank uses **PostgreSQL 16** with **Drizzle ORM** for type-safe database op
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           PIGGY BANK DATABASE SCHEMA                             │
+│                           SWEEP DATABASE SCHEMA                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
 │  ┌─────────────┐          ┌─────────────┐          ┌─────────────────┐         │

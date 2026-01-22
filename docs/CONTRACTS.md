@@ -7,11 +7,11 @@
 1. [Overview](#overview)
 2. [Contract Architecture](#contract-architecture)
 3. [Contracts Reference](#contracts-reference)
-   - [PiggyDustSweeper](#piggydustsweeper)
-   - [PiggyBatchSwap](#piggybatchswap)
-   - [PiggyPermit2Batcher](#piggypermit2batcher)
-   - [PiggyVaultRouter](#piggyvaultrouter)
-   - [PiggyFeeCollector](#piggyfeecollector)
+   - [SweepDustSweeper](#sweepdustsweeper)
+   - [SweepBatchSwap](#sweepbatchswap)
+   - [SweepPermit2Batcher](#sweeppermit2batcher)
+   - [SweepVaultRouter](#sweepvaultrouter)
+   - [SweepFeeCollector](#sweepfeecollector)
 4. [Security Considerations](#security-considerations)
 5. [Deployment](#deployment)
 6. [Upgradeability](#upgradeability)
@@ -25,14 +25,14 @@ The Sweep smart contract system enables gasless, multi-token sweeping with DeFi 
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    PIGGY BANK CONTRACT FLOW                      │
+│                    SWEEP CONTRACT FLOW                      │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │   User Signs Permit2 Signature                                   │
 │           │                                                      │
 │           ▼                                                      │
 │   ┌──────────────────┐                                          │
-│   │ PiggyDustSweeper │ ◄─── Main Entry Point                    │
+│   │ SweepDustSweeper │ ◄─── Main Entry Point                    │
 │   │  (Entry Point)   │                                          │
 │   └────────┬─────────┘                                          │
 │            │                                                     │
@@ -72,31 +72,31 @@ The Sweep smart contract system enables gasless, multi-token sweeping with DeFi 
 
 ```
 OpenZeppelin Contracts
-├── Ownable2Step      → PiggyDustSweeper, PiggyVaultRouter, PiggyFeeCollector
-├── Ownable           → PiggyBatchSwap, PiggyPermit2Batcher
+├── Ownable2Step      → SweepDustSweeper, SweepVaultRouter, SweepFeeCollector
+├── Ownable           → SweepBatchSwap, SweepPermit2Batcher
 ├── ReentrancyGuard   → All contracts
 ├── SafeERC20         → All contracts
-└── EnumerableSet     → PiggyFeeCollector
+└── EnumerableSet     → SweepFeeCollector
 ```
 
 ### Contract Addresses
 
 | Contract | Ethereum | Base | Arbitrum | Polygon |
 |----------|----------|------|----------|---------|
-| PiggyDustSweeper | `TBD` | `TBD` | `TBD` | `TBD` |
-| PiggyBatchSwap | `TBD` | `TBD` | `TBD` | `TBD` |
-| PiggyPermit2Batcher | `TBD` | `TBD` | `TBD` | `TBD` |
-| PiggyVaultRouter | `TBD` | `TBD` | `TBD` | `TBD` |
-| PiggyFeeCollector | `TBD` | `TBD` | `TBD` | `TBD` |
+| SweepDustSweeper | `TBD` | `TBD` | `TBD` | `TBD` |
+| SweepBatchSwap | `TBD` | `TBD` | `TBD` | `TBD` |
+| SweepPermit2Batcher | `TBD` | `TBD` | `TBD` | `TBD` |
+| SweepVaultRouter | `TBD` | `TBD` | `TBD` | `TBD` |
+| SweepFeeCollector | `TBD` | `TBD` | `TBD` | `TBD` |
 | **Permit2 (Canonical)** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Same | Same | Same |
 
 ---
 
 ## Contracts Reference
 
-### PiggyDustSweeper
+### SweepDustSweeper
 
-**File**: [contracts/src/PiggyDustSweeper.sol](../contracts/src/PiggyDustSweeper.sol)  
+**File**: [contracts/src/SweepDustSweeper.sol](../contracts/src/SweepDustSweeper.sol)  
 **Lines**: 686  
 **Inheritance**: `Ownable2Step`, `ReentrancyGuard`
 
@@ -129,7 +129,7 @@ enum SweepDestination {
 struct SweepParams {
     IPermit2.PermitBatchTransferFrom permit;  // Permit2 data
     bytes signature;                           // User signature
-    PiggyBatchSwap.SwapParams[] swaps;        // Swap instructions
+    SweepBatchSwap.SwapParams[] swaps;        // Swap instructions
     address outputToken;                       // Target token
     uint256 minTotalOutput;                    // Slippage protection
     SweepDestination destination;              // Where to send
@@ -176,9 +176,9 @@ event SweepExecuted(
 
 ---
 
-### PiggyBatchSwap
+### SweepBatchSwap
 
-**File**: [contracts/src/PiggyBatchSwap.sol](../contracts/src/PiggyBatchSwap.sol)  
+**File**: [contracts/src/SweepBatchSwap.sol](../contracts/src/SweepBatchSwap.sol)  
 **Lines**: 390  
 **Inheritance**: `Ownable`, `ReentrancyGuard`
 
@@ -234,9 +234,9 @@ struct BatchSwapParams {
 
 ---
 
-### PiggyPermit2Batcher
+### SweepPermit2Batcher
 
-**File**: [contracts/src/PiggyPermit2Batcher.sol](../contracts/src/PiggyPermit2Batcher.sol)  
+**File**: [contracts/src/SweepPermit2Batcher.sol](../contracts/src/SweepPermit2Batcher.sol)  
 **Lines**: 395  
 **Inheritance**: `Ownable`, `ReentrancyGuard`
 
@@ -252,7 +252,7 @@ Enables gasless token transfers using Uniswap's Permit2 protocol.
 #### Key Structs
 
 ```solidity
-struct PiggyBatchWitness {
+struct SweepBatchWitness {
     address outputToken;      // Expected output token
     uint256 minTotalOutput;   // Minimum output protection
     uint256 deadline;         // Signature deadline
@@ -262,7 +262,7 @@ struct PiggyBatchWitness {
 struct BatchExecuteParams {
     IPermit2.PermitBatchTransferFrom permit;
     bytes signature;
-    PiggyBatchSwap.SwapParams[] swaps;
+    SweepBatchSwap.SwapParams[] swaps;
     address outputToken;
     uint256 minTotalOutput;
     address recipient;
@@ -273,7 +273,7 @@ struct BatchExecuteParams {
 #### EIP-712 Signature Format
 
 ```
-PiggySweepWitness(
+SweepWitness(
     address outputToken,
     uint256 minOutput,
     address vaultDestination,
@@ -291,9 +291,9 @@ PiggySweepWitness(
 
 ---
 
-### PiggyVaultRouter
+### SweepVaultRouter
 
-**File**: [contracts/src/PiggyVaultRouter.sol](../contracts/src/PiggyVaultRouter.sol)  
+**File**: [contracts/src/SweepVaultRouter.sol](../contracts/src/SweepVaultRouter.sol)  
 **Lines**: 661  
 **Inheritance**: `Ownable2Step`, `ReentrancyGuard`
 
@@ -354,9 +354,9 @@ struct DepositParams {
 
 ---
 
-### PiggyFeeCollector
+### SweepFeeCollector
 
-**File**: [contracts/src/PiggyFeeCollector.sol](../contracts/src/PiggyFeeCollector.sol)  
+**File**: [contracts/src/SweepFeeCollector.sol](../contracts/src/SweepFeeCollector.sol)  
 **Lines**: 429  
 **Inheritance**: `Ownable2Step`, `ReentrancyGuard`
 
@@ -515,20 +515,20 @@ function batchSwap(BatchSwapParams calldata params)
 Contracts must be deployed in this order due to dependencies:
 
 ```bash
-1. PiggyFeeCollector(treasury, feeBps)
-2. PiggyBatchSwap(feeCollector, feeBps)
-3. PiggyPermit2Batcher(batchSwap)
-4. PiggyVaultRouter()
-5. PiggyDustSweeper(batchSwap, permit2Batcher, vaultRouter, feeCollector)
+1. SweepFeeCollector(treasury, feeBps)
+2. SweepBatchSwap(feeCollector, feeBps)
+3. SweepPermit2Batcher(batchSwap)
+4. SweepVaultRouter()
+5. SweepDustSweeper(batchSwap, permit2Batcher, vaultRouter, feeCollector)
 ```
 
 ### Post-Deployment Checklist
 
 - [ ] Transfer ownership to multisig
-- [ ] Approve DEX routers on PiggyBatchSwap
-- [ ] Approve vaults on PiggyVaultRouter
+- [ ] Approve DEX routers on SweepBatchSwap
+- [ ] Approve vaults on SweepVaultRouter
 - [ ] Set protocol addresses (Aave pools, Lido, etc.)
-- [ ] Approve PiggyDustSweeper as fee depositor
+- [ ] Approve SweepDustSweeper as fee depositor
 - [ ] Enable withdrawal delay on FeeCollector
 - [ ] Verify all contracts on block explorer
 

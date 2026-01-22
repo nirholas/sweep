@@ -16,7 +16,7 @@ import {
   type SignedSpendPermission,
   type SpendPermissionStatus,
   SPEND_PERMISSION_MANAGER,
-  PIGGY_EXECUTOR_ADDRESS,
+  SWEEP_EXECUTOR_ADDRESS,
   NATIVE_TOKEN_ADDRESS,
 } from "./types.js";
 
@@ -230,7 +230,7 @@ export class SpendPermissionsService {
 
     return {
       account: params.account,
-      spender: PIGGY_EXECUTOR_ADDRESS,
+      spender: SWEEP_EXECUTOR_ADDRESS,
       token: params.token,
       allowance: params.maxAmountPerPeriod,
       period: params.periodSeconds,
@@ -547,7 +547,7 @@ export function createUsdcSpendPermission(
 
   return {
     account,
-    spender: PIGGY_EXECUTOR_ADDRESS,
+    spender: SWEEP_EXECUTOR_ADDRESS,
     token: usdcAddress,
     allowance: maxAmountPerPeriod,
     period: periodSeconds,

@@ -2,12 +2,12 @@
 pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {PiggyFeeCollector} from "../src/PiggyFeeCollector.sol";
+import {SweepFeeCollector} from "../src/SweepFeeCollector.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title PiggyFeeCollectorTest
-/// @notice Tests for PiggyFeeCollector
-contract PiggyFeeCollectorTest is Test {
+/// @title SweepFeeCollectorTest
+/// @notice Tests for SweepFeeCollector
+contract SweepFeeCollectorTest is Test {
     // ============================================================
     // CONSTANTS
     // ============================================================
@@ -19,7 +19,7 @@ contract PiggyFeeCollectorTest is Test {
     // STATE
     // ============================================================
 
-    PiggyFeeCollector public collector;
+    SweepFeeCollector public collector;
 
     address public owner;
     address public treasury;
@@ -40,7 +40,7 @@ contract PiggyFeeCollectorTest is Test {
         user = makeAddr("user");
 
         vm.prank(owner);
-        collector = new PiggyFeeCollector(treasury, 30); // 0.3% fee
+        collector = new SweepFeeCollector(treasury, 30); // 0.3% fee
 
         // Approve depositor
         vm.prank(owner);
@@ -66,21 +66,21 @@ contract PiggyFeeCollectorTest is Test {
 
     function test_deployment_defaultFee() public {
         vm.prank(owner);
-        PiggyFeeCollector newCollector = new PiggyFeeCollector(treasury, 0);
+        SweepFeeCollector newCollector = new SweepFeeCollector(treasury, 0);
 
         assertEq(newCollector.feeBps(), 30); // Default 0.3%
     }
 
     function test_deployment_reverts_zeroTreasury() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.ZeroAddress.selector);
-        new PiggyFeeCollector(address(0), 30);
+        vm.expectRevert(SweepFeeCollector.ZeroAddress.selector);
+        new SweepFeeCollector(address(0), 30);
     }
 
     function test_deployment_reverts_feeTooHigh() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.FeeTooHigh.selector);
-        new PiggyFeeCollector(treasury, 501); // > 5%
+        vm.expectRevert(SweepFeeCollector.FeeTooHigh.selector);
+        new SweepFeeCollector(treasury, 501); // > 5%
     }
 
     // ============================================================
@@ -111,13 +111,13 @@ contract PiggyFeeCollectorTest is Test {
 
     function test_depositFee_reverts_notApproved() public {
         vm.prank(user);
-        vm.expectRevert(PiggyFeeCollector.NotApprovedDepositor.selector);
+        vm.expectRevert(SweepFeeCollector.NotApprovedDepositor.selector);
         collector.depositFee(USDC, 100 * 1e6, user);
     }
 
     function test_depositFee_reverts_zeroAmount() public {
         vm.prank(depositor);
-        vm.expectRevert(PiggyFeeCollector.ZeroAmount.selector);
+        vm.expectRevert(SweepFeeCollector.ZeroAmount.selector);
         collector.depositFee(USDC, 0, user);
     }
 
@@ -127,7 +127,7 @@ contract PiggyFeeCollectorTest is Test {
 
         vm.startPrank(depositor);
         IERC20(USDC).approve(address(collector), 100 * 1e6);
-        vm.expectRevert(PiggyFeeCollector.ContractPaused.selector);
+        vm.expectRevert(SweepFeeCollector.ContractPaused.selector);
         collector.depositFee(USDC, 100 * 1e6, user);
         vm.stopPrank();
     }
@@ -229,13 +229,13 @@ contract PiggyFeeCollectorTest is Test {
 
         // Try to execute immediately (should fail)
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.WithdrawalNotReady.selector);
+        vm.expectRevert(SweepFeeCollector.WithdrawalNotReady.selector);
         collector.executeWithdrawal(USDC);
     }
 
     function test_executeWithdrawal_reverts_noPending() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.NoWithdrawalPending.selector);
+        vm.expectRevert(SweepFeeCollector.NoWithdrawalPending.selector);
         collector.executeWithdrawal(USDC);
     }
 
@@ -318,7 +318,7 @@ contract PiggyFeeCollectorTest is Test {
 
         // Try to withdraw (should fail because delay is enabled)
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.WithdrawalNotReady.selector);
+        vm.expectRevert(SweepFeeCollector.WithdrawalNotReady.selector);
         collector.withdrawAllFees(USDC);
     }
 
@@ -367,7 +367,7 @@ contract PiggyFeeCollectorTest is Test {
 
     function test_emergencyWithdraw_reverts_notPaused() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.ContractPaused.selector);
+        vm.expectRevert(SweepFeeCollector.ContractPaused.selector);
         collector.emergencyWithdraw(USDC, treasury);
     }
 
@@ -386,7 +386,7 @@ contract PiggyFeeCollectorTest is Test {
 
     function test_setTreasury_reverts_zeroAddress() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.ZeroAddress.selector);
+        vm.expectRevert(SweepFeeCollector.ZeroAddress.selector);
         collector.setTreasury(address(0));
     }
 
@@ -399,7 +399,7 @@ contract PiggyFeeCollectorTest is Test {
 
     function test_setFee_reverts_tooHigh() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.FeeTooHigh.selector);
+        vm.expectRevert(SweepFeeCollector.FeeTooHigh.selector);
         collector.setFee(501);
     }
 
@@ -412,7 +412,7 @@ contract PiggyFeeCollectorTest is Test {
 
     function test_setFeeDiscount_reverts_tooHigh() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.DiscountTooHigh.selector);
+        vm.expectRevert(SweepFeeCollector.DiscountTooHigh.selector);
         collector.setFeeDiscount(user, 50); // More than fee itself
     }
 
@@ -427,7 +427,7 @@ contract PiggyFeeCollectorTest is Test {
 
     function test_setDepositorApproval_reverts_zeroAddress() public {
         vm.prank(owner);
-        vm.expectRevert(PiggyFeeCollector.ZeroAddress.selector);
+        vm.expectRevert(SweepFeeCollector.ZeroAddress.selector);
         collector.setDepositorApproval(address(0), true);
     }
 

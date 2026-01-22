@@ -1,4 +1,4 @@
-# Piggy Bank Documentation
+# Sweep Documentation
 
 > **⚠️ CRITICAL: This application handles user funds. Read all documentation carefully before making any changes.**
 
@@ -53,7 +53,7 @@
 
 ## Overview
 
-Piggy Bank is a multi-chain dust sweeper that consolidates small token balances ("dust") across EVM chains and Solana into a single valuable token or DeFi position.
+Sweep is a multi-chain dust sweeper that consolidates small token balances ("dust") across EVM chains and Solana into a single valuable token or DeFi position.
 
 ### Key Features
 
@@ -84,14 +84,14 @@ Piggy Bank is a multi-chain dust sweeper that consolidates small token balances 
 ## Project Structure
 
 ```
-piggy-bank/
+sweep/
 ├── contracts/           # Solidity smart contracts (Foundry)
 │   ├── src/
-│   │   ├── PiggyBatchSwap.sol      # Batch swap execution
-│   │   ├── PiggyPermit2Batcher.sol # Permit2 integration
-│   │   ├── PiggyDustSweeper.sol    # Main entry point
-│   │   ├── PiggyVaultRouter.sol    # DeFi vault routing
-│   │   └── PiggyFeeCollector.sol   # Fee management
+│   │   ├── SweepBatchSwap.sol      # Batch swap execution
+│   │   ├── SweepPermit2Batcher.sol # Permit2 integration
+│   │   ├── SweepDustSweeper.sol    # Main entry point
+│   │   ├── SweepVaultRouter.sol    # DeFi vault routing
+│   │   └── SweepFeeCollector.sol   # Fee management
 │   └── test/            # Foundry tests
 │
 ├── src/                 # Backend TypeScript (Hono + Node.js)
@@ -178,8 +178,8 @@ See [DEVELOPMENT.md](./DEVELOPMENT.md) for complete local setup instructions.
 
 ```bash
 # Quick start
-git clone https://github.com/nirholas/piggy-bank.git
-cd piggy-bank
+git clone https://github.com/nirholas/sweep.git
+cd sweep
 npm install
 npm run docker:up      # Start Postgres, Redis
 npm run db:migrate     # Run migrations

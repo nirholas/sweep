@@ -4,8 +4,8 @@ Solidity smart contracts for the Sweep multi-chain dust sweeper.
 
 ## Overview
 
-- **PiggyBatchSwap**: Batch multiple ERC20 swaps in a single transaction
-- **PiggyPermit2Batcher**: Gasless approvals via Permit2 + batch swaps
+- **SweepBatchSwap**: Batch multiple ERC20 swaps in a single transaction
+- **SweepPermit2Batcher**: Gasless approvals via Permit2 + batch swaps
 
 ## Installation
 
@@ -57,7 +57,7 @@ forge script script/Deploy.s.sol:DeployAllChains --broadcast --verify
 
 ```
 ┌─────────────────────────┐
-│   PiggyPermit2Batcher   │ ← User signs Permit2 message
+│   SweepPermit2Batcher   │ ← User signs Permit2 message
 ├─────────────────────────┤
 │ - Batch token transfers │
 │ - Single signature      │
@@ -66,7 +66,7 @@ forge script script/Deploy.s.sol:DeployAllChains --broadcast --verify
             │
             ▼
 ┌─────────────────────────┐
-│     PiggyBatchSwap      │ ← Executes swaps
+│     SweepBatchSwap      │ ← Executes swaps
 ├─────────────────────────┤
 │ - Multi-DEX support     │
 │ - Fee collection        │

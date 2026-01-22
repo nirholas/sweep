@@ -5,7 +5,7 @@
 If you discover a security vulnerability in Sweep, please report it responsibly:
 
 1. **DO NOT** open a public GitHub issue
-2. Email security concerns to: security@piggy.bank (or create a private security advisory)
+2. Email security concerns to: security@sweep.exchange (or create a private security advisory)
 3. Include detailed steps to reproduce the vulnerability
 4. Allow up to 72 hours for an initial response
 
@@ -131,6 +131,6 @@ In case of a security incident:
 
 ## Contact
 
-- Security: security@piggy.bank
-- General: team@piggy.bank
+- Security: security@sweep.exchange
+- General: team@sweep.exchange
 - Discord: [Sweep Community]

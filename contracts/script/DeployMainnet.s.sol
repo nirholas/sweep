@@ -2,11 +2,11 @@
 pragma solidity ^0.8.24;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {PiggyBatchSwap} from "../src/PiggyBatchSwap.sol";
-import {PiggyPermit2Batcher} from "../src/PiggyPermit2Batcher.sol";
-import {PiggyVaultRouter} from "../src/PiggyVaultRouter.sol";
-import {PiggyFeeCollector} from "../src/PiggyFeeCollector.sol";
-import {PiggyDustSweeper} from "../src/PiggyDustSweeper.sol";
+import {SweepBatchSwap} from "../src/SweepBatchSwap.sol";
+import {SweepPermit2Batcher} from "../src/SweepPermit2Batcher.sol";
+import {SweepVaultRouter} from "../src/SweepVaultRouter.sol";
+import {SweepFeeCollector} from "../src/SweepFeeCollector.sol";
+import {SweepDustSweeper} from "../src/SweepDustSweeper.sol";
 
 /// @title DeployMainnet
 /// @notice Full deployment script for Ethereum Mainnet
@@ -38,11 +38,11 @@ contract DeployMainnet is Script {
     // DEPLOYED CONTRACTS
     // ============================================================
 
-    PiggyBatchSwap public batchSwap;
-    PiggyPermit2Batcher public permit2Batcher;
-    PiggyVaultRouter public vaultRouter;
-    PiggyFeeCollector public feeCollector;
-    PiggyDustSweeper public dustSweeper;
+    SweepBatchSwap public batchSwap;
+    SweepPermit2Batcher public permit2Batcher;
+    SweepVaultRouter public vaultRouter;
+    SweepFeeCollector public feeCollector;
+    SweepDustSweeper public dustSweeper;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
@@ -59,28 +59,28 @@ contract DeployMainnet is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // 1. Deploy Fee Collector first
-        feeCollector = new PiggyFeeCollector(treasury, INITIAL_FEE_BPS);
-        console2.log("PiggyFeeCollector:", address(feeCollector));
+        feeCollector = new SweepFeeCollector(treasury, INITIAL_FEE_BPS);
+        console2.log("SweepFeeCollector:", address(feeCollector));
 
         // 2. Deploy BatchSwap (no fee - handled by DustSweeper)
-        batchSwap = new PiggyBatchSwap(address(feeCollector), 0);
-        console2.log("PiggyBatchSwap:", address(batchSwap));
+        batchSwap = new SweepBatchSwap(address(feeCollector), 0);
+        console2.log("SweepBatchSwap:", address(batchSwap));
 
         // 3. Deploy Permit2Batcher
-        permit2Batcher = new PiggyPermit2Batcher(address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(permit2Batcher));
+        permit2Batcher = new SweepPermit2Batcher(address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(permit2Batcher));
 
         // 4. Deploy VaultRouter
-        vaultRouter = new PiggyVaultRouter();
-        console2.log("PiggyVaultRouter:", address(vaultRouter));
+        vaultRouter = new SweepVaultRouter();
+        console2.log("SweepVaultRouter:", address(vaultRouter));
 
         // 5. Deploy DustSweeper
-        dustSweeper = new PiggyDustSweeper(
+        dustSweeper = new SweepDustSweeper(
             address(batchSwap),
             address(vaultRouter),
             address(feeCollector)
         );
-        console2.log("PiggyDustSweeper:", address(dustSweeper));
+        console2.log("SweepDustSweeper:", address(dustSweeper));
 
         // Configure BatchSwap routers
         _configureRouters();
@@ -109,16 +109,16 @@ contract DeployMainnet is Script {
 
     function _configureVaults() internal {
         // Aave
-        vaultRouter.setVaultApproval(AAVE_V3_POOL, PiggyVaultRouter.VaultType.AAVE_V3, true);
+        vaultRouter.setVaultApproval(AAVE_V3_POOL, SweepVaultRouter.VaultType.AAVE_V3, true);
 
         // Lido
-        vaultRouter.setVaultApproval(LIDO, PiggyVaultRouter.VaultType.LIDO, true);
-        vaultRouter.setVaultApproval(WSTETH, PiggyVaultRouter.VaultType.LIDO_WSTETH, true);
+        vaultRouter.setVaultApproval(LIDO, SweepVaultRouter.VaultType.LIDO, true);
+        vaultRouter.setVaultApproval(WSTETH, SweepVaultRouter.VaultType.LIDO_WSTETH, true);
 
         // Yearn
-        vaultRouter.setVaultApproval(YEARN_USDC, PiggyVaultRouter.VaultType.YEARN_V2, true);
-        vaultRouter.setVaultApproval(YEARN_DAI, PiggyVaultRouter.VaultType.YEARN_V2, true);
-        vaultRouter.setVaultApproval(YEARN_WETH, PiggyVaultRouter.VaultType.YEARN_V2, true);
+        vaultRouter.setVaultApproval(YEARN_USDC, SweepVaultRouter.VaultType.YEARN_V2, true);
+        vaultRouter.setVaultApproval(YEARN_DAI, SweepVaultRouter.VaultType.YEARN_V2, true);
+        vaultRouter.setVaultApproval(YEARN_WETH, SweepVaultRouter.VaultType.YEARN_V2, true);
 
         console2.log("Vaults configured");
     }
@@ -126,11 +126,11 @@ contract DeployMainnet is Script {
     function _logDeploymentSummary() internal view {
         console2.log("");
         console2.log("=== Deployment Summary ===");
-        console2.log("PiggyFeeCollector:", address(feeCollector));
-        console2.log("PiggyBatchSwap:", address(batchSwap));
-        console2.log("PiggyPermit2Batcher:", address(permit2Batcher));
-        console2.log("PiggyVaultRouter:", address(vaultRouter));
-        console2.log("PiggyDustSweeper:", address(dustSweeper));
+        console2.log("SweepFeeCollector:", address(feeCollector));
+        console2.log("SweepBatchSwap:", address(batchSwap));
+        console2.log("SweepPermit2Batcher:", address(permit2Batcher));
+        console2.log("SweepVaultRouter:", address(vaultRouter));
+        console2.log("SweepDustSweeper:", address(dustSweeper));
         console2.log("");
         console2.log("Fee: 0.3%");
         console2.log("Routers: Uniswap V3, 1inch, 0x");

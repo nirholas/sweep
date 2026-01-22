@@ -8,7 +8,7 @@ Next.js 14 frontend for the Sweep dust sweeper application.
 - **Wallet Connection**: MetaMask, Coinbase Wallet, WalletConnect, and more
 - **Gasless Transactions**: Using Coinbase Smart Wallet with paymaster
 - **Real-time Updates**: SSE-based transaction status updates
-- **Beautiful UI**: Tailwind CSS with custom piggy theme
+- **Beautiful UI**: Tailwind CSS with custom sweep theme
 
 ## Getting Started
 

@@ -140,7 +140,7 @@ describe("E2E: API Endpoints", () => {
       }
 
       // Simulate SIWE verification
-      if (!body.message.includes("piggy.bank")) {
+      if (!body.message.includes("sweep.bank")) {
         return c.json({ error: "Invalid message domain" }, 400);
       }
 
@@ -332,12 +332,12 @@ describe("E2E: API Endpoints", () => {
       expect(nonceData.expiresAt).toBeDefined();
 
       // Step 2: Sign message (simulated)
-      const message = `piggy.bank wants you to sign in with your Ethereum account:
+      const message = `sweep.bank wants you to sign in with your Ethereum account:
 ${address}
 
 Sign in to Sweep
 
-URI: https://piggy.bank
+URI: https://sweep.bank
 Nonce: ${nonceData.nonce}
 Issued At: ${nonceData.issuedAt}`;
 

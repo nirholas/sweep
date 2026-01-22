@@ -167,7 +167,7 @@ const { userOpHash } = await smartAccount.sendUserOperation({
 - Build AI-powered sweep assistant
 - Natural language sweep commands
 - Intelligent DeFi routing recommendations
-- "Hey Piggy, sweep my dust into Aave"
+- "Hey Sweep, sweep my dust into Aave"
 
 ---
 
@@ -175,7 +175,7 @@ const { userOpHash } = await smartAccount.sendUserOperation({
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        PIGGY BANK                               │
+│                        SWEEP                               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌─────────────┐    ┌──────────────┐    ┌──────────────────┐  │
@@ -200,7 +200,7 @@ const { userOpHash } = await smartAccount.sendUserOperation({
 │         ▼                                                       │
 │  ┌───────────────────────────────────────────────────────────┐ │
 │  │                 SPEND PERMISSIONS                          │ │
-│  │  "User grants Piggy 100 USDC/month sweep allowance"       │ │
+│  │  "User grants Sweep 100 USDC/month sweep allowance"       │ │
 │  └───────────────────────────────────────────────────────────┘ │
 │         │                                                       │
 │         ▼                                                       │

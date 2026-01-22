@@ -22,7 +22,7 @@ import {
   type SpendPermission,
   type SignedSpendPermission,
   SPEND_PERMISSION_MANAGER,
-  PIGGY_EXECUTOR_ADDRESS,
+  SWEEP_EXECUTOR_ADDRESS,
 } from "../../../src/services/subscriptions/types.js";
 import { verifyTypedData, hashTypedData } from "viem";
 
@@ -70,7 +70,7 @@ describe("SpendPermissionsService", () => {
       });
 
       expect(permission.account).toBe("0x1234567890123456789012345678901234567890");
-      expect(permission.spender).toBe(PIGGY_EXECUTOR_ADDRESS);
+      expect(permission.spender).toBe(SWEEP_EXECUTOR_ADDRESS);
       expect(permission.token).toBe("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913");
       expect(permission.allowance).toBe(BigInt("1000000000"));
       expect(permission.period).toBe(86400);
@@ -100,7 +100,7 @@ describe("SpendPermissionsService", () => {
     it("should build correct EIP-712 typed data", () => {
       const permission: SpendPermission = {
         account: "0x1234567890123456789012345678901234567890" as Address,
-        spender: PIGGY_EXECUTOR_ADDRESS,
+        spender: SWEEP_EXECUTOR_ADDRESS,
         token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as Address,
         allowance: BigInt("1000000000"),
         period: 86400,
@@ -126,7 +126,7 @@ describe("SpendPermissionsService", () => {
     it("should validate a correct signature", async () => {
       const permission: SpendPermission = {
         account: "0x1234567890123456789012345678901234567890" as Address,
-        spender: PIGGY_EXECUTOR_ADDRESS,
+        spender: SWEEP_EXECUTOR_ADDRESS,
         token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as Address,
         allowance: BigInt("1000000000"),
         period: 86400,
@@ -153,7 +153,7 @@ describe("SpendPermissionsService", () => {
     it("should return false for invalid signature", async () => {
       const permission: SpendPermission = {
         account: "0x1234567890123456789012345678901234567890" as Address,
-        spender: PIGGY_EXECUTOR_ADDRESS,
+        spender: SWEEP_EXECUTOR_ADDRESS,
         token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as Address,
         allowance: BigInt("1000000000"),
         period: 86400,
@@ -179,7 +179,7 @@ describe("SpendPermissionsService", () => {
   describe("getSpendPermissionStatus", () => {
     const permission: SpendPermission = {
       account: "0x1234567890123456789012345678901234567890" as Address,
-      spender: PIGGY_EXECUTOR_ADDRESS,
+      spender: SWEEP_EXECUTOR_ADDRESS,
       token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as Address,
       allowance: BigInt("1000000000"),
       period: 86400,
@@ -248,7 +248,7 @@ describe("SpendPermissionsService", () => {
   describe("hasEnoughAllowance", () => {
     const permission: SpendPermission = {
       account: "0x1234567890123456789012345678901234567890" as Address,
-      spender: PIGGY_EXECUTOR_ADDRESS,
+      spender: SWEEP_EXECUTOR_ADDRESS,
       token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as Address,
       allowance: BigInt("1000000000"),
       period: 86400,

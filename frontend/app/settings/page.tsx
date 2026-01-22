@@ -17,7 +17,7 @@ export default function SettingsPage() {
   // Load settings from localStorage
   useEffect(() => {
     if (address) {
-      const saved = localStorage.getItem(`piggy-settings-${address}`);
+      const saved = localStorage.getItem(`sweep-settings-${address}`);
       if (saved) {
         try {
           setSettings(JSON.parse(saved));
@@ -33,7 +33,7 @@ export default function SettingsPage() {
 
     setIsSaving(true);
     try {
-      localStorage.setItem(`piggy-settings-${address}`, JSON.stringify(settings));
+      localStorage.setItem(`sweep-settings-${address}`, JSON.stringify(settings));
       setSaveMessage("Settings saved successfully!");
       setTimeout(() => setSaveMessage(null), 3000);
     } catch (e) {
@@ -46,7 +46,7 @@ export default function SettingsPage() {
   const handleReset = () => {
     setSettings(DEFAULT_SETTINGS);
     if (address) {
-      localStorage.removeItem(`piggy-settings-${address}`);
+      localStorage.removeItem(`sweep-settings-${address}`);
     }
     setSaveMessage("Settings reset to defaults");
     setTimeout(() => setSaveMessage(null), 3000);

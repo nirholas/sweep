@@ -3,15 +3,15 @@ pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {StdInvariant} from "forge-std/StdInvariant.sol";
-import {PiggyBatchSwap} from "../../src/PiggyBatchSwap.sol";
-import {PiggyFeeCollector} from "../../src/PiggyFeeCollector.sol";
+import {SweepBatchSwap} from "../../src/SweepBatchSwap.sol";
+import {SweepFeeCollector} from "../../src/SweepFeeCollector.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title BatchSwapHandler
 /// @notice Handler contract for invariant testing
 contract BatchSwapHandler is Test {
-    PiggyBatchSwap public batchSwap;
-    PiggyFeeCollector public feeCollector;
+    SweepBatchSwap public batchSwap;
+    SweepFeeCollector public feeCollector;
 
     address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -22,7 +22,7 @@ contract BatchSwapHandler is Test {
     uint256 public totalSwapsExecuted;
     uint256 public totalTokensSwapped;
 
-    constructor(PiggyBatchSwap _batchSwap, PiggyFeeCollector _feeCollector) {
+    constructor(SweepBatchSwap _batchSwap, SweepFeeCollector _feeCollector) {
         batchSwap = _batchSwap;
         feeCollector = _feeCollector;
     }
@@ -47,7 +47,7 @@ contract BatchSwapHandler is Test {
             0
         );
 
-        PiggyBatchSwap.SwapParams memory swap = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams memory swap = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: amount,
@@ -89,8 +89,8 @@ contract BatchSwapHandler is Test {
             0
         );
 
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: amount1,
@@ -99,7 +99,7 @@ contract BatchSwapHandler is Test {
             routerData: swapData
         });
 
-        PiggyBatchSwap.BatchSwapParams memory params = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory params = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: USDC,
             recipient: address(this),
@@ -115,11 +115,11 @@ contract BatchSwapHandler is Test {
     }
 }
 
-/// @title PiggyInvariantTest
+/// @title SweepInvariantTest
 /// @notice Invariant tests for Sweep contracts
-contract PiggyInvariantTest is StdInvariant, Test {
-    PiggyBatchSwap public batchSwap;
-    PiggyFeeCollector public feeCollector;
+contract SweepInvariantTest is StdInvariant, Test {
+    SweepBatchSwap public batchSwap;
+    SweepFeeCollector public feeCollector;
     BatchSwapHandler public handler;
 
     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -136,8 +136,8 @@ contract PiggyInvariantTest is StdInvariant, Test {
         treasury = makeAddr("treasury");
 
         vm.startPrank(owner);
-        feeCollector = new PiggyFeeCollector(treasury, 30);
-        batchSwap = new PiggyBatchSwap(address(feeCollector), 50);
+        feeCollector = new SweepFeeCollector(treasury, 30);
+        batchSwap = new SweepBatchSwap(address(feeCollector), 50);
         batchSwap.setRouterApproval(UNISWAP_V3_ROUTER, true);
         vm.stopPrank();
 
@@ -187,7 +187,7 @@ contract PiggyInvariantTest is StdInvariant, Test {
 /// @title FeeCollectorInvariantTest
 /// @notice Invariant tests specifically for fee collector
 contract FeeCollectorInvariantTest is StdInvariant, Test {
-    PiggyFeeCollector public feeCollector;
+    SweepFeeCollector public feeCollector;
 
     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
 
@@ -204,7 +204,7 @@ contract FeeCollectorInvariantTest is StdInvariant, Test {
         depositor = makeAddr("depositor");
 
         vm.startPrank(owner);
-        feeCollector = new PiggyFeeCollector(treasury, 30);
+        feeCollector = new SweepFeeCollector(treasury, 30);
         feeCollector.setDepositorApproval(depositor, true);
         vm.stopPrank();
 

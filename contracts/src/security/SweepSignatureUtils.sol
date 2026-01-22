@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// @title PiggySignatureVerifier
+/// @title SweepSignatureVerifier
 /// @author Sweep Team
 /// @notice Signature verification utilities for Sweep contracts
 /// @dev Provides EIP-712 and ECDSA signature verification
-library PiggySignatureVerifier {
+library SweepSignatureVerifier {
     // ============================================================
     // ERRORS
     // ============================================================
@@ -101,9 +101,9 @@ library PiggySignatureVerifier {
     }
 }
 
-/// @title PiggyEIP712
+/// @title SweepEIP712
 /// @notice EIP-712 typed data hashing for Sweep
-library PiggyEIP712 {
+library SweepEIP712 {
     /// @notice EIP-712 type hash for domain separator
     bytes32 internal constant TYPE_HASH =
         keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
@@ -144,9 +144,9 @@ library PiggyEIP712 {
     }
 }
 
-/// @title PiggyMerkleProof
+/// @title SweepMerkleProof
 /// @notice Merkle proof verification for whitelists
-library PiggyMerkleProof {
+library SweepMerkleProof {
     /// @notice Verify a Merkle proof
     /// @param proof Array of proof hashes
     /// @param root Merkle root

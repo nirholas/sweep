@@ -8,11 +8,11 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-/// @title PiggyFeeCollector
+/// @title SweepFeeCollector
 /// @author Sweep Team
 /// @notice Protocol fee management with configurable fees and treasury distribution
 /// @dev Collects fees from swaps and distributes to treasury with admin controls
-contract PiggyFeeCollector is Ownable2Step, ReentrancyGuard {
+contract SweepFeeCollector is Ownable2Step, ReentrancyGuard {
     using SafeERC20 for IERC20;
     using EnumerableSet for EnumerableSet.AddressSet;
 
@@ -48,7 +48,7 @@ contract PiggyFeeCollector is Ownable2Step, ReentrancyGuard {
     /// @notice Fee discount for specific addresses (in basis points)
     mapping(address => uint256) public feeDiscounts;
 
-    /// @notice Approved fee depositors (PiggyBatchSwap, PiggyDustSweeper, etc.)
+    /// @notice Approved fee depositors (SweepBatchSwap, SweepDustSweeper, etc.)
     mapping(address => bool) public approvedDepositors;
 
     /// @notice Accumulated fees per token

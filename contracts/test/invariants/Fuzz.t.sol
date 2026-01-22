@@ -2,14 +2,14 @@
 pragma solidity ^0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {PiggyBatchSwap} from "../../src/PiggyBatchSwap.sol";
-import {PiggyFeeCollector} from "../../src/PiggyFeeCollector.sol";
-import {PiggyVaultRouter} from "../../src/PiggyVaultRouter.sol";
+import {SweepBatchSwap} from "../../src/SweepBatchSwap.sol";
+import {SweepFeeCollector} from "../../src/SweepFeeCollector.sol";
+import {SweepVaultRouter} from "../../src/SweepVaultRouter.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title PiggyFuzzTest
+/// @title SweepFuzzTest
 /// @notice Comprehensive fuzz tests for Sweep contracts
-contract PiggyFuzzTest is Test {
+contract SweepFuzzTest is Test {
     // ============================================================
     // CONSTANTS
     // ============================================================
@@ -24,9 +24,9 @@ contract PiggyFuzzTest is Test {
     // STATE
     // ============================================================
 
-    PiggyBatchSwap public batchSwap;
-    PiggyFeeCollector public feeCollector;
-    PiggyVaultRouter public vaultRouter;
+    SweepBatchSwap public batchSwap;
+    SweepFeeCollector public feeCollector;
+    SweepVaultRouter public vaultRouter;
 
     address public owner;
     address public treasury;
@@ -45,12 +45,12 @@ contract PiggyFuzzTest is Test {
         user = makeAddr("user");
 
         vm.startPrank(owner);
-        feeCollector = new PiggyFeeCollector(treasury, 30);
-        batchSwap = new PiggyBatchSwap(address(feeCollector), 50);
-        vaultRouter = new PiggyVaultRouter();
+        feeCollector = new SweepFeeCollector(treasury, 30);
+        batchSwap = new SweepBatchSwap(address(feeCollector), 50);
+        vaultRouter = new SweepVaultRouter();
 
         batchSwap.setRouterApproval(UNISWAP_V3_ROUTER, true);
-        vaultRouter.setVaultApproval(AAVE_V3_POOL, PiggyVaultRouter.VaultType.AAVE_V3, true);
+        vaultRouter.setVaultApproval(AAVE_V3_POOL, SweepVaultRouter.VaultType.AAVE_V3, true);
         feeCollector.setDepositorApproval(user, true);
         vm.stopPrank();
 
@@ -80,7 +80,7 @@ contract PiggyFuzzTest is Test {
         newFee = bound(newFee, batchSwap.MAX_FEE_BPS() + 1, type(uint256).max);
 
         vm.prank(owner);
-        vm.expectRevert(PiggyBatchSwap.FeeTooHigh.selector);
+        vm.expectRevert(SweepBatchSwap.FeeTooHigh.selector);
         batchSwap.setFee(newFee);
     }
 
@@ -205,7 +205,7 @@ contract PiggyFuzzTest is Test {
         slippage = bound(slippage, vaultRouter.MAX_SLIPPAGE_BPS() + 1, type(uint256).max);
 
         vm.prank(owner);
-        vm.expectRevert(PiggyVaultRouter.InvalidSlippage.selector);
+        vm.expectRevert(SweepVaultRouter.InvalidSlippage.selector);
         vaultRouter.setDefaultSlippage(slippage);
     }
 
@@ -228,7 +228,7 @@ contract PiggyFuzzTest is Test {
         
         // Bound vault type to valid enum values (0-5)
         uint8 boundedType = uint8(bound(vaultTypeRaw, 0, 5));
-        PiggyVaultRouter.VaultType vaultType = PiggyVaultRouter.VaultType(boundedType);
+        SweepVaultRouter.VaultType vaultType = SweepVaultRouter.VaultType(boundedType);
 
         vm.prank(owner);
         vaultRouter.setVaultApproval(vault, vaultType, true);
@@ -289,8 +289,8 @@ contract PiggyFuzzTest is Test {
         uint256 expiredDeadline = block.timestamp - timeInPast;
 
         // Create minimal swap params
-        PiggyBatchSwap.SwapParams[] memory swaps = new PiggyBatchSwap.SwapParams[](1);
-        swaps[0] = PiggyBatchSwap.SwapParams({
+        SweepBatchSwap.SwapParams[] memory swaps = new SweepBatchSwap.SwapParams[](1);
+        swaps[0] = SweepBatchSwap.SwapParams({
             tokenIn: WETH,
             tokenOut: USDC,
             amountIn: 1 ether,
@@ -299,7 +299,7 @@ contract PiggyFuzzTest is Test {
             routerData: ""
         });
 
-        PiggyBatchSwap.BatchSwapParams memory params = PiggyBatchSwap.BatchSwapParams({
+        SweepBatchSwap.BatchSwapParams memory params = SweepBatchSwap.BatchSwapParams({
             swaps: swaps,
             outputToken: USDC,
             recipient: user,
@@ -307,7 +307,7 @@ contract PiggyFuzzTest is Test {
         });
 
         vm.prank(user);
-        vm.expectRevert(PiggyBatchSwap.DeadlineExpired.selector);
+        vm.expectRevert(SweepBatchSwap.DeadlineExpired.selector);
         batchSwap.batchSwap(params);
     }
 
