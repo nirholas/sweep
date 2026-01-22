@@ -172,8 +172,7 @@ export default function DeFiPage() {
               {/* APY Comparison Table */}
               <APYComparisonTable
                 vaults={DEFI_VAULTS}
-                onSelect={handleVaultSelect}
-                sortBy="apy"
+                onSelectVault={handleVaultSelect}
               />
 
               {/* Featured Vaults Grid */}
@@ -333,7 +332,8 @@ const DEFI_VAULTS: DefiVault[] = [
     chainId: 8453,
     apy: 4.5,
     tvl: 125000000,
-    risk: "low",
+    riskLevel: "LOW",
+    vaultAddress: "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
     description: "Supply USDC to Aave V3 on Base and earn yield from borrowers",
   },
   {
@@ -344,7 +344,8 @@ const DEFI_VAULTS: DefiVault[] = [
     chainId: 1,
     apy: 3.8,
     tvl: 9500000000,
-    risk: "low",
+    riskLevel: "LOW",
+    vaultAddress: "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
     description: "Stake ETH with Lido to earn staking rewards while keeping liquidity",
   },
   {
@@ -355,7 +356,8 @@ const DEFI_VAULTS: DefiVault[] = [
     chainId: 42161,
     apy: 3.2,
     tvl: 85000000,
-    risk: "low",
+    riskLevel: "LOW",
+    vaultAddress: "0xd98Be00b5D27fc98112BdE293e487f8D4cA57d07",
     description: "Supply USDT to Compound V3 on Arbitrum for competitive yields",
   },
   {
@@ -366,7 +368,8 @@ const DEFI_VAULTS: DefiVault[] = [
     chainId: 1,
     apy: 5.5,
     tvl: 42000000,
-    risk: "medium",
+    riskLevel: "MEDIUM",
+    vaultAddress: "0xdA816459F1AB5631232FE5e97a05BBBb94970c95",
     description: "Auto-compounding DAI strategy vault with optimized yield farming",
   },
   {
@@ -377,7 +380,8 @@ const DEFI_VAULTS: DefiVault[] = [
     chainId: 8453,
     apy: 2.1,
     tvl: 78000000,
-    risk: "low",
+    riskLevel: "LOW",
+    vaultAddress: "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
     description: "Supply WETH to Aave V3 on Base for passive ETH yield",
   },
   {
@@ -388,7 +392,8 @@ const DEFI_VAULTS: DefiVault[] = [
     chainId: 1,
     apy: 6.2,
     tvl: 156000000,
-    risk: "medium",
+    riskLevel: "MEDIUM",
+    vaultAddress: "0x8888882f8f843896699869179fB6E4f7e3B58888",
     description: "Optimized USDC lending via Morpho peer-to-peer matching",
   },
 ];

@@ -1,4 +1,4 @@
-# Sweep Documentation
+# Piggy Bank Documentation
 
 > **⚠️ CRITICAL: This application handles user funds. Read all documentation carefully before making any changes.**
 
@@ -11,20 +11,49 @@
 5. [Security](./SECURITY.md)
 6. [Deployment](./DEPLOYMENT.md)
 7. [Development Guide](./DEVELOPMENT.md)
+8. [Database](./DATABASE.md)
+9. [Queue Workers](./QUEUE_WORKERS.md)
+10. [Testing](./TESTING.md)
+11. [Monitoring](./MONITORING.md)
 
 ## Quick Links
+
+### Core Documentation
 
 | Document | Description |
 |----------|-------------|
 | [CONTRACTS.md](./CONTRACTS.md) | Smart contract documentation and security considerations |
-| [API.md](./API.md) | Complete REST API reference |
+| [API.md](./API.md) | Complete REST API reference with OpenAPI spec |
 | [SECURITY.md](./SECURITY.md) | Security model and threat mitigations |
-| [DEPLOYMENT.md](./DEPLOYMENT.md) | Infrastructure and deployment guide |
-| [DEVELOPMENT.md](./DEVELOPMENT.md) | Local development setup |
+| [SYSTEM_ARCHITECTURE.md](./architecture/SYSTEM_ARCHITECTURE.md) | Full system architecture and design |
+
+### Development
+
+| Document | Description |
+|----------|-------------|
+| [DEVELOPMENT.md](./DEVELOPMENT.md) | Local development setup and workflow |
+| [TESTING.md](./TESTING.md) | Testing guide with coverage requirements |
+| [DATABASE.md](./DATABASE.md) | Database schema, ERD, and migrations |
+| [QUEUE_WORKERS.md](./QUEUE_WORKERS.md) | Background job workers documentation |
+
+### Operations
+
+| Document | Description |
+|----------|-------------|
+| [DEPLOYMENT.md](./DEPLOYMENT.md) | Production deployment with Kubernetes |
+| [MONITORING.md](./MONITORING.md) | Observability, metrics, and alerting |
+
+### Project
+
+| Document | Description |
+|----------|-------------|
+| [CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines and code style |
+| [CHANGELOG.md](../CHANGELOG.md) | Version history and release notes |
+| [README.md](../README.md) | Project overview and quick start |
 
 ## Overview
 
-Sweep is a multi-chain dust sweeper that consolidates small token balances ("dust") across EVM chains and Solana into a single valuable token or DeFi position.
+Piggy Bank is a multi-chain dust sweeper that consolidates small token balances ("dust") across EVM chains and Solana into a single valuable token or DeFi position.
 
 ### Key Features
 
@@ -55,7 +84,7 @@ Sweep is a multi-chain dust sweeper that consolidates small token balances ("dus
 ## Project Structure
 
 ```
-sweep/
+piggy-bank/
 ├── contracts/           # Solidity smart contracts (Foundry)
 │   ├── src/
 │   │   ├── PiggyBatchSwap.sol      # Batch swap execution
@@ -77,6 +106,7 @@ sweep/
 │   │   ├── wallet/      # Wallet scanning
 │   │   └── price/       # Price oracles
 │   ├── db/              # Database schema (Drizzle ORM)
+│   ├── queue/           # Background job workers
 │   ├── config/          # Chain configurations
 │   └── utils/           # Shared utilities
 │
@@ -85,6 +115,18 @@ sweep/
 │   ├── components/      # React components
 │   ├── hooks/           # Custom React hooks
 │   └── lib/             # Client utilities
+│
+├── docs/                # Documentation
+│   ├── API.md           # API reference
+│   ├── CONTRACTS.md     # Smart contract docs
+│   ├── DATABASE.md      # Database schema
+│   ├── DEPLOYMENT.md    # Deployment guide
+│   ├── DEVELOPMENT.md   # Development guide
+│   ├── MONITORING.md    # Observability
+│   ├── QUEUE_WORKERS.md # Background jobs
+│   ├── SECURITY.md      # Security model
+│   ├── TESTING.md       # Testing guide
+│   └── architecture/    # System architecture
 │
 ├── k8s/                 # Kubernetes manifests
 ├── monitoring/          # Prometheus + Grafana
@@ -132,23 +174,57 @@ sweep/
 
 ## Getting Started
 
-See [DEVELOPMENT.md](./DEVELOPMENT.md) for local setup instructions.
+See [DEVELOPMENT.md](./DEVELOPMENT.md) for complete local setup instructions.
 
 ```bash
 # Quick start
+git clone https://github.com/nirholas/piggy-bank.git
+cd piggy-bank
 npm install
 npm run docker:up      # Start Postgres, Redis
 npm run db:migrate     # Run migrations
-npm run db:seed        # Seed test data
+npm run db:seed        # Seed test data (optional)
 npm run dev            # Start API server
+```
+
+For frontend development:
+```bash
+cd frontend
+npm install
+npm run dev            # Start Next.js at http://localhost:3001
+```
+
+For smart contract development:
+```bash
+cd contracts
+forge install
+forge build
+forge test
 ```
 
 ## Contributing
 
-1. Read the [Security Documentation](./SECURITY.md)
-2. Follow the [Development Guide](./DEVELOPMENT.md)
-3. Ensure all tests pass
-4. Submit PR with detailed description
+1. Read the [CONTRIBUTING.md](../CONTRIBUTING.md) guide
+2. Follow the [Security Documentation](./SECURITY.md)
+3. Set up your environment with [DEVELOPMENT.md](./DEVELOPMENT.md)
+4. Write tests following [TESTING.md](./TESTING.md)
+5. Ensure all tests pass
+6. Submit PR with detailed description
+
+## Documentation Status
+
+| Document | Status | Lines |
+|----------|--------|-------|
+| [SYSTEM_ARCHITECTURE.md](./architecture/SYSTEM_ARCHITECTURE.md) | ✅ Complete | 2189 |
+| [API.md](./API.md) | ✅ Complete | 1039 |
+| [CONTRACTS.md](./CONTRACTS.md) | ✅ Complete | 598 |
+| [DATABASE.md](./DATABASE.md) | ✅ Complete | New |
+| [DEPLOYMENT.md](./DEPLOYMENT.md) | ✅ Complete | New |
+| [DEVELOPMENT.md](./DEVELOPMENT.md) | ✅ Complete | New |
+| [MONITORING.md](./MONITORING.md) | ✅ Complete | New |
+| [QUEUE_WORKERS.md](./QUEUE_WORKERS.md) | ✅ Complete | New |
+| [SECURITY.md](./SECURITY.md) | ✅ Complete | 137 |
+| [TESTING.md](./TESTING.md) | ✅ Complete | New |
 
 ## License
 

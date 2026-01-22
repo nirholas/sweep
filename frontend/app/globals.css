@@ -164,6 +164,13 @@
     linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
   background-size: 60px 60px;
 }
+
+/* Slide in animation */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
   to {
     opacity: 1;
     transform: translateX(0);
@@ -186,19 +193,6 @@
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
-}
-
-/* Piggy pink color utilities */
-.text-piggy {
-  color: hsl(330, 100%, 71%);
-}
-
-.bg-piggy {
-  background-color: hsl(330, 100%, 71%);
-}
-
-.border-piggy {
-  border-color: hsl(330, 100%, 71%);
 }
 
 /* Mobile touch improvements */

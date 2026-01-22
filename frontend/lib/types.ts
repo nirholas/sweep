@@ -19,6 +19,21 @@ export interface DustToken {
   riskScore?: number;
 }
 
+// DeFi Vault types
+export interface DefiVault {
+  id: string;
+  protocol: string;
+  name: string;
+  asset: string;
+  chainId: number;
+  apy: number;
+  tvl: number;
+  riskLevel: "LOW" | "MEDIUM" | "HIGH";
+  description?: string;
+  vaultAddress: string;
+  logoUrl?: string;
+}
+
 // Chain types
 export interface Chain {
   id: number;

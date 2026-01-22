@@ -1,80 +1,75 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" viewBox="0 0 800 200">
   <defs>
     <linearGradient id="bg-gradient-light" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f5f3ff"/>
-      <stop offset="50%" style="stop-color:#ede9fe"/>
-      <stop offset="100%" style="stop-color:#ddd6fe"/>
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#fafafa"/>
     </linearGradient>
-    <linearGradient id="text-gradient-light" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#5b21b6"/>
-      <stop offset="50%" style="stop-color:#7c3aed"/>
-      <stop offset="100%" style="stop-color:#5b21b6"/>
-    </linearGradient>
-    <filter id="glow-light">
-      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
   </defs>
   
   <!-- Background -->
-  <rect width="800" height="200" fill="url(#bg-gradient-light)" rx="16"/>
+  <rect width="800" height="200" fill="url(#bg-gradient-light)" rx="0"/>
   
-  <!-- Decorative circles -->
-  <circle cx="700" cy="40" r="80" fill="#c4b5fd" opacity="0.4"/>
-  <circle cx="750" cy="160" r="60" fill="#a78bfa" opacity="0.3"/>
-  <circle cx="50" cy="180" r="100" fill="#c4b5fd" opacity="0.3"/>
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid-light" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="200" fill="url(#grid-light)"/>
   
-  <!-- Broom/Sweep icon -->
+  <!-- Logo mark -->
   <g transform="translate(60, 60)">
-    <text font-size="72" fill="#7c3aed" filter="url(#glow-light)">🧹</text>
+    <rect width="80" height="80" rx="16" fill="#000000"/>
+    <text x="40" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="800" fill="#ffffff" text-anchor="middle">S</text>
   </g>
   
   <!-- Main title -->
-  <text x="170" y="105" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="64" font-weight="800" fill="url(#text-gradient-light)" filter="url(#glow-light)">Sweep</text>
+  <text x="170" y="95" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="56" font-weight="700" fill="#000000" letter-spacing="-2">Sweep</text>
   
   <!-- Tagline -->
-  <text x="170" y="145" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#6b21a8" opacity="0.9">Multi-chain dust sweeper → DeFi yield</text>
+  <text x="170" y="130" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#666666">Multi-chain dust sweeper → DeFi yield</text>
   
   <!-- Feature badges -->
-  <g transform="translate(170, 160)">
-    <rect x="0" y="0" width="85" height="24" rx="12" fill="#f59e0b" opacity="0.2"/>
-    <text x="42" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#b45309" text-anchor="middle" font-weight="600">⚡ Gasless</text>
+  <g transform="translate(170, 150)">
+    <rect x="0" y="0" width="80" height="28" rx="14" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="40" y="18" font-family="system-ui, sans-serif" font-size="11" fill="#666666" text-anchor="middle" font-weight="500">Gasless</text>
     
-    <rect x="95" y="0" width="95" height="24" rx="12" fill="#10b981" opacity="0.2"/>
-    <text x="142" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#047857" text-anchor="middle" font-weight="600">🔗 8 Chains</text>
+    <rect x="90" y="0" width="80" height="28" rx="14" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="130" y="18" font-family="system-ui, sans-serif" font-size="11" fill="#666666" text-anchor="middle" font-weight="500">8 Chains</text>
     
-    <rect x="200" y="0" width="110" height="24" rx="12" fill="#3b82f6" opacity="0.2"/>
-    <text x="255" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#1d4ed8" text-anchor="middle" font-weight="600">📈 DeFi Yield</text>
+    <rect x="180" y="0" width="90" height="28" rx="14" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="225" y="18" font-family="system-ui, sans-serif" font-size="11" fill="#666666" text-anchor="middle" font-weight="500">DeFi Yield</text>
     
-    <rect x="320" y="0" width="115" height="24" rx="12" fill="#ec4899" opacity="0.2"/>
-    <text x="377" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#be185d" text-anchor="middle" font-weight="600">🛡️ MEV Protected</text>
+    <rect x="280" y="0" width="110" height="28" rx="14" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="335" y="18" font-family="system-ui, sans-serif" font-size="11" fill="#666666" text-anchor="middle" font-weight="500">MEV Protected</text>
   </g>
   
-  <!-- Chain icons representation -->
-  <g transform="translate(620, 70)">
-    <circle cx="0" cy="0" r="20" fill="#627eea"/>
-    <text x="0" y="6" font-size="16" text-anchor="middle" fill="white">Ξ</text>
+  <!-- Chain logos - minimal circles -->
+  <g transform="translate(580, 65)">
+    <!-- Ethereum -->
+    <circle cx="0" cy="0" r="18" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="0" y="5" font-size="14" text-anchor="middle" fill="#333">Ξ</text>
     
-    <circle cx="45" cy="0" r="20" fill="#0052ff"/>
-    <text x="45" y="5" font-size="12" text-anchor="middle" fill="white" font-weight="bold">B</text>
+    <!-- Base -->
+    <circle cx="45" cy="0" r="18" fill="#0052ff"/>
+    <text x="45" y="5" font-size="11" text-anchor="middle" fill="white" font-weight="600">B</text>
     
-    <circle cx="90" cy="0" r="20" fill="#28a0f0"/>
-    <text x="90" y="5" font-size="12" text-anchor="middle" fill="white" font-weight="bold">A</text>
+    <!-- Arbitrum -->
+    <circle cx="90" cy="0" r="18" fill="#28a0f0"/>
+    <text x="90" y="5" font-size="11" text-anchor="middle" fill="white" font-weight="600">A</text>
     
-    <circle cx="135" cy="0" r="20" fill="#8247e5"/>
-    <text x="135" y="5" font-size="12" text-anchor="middle" fill="white" font-weight="bold">P</text>
+    <!-- Polygon -->
+    <circle cx="135" cy="0" r="18" fill="#8247e5"/>
+    <text x="135" y="5" font-size="11" text-anchor="middle" fill="white" font-weight="600">P</text>
+    
+    <!-- More chains -->
+    <circle cx="180" cy="0" r="18" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="180" y="5" font-size="9" text-anchor="middle" fill="#666">+4</text>
   </g>
-  <g transform="translate(642, 120)">
-    <circle cx="0" cy="0" r="16" fill="#f0b90b"/>
-    <text x="0" y="5" font-size="10" text-anchor="middle" fill="white" font-weight="bold">BSC</text>
-    
-    <circle cx="38" cy="0" r="16" fill="#ff0420"/>
-    <text x="38" y="5" font-size="10" text-anchor="middle" fill="white" font-weight="bold">OP</text>
-    
-    <circle cx="76" cy="0" r="16" fill="#14f195"/>
-    <text x="76" y="5" font-size="10" text-anchor="middle" fill="black" font-weight="bold">SOL</text>
+  
+  <!-- Live indicator -->
+  <g transform="translate(620, 140)">
+    <circle cx="0" cy="0" r="4" fill="#22c55e"/>
+    <text x="12" y="4" font-family="system-ui, sans-serif" font-size="12" fill="#22c55e" font-weight="500">Live</text>
   </g>
 </svg>
