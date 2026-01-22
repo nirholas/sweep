@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { MobileBottomNav, FloatingActionButton } from "@/components/MobileNav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,6 +13,23 @@ export const metadata: Metadata = {
   icons: {
     icon: "/piggy.svg",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Piggy Bank",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a1a" },
+  ],
 };
 
 export default function RootLayout({
@@ -23,7 +41,14 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={inter.className}>
         <Providers>
-          <ErrorBoundary>{children}</ErrorBoundary>
+          <ErrorBoundary>
+            {/* Main content with bottom padding for mobile nav */}
+            <div className="pb-16 md:pb-0">{children}</div>
+            
+            {/* Mobile navigation */}
+            <MobileBottomNav />
+            <FloatingActionButton />
+          </ErrorBoundary>
         </Providers>
       </body>
     </html>

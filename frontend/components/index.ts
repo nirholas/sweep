@@ -4,8 +4,24 @@ export { DeFiDestinations } from "./DeFiDestinations";
 export { DeFiVaultCard, DeFiVaultList, APYComparisonTable, DeFiVaultCardSkeleton } from "./DeFiVaultCard";
 export { DustTokenList } from "./DustTokenList";
 export { ErrorBoundary, WithErrorBoundary } from "./ErrorBoundary";
+export {
+  ErrorDisplay,
+  NetworkError,
+  TransactionError,
+  EmptyState,
+  Retryable,
+  useRetry,
+  formatErrorMessage,
+} from "./ErrorHandling";
 export { FeeBreakdown, FeeBreakdownSkeleton } from "./FeeBreakdown";
 export { Header } from "./Header";
+export {
+  MobileBottomNav,
+  FloatingActionButton,
+  PullToRefreshWrapper,
+  SwipeableCard,
+  CollapsibleSection,
+} from "./MobileNav";
 export { PortfolioSummary } from "./PortfolioSummary";
 export { Providers } from "./Providers";
 export { RecentActivity, QuickActions, ActivityFeed } from "./RecentActivity";

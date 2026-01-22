@@ -118,7 +118,8 @@ export async function verifyAuthorization(
     const client = getBaseClient();
 
     // Check if nonce is already used
-    const nonceUsed = await client.readContract({
+    // Note: Using 'as any' to bypass viem type incompatibilities
+    const nonceUsed = await (client as any).readContract({
       address: BASE_USDC_ADDRESS,
       abi: USDC_ABI,
       functionName: "authorizationState",
@@ -130,7 +131,7 @@ export async function verifyAuthorization(
     }
 
     // Check payer balance
-    const balance = await client.readContract({
+    const balance = await (client as any).readContract({
       address: BASE_USDC_ADDRESS,
       abi: USDC_ABI,
       functionName: "balanceOf",
@@ -249,7 +250,7 @@ async function settleWithExternalFacilitator(
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      const errorData = await response.json().catch(() => ({})) as { error?: string };
       const result: SettlementResult = {
         success: false,
         status: "failed",
@@ -258,7 +259,7 @@ async function settleWithExternalFacilitator(
       return result;
     }
 
-    const data = await response.json();
+    const data = await response.json() as { txHash?: string };
 
     const result: SettlementResult = {
       success: true,
@@ -299,7 +300,7 @@ async function settleDirectly(
     const publicClient = getBaseClient();
 
     // Execute TransferWithAuthorization
-    const hash = await walletClient.writeContract({
+    const hash = await (walletClient as any).writeContract({
       address: BASE_USDC_ADDRESS,
       abi: USDC_ABI,
       functionName: "transferWithAuthorization",
@@ -360,7 +361,7 @@ async function settleDirectly(
  */
 async function updatePaymentStatus(
   receiptId: string,
-  status: string,
+  status: "pending" | "completed" | "failed" | "refunded",
   txHash?: string
 ): Promise<void> {
   try {
@@ -369,9 +370,9 @@ async function updatePaymentStatus(
       .update(apiPayments)
       .set({
         status,
-        txHash: txHash || undefined,
         updatedAt: new Date(),
-      })
+        ...(txHash ? { txHash } : {}),
+      } as any)
       .where(eq(apiPayments.receiptId, receiptId));
   } catch (error) {
     console.error("[Facilitator] Database update error:", error);
@@ -475,7 +476,7 @@ export async function processRefund(
     const publicClient = getBaseClient();
 
     // Transfer USDC from facilitator to recipient
-    const hash = await walletClient.writeContract({
+    const hash = await (walletClient as any).writeContract({
       address: BASE_USDC_ADDRESS,
       abi: USDC_ABI,
       functionName: "transfer",

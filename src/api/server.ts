@@ -4,7 +4,7 @@ import { logger } from "hono/logger";
 import { serve } from "@hono/node-server";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
-import { rateLimiter } from "hono-rate-limiter";
+import { getRedis } from "../utils/redis.js";
 
 import { scanAllChains, getWalletTokenBalancesAlchemy } from "../services/wallet.service.js";
 import { filterDustTokens } from "../services/validation.service.js";
@@ -36,17 +36,34 @@ app.use("*", logger());
 app.use("*", cors());
 app.use("*", metricsMiddleware());
 
-// Rate limiting (even for paying users to prevent abuse)
-const limiter = rateLimiter({
-  windowMs: 60 * 1000, // 1 minute
-  limit: 100, // 100 requests per minute per IP
-  standardHeaders: "draft-6",
-  keyGenerator: (c) =>
+// Simple Redis-based rate limiting
+const rateLimitMiddleware = async (c: Parameters<Parameters<typeof app.use>[1]>[0], next: Parameters<Parameters<typeof app.use>[1]>[1]) => {
+  const clientIp =
     c.req.header("x-forwarded-for")?.split(",")[0] ||
     c.req.header("x-real-ip") ||
-    "unknown",
-});
-app.use("*", limiter);
+    "unknown";
+  
+  const redis = getRedis();
+  const key = `rate_limit:${clientIp}`;
+  const windowMs = 60 * 1000; // 1 minute
+  const limit = 100; // 100 requests per minute
+  
+  try {
+    const current = await redis.incr(key);
+    if (current === 1) {
+      await redis.expire(key, Math.ceil(windowMs / 1000));
+    }
+    
+    if (current > limit) {
+      return c.json({ error: "Too many requests", code: "RATE_LIMITED" }, 429);
+    }
+  } catch {
+    // On Redis error, allow request through
+  }
+  
+  await next();
+};
+app.use("*", rateLimitMiddleware);
 
 // Get x402 receiver address if configured
 const x402Receiver = isX402Configured() ? getX402ReceiverAddress() : null;
@@ -193,44 +210,56 @@ app.get("/api/price", zValidator("query", priceQuerySchema), async (c) => {
 
 // POST /api/sweep/quote ($0.05)
 // Get a quote for sweeping dust tokens
-app.post(
-  "/api/sweep/quote",
-  ...(x402Receiver
-    ? [quotePaymentMiddleware(x402Receiver)]
-    : []),
-  async (c) => {
-    // TODO: Implement sweep quote generation
-    // This will call 1inch/Jupiter/Li.Fi for swap quotes
+if (x402Receiver) {
+  app.post(
+    "/api/sweep/quote",
+    quotePaymentMiddleware(x402Receiver),
+    async (c) => {
+      // TODO: Implement sweep quote generation
+      // This will call 1inch/Jupiter/Li.Fi for swap quotes
+      return c.json({ message: "Not implemented yet" }, 501);
+    }
+  );
+} else {
+  app.post("/api/sweep/quote", async (c) => {
     return c.json({ message: "Not implemented yet" }, 501);
-  }
-);
+  });
+}
 
 // POST /api/sweep/execute ($0.10)
 // Execute a sweep transaction
-app.post(
-  "/api/sweep/execute",
-  ...(x402Receiver
-    ? [sweepPaymentMiddleware(x402Receiver)]
-    : []),
-  async (c) => {
-    // TODO: Implement sweep execution
-    // This will use the account abstraction layer
+if (x402Receiver) {
+  app.post(
+    "/api/sweep/execute",
+    sweepPaymentMiddleware(x402Receiver),
+    async (c) => {
+      // TODO: Implement sweep execution
+      // This will use the account abstraction layer
+      return c.json({ message: "Not implemented yet" }, 501);
+    }
+  );
+} else {
+  app.post("/api/sweep/execute", async (c) => {
     return c.json({ message: "Not implemented yet" }, 501);
-  }
-);
+  });
+}
 
 // POST /api/consolidate/execute ($0.25)
 // Execute a multi-chain consolidation
-app.post(
-  "/api/consolidate/execute",
-  ...(x402Receiver
-    ? [consolidateExecuteMiddleware(x402Receiver)]
-    : []),
-  async (c) => {
-    // TODO: Implement consolidation execution
+if (x402Receiver) {
+  app.post(
+    "/api/consolidate/execute",
+    consolidateExecuteMiddleware(x402Receiver),
+    async (c) => {
+      // TODO: Implement consolidation execution
+      return c.json({ message: "Not implemented yet" }, 501);
+    }
+  );
+} else {
+  app.post("/api/consolidate/execute", async (c) => {
     return c.json({ message: "Not implemented yet" }, 501);
-  }
-);
+  });
+}
 
 // ============================================================
 // DeFi Routes (some endpoints monetized)

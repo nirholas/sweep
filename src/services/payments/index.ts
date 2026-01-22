@@ -105,16 +105,17 @@ export async function verifyPaymentOnChain(
     }
 
     // Run verifications in parallel for speed
+    // Note: Using 'as any' to bypass viem type incompatibilities with authorizationList
     const [balanceResult, nonceResult] = await Promise.all([
       // Check payer balance
-      client.readContract({
+      (client as any).readContract({
         address: BASE_USDC_ADDRESS,
         abi: BALANCE_OF_ABI,
         functionName: "balanceOf",
         args: [params.payer],
       }),
       // Check if nonce is already used
-      client.readContract({
+      (client as any).readContract({
         address: BASE_USDC_ADDRESS,
         abi: AUTHORIZATION_STATE_ABI,
         functionName: "authorizationState",
@@ -215,7 +216,7 @@ async function verifyEIP3009Signature(
 ): Promise<{ valid: boolean; error?: string }> {
   try {
     // Get domain separator from USDC contract
-    const domainSeparator = await client.readContract({
+    const domainSeparator = await (client as any).readContract({
       address: BASE_USDC_ADDRESS,
       abi: DOMAIN_SEPARATOR_ABI,
       functionName: "DOMAIN_SEPARATOR",
@@ -310,7 +311,7 @@ export async function checkUsdcTransfer(
 export async function getUsdcBalance(address: Address): Promise<bigint> {
   try {
     const client = getBaseClient();
-    const balance = await client.readContract({
+    const balance = await (client as any).readContract({
       address: BASE_USDC_ADDRESS,
       abi: BALANCE_OF_ABI,
       functionName: "balanceOf",

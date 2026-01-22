@@ -155,7 +155,7 @@ export async function deductCredits(
       .set({
         balanceCents: newBalance.toString(),
         updatedAt: new Date(),
-      })
+      } as any)
       .where(eq(apiCredits.walletAddress, normalizedAddress));
 
     // Record transaction
@@ -166,7 +166,7 @@ export async function deductCredits(
       balanceAfter: newBalance.toString(),
       endpoint,
       description: `API request: ${endpoint}`,
-    });
+    } as any);
 
     // Invalidate cache
     const redis = getRedis();
@@ -233,7 +233,7 @@ export async function addCredits(
         expiresAt,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      } as any);
     } else {
       // Update existing record
       const currentBalance = parseInt(existing[0].balanceCents || "0");
@@ -253,7 +253,7 @@ export async function addCredits(
           balanceCents: newBalance.toString(),
           expiresAt,
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(apiCredits.walletAddress, normalizedAddress));
     }
 
@@ -265,7 +265,7 @@ export async function addCredits(
       balanceAfter: newBalance.toString(),
       txHash,
       description: description || "USDC deposit",
-    });
+    } as any);
 
     // Invalidate cache
     const redis = getRedis();
@@ -433,7 +433,7 @@ export async function expireOldCredits(): Promise<{ expired: number }> {
         amountCents: (-balance).toString(),
         balanceAfter: "0",
         description: "Credits expired after 90 days",
-      });
+      } as any);
 
       // Zero out balance
       await db
@@ -441,7 +441,7 @@ export async function expireOldCredits(): Promise<{ expired: number }> {
         .set({
           balanceCents: "0",
           updatedAt: new Date(),
-        })
+        } as any)
         .where(eq(apiCredits.walletAddress, record.walletAddress));
 
       // Invalidate cache

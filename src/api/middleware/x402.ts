@@ -413,7 +413,7 @@ async function recordPayment(
       paymentType,
       status: "completed",
       createdAt: new Date(receipt.timestamp),
-    });
+    } as any);
   } catch (error) {
     console.error("[x402] Failed to record payment:", error);
     // Non-blocking - don't fail the request
@@ -439,7 +439,7 @@ async function recordUsage(
       priceCents: String(priceCents),
       paymentType,
       createdAt: new Date(),
-    });
+    } as any);
   } catch (error) {
     console.error("[x402] Failed to record usage:", error);
     // Non-blocking
