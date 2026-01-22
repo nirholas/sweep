@@ -1,9 +1,6 @@
 import { http, createConfig } from "wagmi";
 import { mainnet, base, arbitrum, polygon, bsc, linea } from "wagmi/chains";
-import { coinbaseWallet, metaMask, walletConnect, injected } from "wagmi/connectors";
-
-// WalletConnect project ID - get from https://cloud.walletconnect.com
-const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "";
+import { coinbaseWallet, metaMask, injected } from "wagmi/connectors";
 
 // Coinbase Smart Wallet - enables gasless transactions
 const coinbaseWalletConnector = coinbaseWallet({
@@ -21,17 +18,6 @@ const metaMaskConnector = metaMask({
   },
 });
 
-// WalletConnect connector
-const walletConnectConnector = walletConnect({
-  projectId: walletConnectProjectId,
-  metadata: {
-    name: "Sweep",
-    description: "Sweep dust tokens across chains",
-    url: "https://sweep.exchange",
-    icons: ["https://sweep.exchange/logo.png"],
-  },
-});
-
 // Injected wallet connector (browser extensions)
 const injectedConnector = injected();
 
@@ -41,7 +27,6 @@ export const config = createConfig({
   connectors: [
     coinbaseWalletConnector,
     metaMaskConnector,
-    walletConnectConnector,
     injectedConnector,
   ],
   transports: {

@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://github.com/nirholas/sweep/stargazers"><img src="https://img.shields.io/github/stars/nirholas/sweep?style=for-the-badge&logo=github&color=yellow" alt="GitHub Stars"></a>
-  <a href="https://github.com/nirholas/sweep/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nirholas/sweep?style=for-the-badge&color=blue" alt="License"></a>
+  <a href="https://github.com/nirholas/sweep/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge" alt="License"></a>
   <a href="https://github.com/nirholas/sweep"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge" alt="PRs Welcome"></a>
 </p>
 

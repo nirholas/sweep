@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Providers } from "@/components/Providers";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { MobileBottomNav, FloatingActionButton } from "@/components/MobileNav";
@@ -38,19 +39,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={inter.className}>
-        <Providers>
-          <ErrorBoundary>
-            {/* Main content with bottom padding for mobile nav */}
-            <div className="pb-16 md:pb-0">{children}</div>
-            
-            {/* Mobile navigation */}
-            <MobileBottomNav />
-            <FloatingActionButton />
-          </ErrorBoundary>
-        </Providers>
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: "#10b981",
+          colorBackground: "#0a0a1a",
+          colorText: "#ffffff",
+          colorTextSecondary: "#a1a1aa",
+        },
+      }}
+    >
+      <html lang="en" className="dark">
+        <body className={inter.className}>
+          <Providers>
+            <ErrorBoundary>
+              {/* Main content with bottom padding for mobile nav */}
+              <div className="pb-16 md:pb-0">{children}</div>
+              
+              {/* Mobile navigation */}
+              <MobileBottomNav />
+              <FloatingActionButton />
+            </ErrorBoundary>
+          </Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

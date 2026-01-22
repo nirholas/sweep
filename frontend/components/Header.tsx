@@ -8,10 +8,9 @@ import { WalletConnect } from "./WalletConnect";
 const navItems = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/consolidate", label: "Consolidate" },
-  { href: "/subscriptions", label: "Subscriptions" },
   { href: "/defi", label: "DeFi" },
+  { href: "/subscriptions", label: "Auto-Sweep" },
   { href: "/history", label: "History" },
-  { href: "/settings", label: "Settings" },
 ];
 
 export function Header() {
@@ -19,12 +18,14 @@ export function Header() {
   const { chain, isConnected } = useAccount();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b glass">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-3xl">🧹</span>
-          <span className="text-xl font-bold text-primary hidden sm:inline">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center">
+            <span className="text-background text-lg font-bold">S</span>
+          </div>
+          <span className="text-xl font-semibold tracking-tight hidden sm:inline">
             Sweep
           </span>
         </Link>
@@ -37,7 +38,7 @@ export function Header() {
               href={item.href}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 pathname === item.href
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
@@ -50,9 +51,9 @@ export function Header() {
         <div className="flex items-center gap-3">
           {/* Network indicator */}
           {isConnected && chain && (
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg text-sm">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span>{chain.name}</span>
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse-subtle" />
+              <span className="text-muted-foreground">{chain.name}</span>
             </div>
           )}
           
@@ -61,7 +62,7 @@ export function Header() {
           {/* Mobile menu button */}
           <button className="md:hidden p-2 rounded-lg hover:bg-muted">
             <svg
-              className="w-6 h-6"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -79,14 +80,14 @@ export function Header() {
 
       {/* Mobile navigation */}
       <nav className="md:hidden border-t">
-        <div className="container mx-auto px-4 py-2 flex gap-2 overflow-x-auto">
+        <div className="container mx-auto px-4 py-2 flex gap-2 overflow-x-auto hide-scrollbar">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                 pathname === item.href
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

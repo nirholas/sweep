@@ -2,27 +2,37 @@
 
 ## Quick Deploy
 
-### Frontend → Vercel (Free)
+### 1. Set Up Clerk (Authentication)
+
+1. **Create Clerk Account**
+   - Go to [clerk.com](https://clerk.com)
+   - Sign up (free tier available)
+   - Create a new application
+
+2. **Configure Clerk**
+   - Enable **Email** and/or **Web3** authentication
+   - In "Social Connections" enable **MetaMask** and **Coinbase Wallet** if desired
+   - Copy your **Publishable Key** and **Secret Key**
+
+### 2. Frontend → Vercel (Free)
 
 1. **Connect GitHub to Vercel**
    - Go to [vercel.com](https://vercel.com)
    - Click "Add New Project"
-   - Import `nirholas/sweep` (or your fork)
+   - Import your repo
    - Set **Root Directory** to `frontend`
    - Click Deploy
 
-2. **Set Environment Variables** (in Vercel dashboard → Settings → Environment Variables)
+2. **Set Environment Variables** (Vercel dashboard → Settings → Environment Variables)
    ```
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
+   CLERK_SECRET_KEY=sk_live_...
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
    NEXT_PUBLIC_API_URL=https://your-railway-app.up.railway.app
-   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id
    ```
 
-3. **Get WalletConnect Project ID**
-   - Go to [cloud.reown.com](https://cloud.reown.com)
-   - Create a new project
-   - Copy the Project ID
-
-### Backend → Railway (~$5/month)
+### 3. Backend → Railway (~$5/month)
 
 1. **Create Railway Account**
    - Go to [railway.app](https://railway.app)
