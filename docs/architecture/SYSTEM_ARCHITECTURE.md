@@ -1,4 +1,4 @@
-# 🐷 Piggy Bank - Production System Architecture
+# 🧹 Sweep - Production System Architecture
 
 > **Target Scale**: 600,000 users across 7 chains
 > **Last Updated**: January 2026
@@ -56,7 +56,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                            🐷 PIGGY BANK ARCHITECTURE                            │
+│                            🧹 PIGGY BANK ARCHITECTURE                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
 │  ┌──────────────────────────────────────────────────────────────────────────┐   │
@@ -587,7 +587,7 @@ async function createCowOrder(
 import { createConfig, getRoutes, executeRoute } from "@lifi/sdk";
 
 const lifiConfig = createConfig({
-  integrator: "piggy-bank",
+  integrator: "sweep",
   chains: [1, 8453, 42161, 137, 56, 59144], // ETH, Base, ARB, Polygon, BNB, Linea
 });
 
@@ -2185,4 +2185,4 @@ sweepWorker.on("completed", (job, result) => {
 
 ---
 
-*This document represents the comprehensive architecture for Piggy Bank at scale. All code examples are production-ready patterns.*
+*This document represents the comprehensive architecture for Sweep at scale. All code examples are production-ready patterns.*

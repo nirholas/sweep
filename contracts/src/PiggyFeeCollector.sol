@@ -9,7 +9,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 /// @title PiggyFeeCollector
-/// @author Piggy Bank Team
+/// @author Sweep Team
 /// @notice Protocol fee management with configurable fees and treasury distribution
 /// @dev Collects fees from swaps and distributes to treasury with admin controls
 contract PiggyFeeCollector is Ownable2Step, ReentrancyGuard {

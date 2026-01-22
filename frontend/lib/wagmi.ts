@@ -7,17 +7,17 @@ const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID 
 
 // Coinbase Smart Wallet - enables gasless transactions
 const coinbaseWalletConnector = coinbaseWallet({
-  appName: "Piggy Bank",
-  appLogoUrl: "https://piggybank.xyz/logo.png",
+  appName: "Sweep",
+  appLogoUrl: "https://sweep.exchange/logo.png",
   preference: "smartWalletOnly", // Use Smart Wallet for gasless
 });
 
 // MetaMask connector
 const metaMaskConnector = metaMask({
   dappMetadata: {
-    name: "Piggy Bank",
-    url: "https://piggybank.xyz",
-    iconUrl: "https://piggybank.xyz/logo.png",
+    name: "Sweep",
+    url: "https://sweep.exchange",
+    iconUrl: "https://sweep.exchange/logo.png",
   },
 });
 
@@ -25,10 +25,10 @@ const metaMaskConnector = metaMask({
 const walletConnectConnector = walletConnect({
   projectId: walletConnectProjectId,
   metadata: {
-    name: "Piggy Bank",
+    name: "Sweep",
     description: "Sweep dust tokens across chains",
-    url: "https://piggybank.xyz",
-    icons: ["https://piggybank.xyz/logo.png"],
+    url: "https://sweep.exchange",
+    icons: ["https://sweep.exchange/logo.png"],
   },
 });
 

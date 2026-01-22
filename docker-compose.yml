@@ -4,29 +4,29 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
-    container_name: piggybank-postgres
+    container_name: sweep-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: piggy
-      POSTGRES_PASSWORD: piggy
-      POSTGRES_DB: piggybank
+      POSTGRES_USER: sweep
+      POSTGRES_PASSWORD: sweep
+      POSTGRES_DB: sweep
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U piggy -d piggybank"]
+      test: ["CMD-SHELL", "pg_isready -U sweep -d sweep"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
     networks:
-      - piggybank-network
+      - sweep-network
 
   # Redis for BullMQ and caching
   redis:
     image: redis:7-alpine
-    container_name: piggybank-redis
+    container_name: sweep-redis
     restart: unless-stopped
     command: redis-server --appendonly yes
     ports:
@@ -40,15 +40,15 @@ services:
       retries: 5
       start_period: 5s
     networks:
-      - piggybank-network
+      - sweep-network
 
   # PgAdmin (optional - for database management)
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: piggybank-pgadmin
+    container_name: sweep-pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@piggybank.local
+      PGADMIN_DEFAULT_EMAIL: admin@sweep.local
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
@@ -60,7 +60,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - piggybank-network
+      - sweep-network
 
 volumes:
   postgres_data:
@@ -71,5 +71,5 @@ volumes:
     driver: local
 
 networks:
-  piggybank-network:
+  sweep-network:
     driver: bridge

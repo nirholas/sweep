@@ -1,6 +1,6 @@
-# Piggy Bank Frontend
+# Sweep Frontend
 
-Next.js 14 frontend for the Piggy Bank dust sweeper application.
+Next.js 14 frontend for the Sweep dust sweeper application.
 
 ## Features
 

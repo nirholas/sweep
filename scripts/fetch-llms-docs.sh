@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# 🐷 Piggy Bank - LLM Documentation Fetcher
+# 🧹 Sweep - LLM Documentation Fetcher
 # Fetches llms.txt and llms-full.txt files from API providers
 
 set -e
 
-DOCS_DIR="/workspaces/piggy-bank/docs/external"
+DOCS_DIR="/workspaces/sweep/docs/external"
 mkdir -p "$DOCS_DIR"
 
-echo "🐷 Piggy Bank - Fetching LLM Documentation"
+echo "🧹 Sweep - Fetching LLM Documentation"
 echo "==========================================="
 echo ""
 

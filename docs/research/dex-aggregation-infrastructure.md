@@ -1,6 +1,6 @@
 # DEX Aggregation & Swap Infrastructure - Technical Research
 
-> **Purpose**: Technical research document for implementing multi-chain dust sweeping in Piggy Bank
+> **Purpose**: Technical research document for implementing multi-chain dust sweeping in Sweep
 > **Target Scale**: 600,000 users across EVM chains (Ethereum, Base, Arbitrum, BNB Chain, Polygon, Linea) and Solana
 > **Last Updated**: January 2026
 
@@ -694,7 +694,7 @@ import { mainnet, arbitrum, base, polygon, bsc, linea } from 'viem/chains';
 
 // Initialize SDK
 createConfig({
-  integrator: 'piggy-bank',  // Required - your app name
+  integrator: 'sweep',  // Required - your app name
   apiKey: 'YOUR_LIFI_API_KEY', // Optional but recommended
   
   // Custom RPC URLs for reliability
@@ -1566,7 +1566,7 @@ async function rateLimitedQuote(
 | $10 dust swap (same chain) | ~$0.05 | ~$0.04 | ~$0.08 | ~$0.03 |
 | $5 cross-chain | N/A | N/A | ~$0.50 | N/A |
 
-### Revenue Model for Piggy Bank
+### Revenue Model for Sweep
 
 ```typescript
 // Recommended fee structure
@@ -1761,4 +1761,4 @@ class OneInchFusionAggregator extends BaseAggregator {
 
 ---
 
-*Document compiled for Piggy Bank dust sweeper project. January 2026.*
+*Document compiled for Sweep dust sweeper project. January 2026.*

@@ -1,6 +1,6 @@
-# Piggy Bank Smart Contracts
+# Sweep Smart Contracts
 
-Solidity smart contracts for the Piggy Bank multi-chain dust sweeper.
+Solidity smart contracts for the Sweep multi-chain dust sweeper.
 
 ## Overview
 

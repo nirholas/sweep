@@ -296,5 +296,5 @@ export { app };
 
 // Start server if run directly
 const port = parseInt(process.env.PORT || "3000");
-console.log(`🐷 Piggy Bank API starting on port ${port}...`);
+console.log(`🧹 Sweep API starting on port ${port}...`);
 serve({ fetch: app.fetch, port });

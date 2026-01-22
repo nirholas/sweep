@@ -265,7 +265,7 @@ quote.post(
           ), // vs manual swaps
         },
         route: {
-          aggregator: "piggy-bank",
+          aggregator: "sweep",
           steps: routeSteps,
         },
         expiresAt,
@@ -295,7 +295,7 @@ quote.post(
           outputAmount: estimatedOutputAmount,
           estimatedGasUsd: estimatedGasUsd.toString(),
           netValueUsd: estimatedOutputValueUsd.toString(),
-          aggregator: "piggy-bank",
+          aggregator: "sweep",
           routeData: quoteResponse.route,
           expiresAt: new Date(expiresAt),
         });

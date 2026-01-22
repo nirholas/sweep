@@ -195,7 +195,7 @@ export function useCreateSubscription() {
         // Sign the spend permission (EIP-712)
         const signature = await signTypedDataAsync({
           domain: {
-            name: "PiggyBank",
+            name: "Sweep",
             version: "1",
             chainId: request.outputChainId,
             verifyingContract: "0x0000000000000000000000000000000000000000", // Will be set to actual contract

@@ -30,13 +30,13 @@ The complete API is documented in OpenAPI 3.1 format:
 
 ## Overview
 
-The Piggy Bank API is a RESTful service built with [Hono](https://hono.dev/). All endpoints return JSON and follow consistent patterns for requests and responses.
+The Sweep API is a RESTful service built with [Hono](https://hono.dev/). All endpoints return JSON and follow consistent patterns for requests and responses.
 
 ### Base URL
 
 ```
-Production: https://api.piggybank.xyz/api
-Staging:    https://staging-api.piggybank.xyz/api
+Production: https://api.sweep.xyz/api
+Staging:    https://staging-api.sweep.xyz/api
 Local:      http://localhost:3000/api
 ```
 
@@ -75,7 +75,7 @@ GET /api/auth/nonce?address=0x...
 Sign the SIWE message with your wallet:
 
 ```javascript
-const message = `Sign in to Piggy Bank
+const message = `Sign in to Sweep
 Nonce: ${nonce}
 Issued At: ${new Date().toISOString()}`;
 ```
@@ -88,7 +88,7 @@ Content-Type: application/json
 
 {
   "address": "0x...",
-  "message": "Sign in to Piggy Bank...",
+  "message": "Sign in to Sweep...",
   "signature": "0x..."
 }
 ```
@@ -165,7 +165,7 @@ GET /api/wallet/:address/dust
 
 **Example Request:**
 ```bash
-curl "https://api.piggybank.xyz/api/wallet/0x1234.../dust?chains=ethereum,base,arbitrum&threshold=5"
+curl "https://api.sweep.xyz/api/wallet/0x1234.../dust?chains=ethereum,base,arbitrum&threshold=5"
 ```
 
 **Response (200 OK):**
@@ -951,7 +951,7 @@ const signature = crypto
 
 ## WebSocket Events
 
-Connect to `wss://api.piggybank.xyz/ws` for real-time updates.
+Connect to `wss://api.sweep.xyz/ws` for real-time updates.
 
 ### Subscribe to Sweep Updates
 
@@ -983,11 +983,11 @@ Connect to `wss://api.piggybank.xyz/ws` for real-time updates.
 ### JavaScript/TypeScript
 
 ```typescript
-import { PiggyBankClient } from '@piggy-bank/sdk';
+import { SweepClient } from '@sweep/sdk';
 
-const client = new PiggyBankClient({
+const client = new SweepClient({
   apiKey: 'your-api-key',
-  baseUrl: 'https://api.piggybank.xyz',
+  baseUrl: 'https://api.sweep.xyz',
 });
 
 // Scan for dust
@@ -1019,9 +1019,9 @@ const status = await client.sweep.getStatus(sweep.sweepId);
 ### Python
 
 ```python
-from piggy_bank import PiggyBankClient
+from piggy_bank import SweepClient
 
-client = PiggyBankClient(api_key="your-api-key")
+client = SweepClient(api_key="your-api-key")
 
 # Scan for dust
 dust = client.wallet.scan_dust("0x...", chains=["ethereum", "base"])

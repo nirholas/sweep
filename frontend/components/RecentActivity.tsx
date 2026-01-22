@@ -117,7 +117,7 @@ function ActivityItem({ item }: { item: SweepStatus }) {
     <div className="flex items-center gap-4 p-3 rounded-lg bg-background border border-border/50 hover:border-border transition-colors">
       {/* Icon */}
       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-lg">
-        🐷
+        🧹
       </div>
 
       {/* Info */}

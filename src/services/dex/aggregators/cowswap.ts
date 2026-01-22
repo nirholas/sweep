@@ -19,7 +19,7 @@ const COW_API_ENDPOINTS: Record<number, string> = {
   8453: "https://api.cow.fi/base/api/v1",
 };
 
-// CoW Protocol app data (identifies Piggy Bank orders)
+// CoW Protocol app data (identifies Sweep orders)
 const PIGGY_APP_DATA =
   "0x0000000000000000000000000000000000000000000000000000000070696767"; // "pigg" in hex
 

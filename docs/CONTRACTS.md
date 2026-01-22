@@ -21,7 +21,7 @@
 
 ## Overview
 
-The Piggy Bank smart contract system enables gasless, multi-token sweeping with DeFi routing. The architecture consists of 5 core contracts that work together:
+The Sweep smart contract system enables gasless, multi-token sweeping with DeFi routing. The architecture consists of 5 core contracts that work together:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -576,7 +576,7 @@ If updates are needed:
 - **Medium**: Up to $2,500
 - **Low**: Up to $500
 
-Report vulnerabilities to: security@piggybank.xyz
+Report vulnerabilities to: security@sweep.xyz
 
 ---
 

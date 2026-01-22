@@ -1,5 +1,5 @@
 # Account Abstraction & Gas Abstraction Infrastructure Research
-## Piggy Bank Multi-Chain Dust Sweeper
+## Sweep Multi-Chain Dust Sweeper
 
 **Target**: 600,000 users across Ethereum, Base, Arbitrum, BNB Chain, Polygon, Linea  
 **Core Requirement**: Users sweep dust tokens WITHOUT native gas tokens, paying with USDC/USDT
@@ -232,11 +232,11 @@ async function createPasskeyOwner(userId: string): Promise<{ x: bigint; y: bigin
     const credential = await navigator.credentials.create({
         publicKey: {
             challenge: crypto.getRandomValues(new Uint8Array(32)),
-            rp: { name: 'Piggy Bank', id: window.location.hostname },
+            rp: { name: 'Sweep', id: window.location.hostname },
             user: {
                 id: new TextEncoder().encode(userId),
                 name: userId,
-                displayName: 'Piggy Bank User',
+                displayName: 'Sweep User',
             },
             pubKeyCredParams: [{ alg: -7, type: 'public-key' }], // ES256 (P-256)
             authenticatorSelection: {

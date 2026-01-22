@@ -123,7 +123,7 @@ export default function DashboardPage() {
         <Header />
         <div className="container mx-auto px-4 py-20 text-center">
           <div className="mb-8">
-            <span className="text-8xl">🐷</span>
+            <span className="text-8xl">🧹</span>
           </div>
           <h1 className="text-3xl font-bold mb-4">Connect Your Wallet</h1>
           <p className="text-muted-foreground mb-8">

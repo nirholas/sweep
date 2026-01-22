@@ -1,4 +1,4 @@
 import "dotenv/config";
 import "./api/server.js";
 
-console.log("🐷 Piggy Bank started!");
+console.log("🧹 Sweep started!");

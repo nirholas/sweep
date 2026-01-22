@@ -46,7 +46,7 @@ function createTestApp() {
     return c.json({
       nonce,
       expiresAt,
-      message: `Sign this message to authenticate with Piggy Bank.\n\nNonce: ${nonce}`,
+      message: `Sign this message to authenticate with Sweep.\n\nNonce: ${nonce}`,
     });
   });
   
@@ -87,7 +87,7 @@ function createTestApp() {
       nonce = nonceMatch[1];
       
       // Extract domain (default)
-      domain = "piggybank.finance";
+      domain = "sweep.finance";
       chainId = 8453; // Base
     } catch (error) {
       return c.json({ error: "Invalid message format" }, 400);
@@ -306,12 +306,12 @@ describe("Auth API", () => {
       const { nonce } = await nonceRes.json();
       
       // Create SIWE-like message
-      const message = `piggybank.finance wants you to sign in with your Ethereum account:
+      const message = `sweep.finance wants you to sign in with your Ethereum account:
 ${address}
 
-Sign this message to authenticate with Piggy Bank.
+Sign this message to authenticate with Sweep.
 
-URI: https://piggybank.finance
+URI: https://sweep.finance
 Version: 1
 Chain ID: 8453
 Nonce: ${nonce}
@@ -368,7 +368,7 @@ Issued At: ${new Date().toISOString()}`;
     it("should reject if no nonce exists for address", async () => {
       const address = generateTestWalletAddress();
       
-      const message = `piggybank.finance wants you to sign in with your Ethereum account:
+      const message = `sweep.finance wants you to sign in with your Ethereum account:
 ${address}
 
 Sign this message.
@@ -397,7 +397,7 @@ Nonce: someRandomNonce`;
       await app.request(`/auth/nonce?address=${address}`);
       
       // Use wrong nonce
-      const message = `piggybank.finance wants you to sign in with your Ethereum account:
+      const message = `sweep.finance wants you to sign in with your Ethereum account:
 ${address}
 
 Sign this message.
@@ -428,7 +428,7 @@ Nonce: wrongNonce12345`;
         expiresAt: Date.now() - 1000,
       });
       
-      const message = `piggybank.finance wants you to sign in with your Ethereum account:
+      const message = `sweep.finance wants you to sign in with your Ethereum account:
 ${address}
 
 Sign this message.
@@ -457,7 +457,7 @@ Nonce: expiredNonce1234`;
       const nonceRes = await app.request(`/auth/nonce?address=${address}`);
       const { nonce } = await nonceRes.json();
       
-      const message = `piggybank.finance wants you to sign in with your Ethereum account:
+      const message = `sweep.finance wants you to sign in with your Ethereum account:
 ${address}
 
 Sign this message.
@@ -484,7 +484,7 @@ Nonce: ${nonce}`;
       const nonceRes = await app.request(`/auth/nonce?address=${address}`);
       const { nonce } = await nonceRes.json();
       
-      const message = `piggybank.finance wants you to sign in with your Ethereum account:
+      const message = `sweep.finance wants you to sign in with your Ethereum account:
 ${address}
 
 Sign this message.
@@ -512,7 +512,7 @@ Nonce: ${nonce}`;
       const nonceRes = await app.request(`/auth/nonce?address=${address}`);
       const { nonce } = await nonceRes.json();
       
-      const message = `piggybank.finance wants you to sign in with your Ethereum account:
+      const message = `sweep.finance wants you to sign in with your Ethereum account:
 ${address}
 
 Sign this message.

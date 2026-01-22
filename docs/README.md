@@ -1,4 +1,4 @@
-# Piggy Bank Documentation
+# Sweep Documentation
 
 > **⚠️ CRITICAL: This application handles user funds. Read all documentation carefully before making any changes.**
 
@@ -24,7 +24,7 @@
 
 ## Overview
 
-Piggy Bank is a multi-chain dust sweeper that consolidates small token balances ("dust") across EVM chains and Solana into a single valuable token or DeFi position.
+Sweep is a multi-chain dust sweeper that consolidates small token balances ("dust") across EVM chains and Solana into a single valuable token or DeFi position.
 
 ### Key Features
 
@@ -55,7 +55,7 @@ Piggy Bank is a multi-chain dust sweeper that consolidates small token balances 
 ## Project Structure
 
 ```
-piggy-bank/
+sweep/
 ├── contracts/           # Solidity smart contracts (Foundry)
 │   ├── src/
 │   │   ├── PiggyBatchSwap.sol      # Batch swap execution

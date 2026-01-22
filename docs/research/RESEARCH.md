@@ -1,4 +1,4 @@
-# 🐷 Piggy Bank - Research & Planning Document
+# 🧹 Sweep - Research & Planning Document
 
 > **Project Vision**: A multi-chain dust sweeper that allows users to swap small amounts of tokens across EVM chains (Ethereum, BNB Chain, Base, Arbitrum, Polygon, Linea) and Solana, then convert them into DeFi yield positions — all without needing native gas tokens.
 
@@ -80,7 +80,7 @@ Total "trapped" value: ~$30+ that user cannot access
    DEFI        │ Sol-Incinerator │    Socket       │
   ROUTING      │                 │    1inch        │
                 ├─────────────────┼─────────────────┤
-         ✅ Yes │                 │   🐷 PIGGY      │
+         ✅ Yes │                 │   🧹 PIGGY      │
                │    (empty)      │     BANK        │
                │                 │   (our gap!)    │
                 └─────────────────┴─────────────────┘
@@ -96,7 +96,7 @@ Total "trapped" value: ~$30+ that user cannot access
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        🐷 PIGGY BANK FLOW                                   │
+│                        🧹 PIGGY BANK FLOW                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  [1] SCAN            [2] SELECT GAS TOKEN      [3] BATCH SWEEP              │
@@ -146,7 +146,7 @@ Inspired by MetaMask's "gas included transactions" feature, users can pay gas fe
 
 **Journey 1: "I have dust everywhere but no gas"**
 1. Connect wallet
-2. Piggy Bank scans all chains → finds $47 total dust
+2. Sweep scans all chains → finds $47 total dust
 3. Shows: "We'll use $2 of your USDT to cover all gas fees"
 4. User selects destination: "Deposit to Aave USDC vault"
 5. One signature → execution across chains
@@ -161,11 +161,11 @@ Inspired by MetaMask's "gas included transactions" feature, users can pay gas fe
 **Journey 3: "Auto-sweep mode"**
 1. Set rules: "Sweep anything under $5 weekly"
 2. Set destination: "Add to my Aave position"
-3. Piggy Bank monitors and auto-executes when threshold hit
+3. Sweep monitors and auto-executes when threshold hit
 
 ### Key Differentiators
 
-| Feature | Existing Tools | Piggy Bank |
+| Feature | Existing Tools | Sweep |
 |---------|----------------|------------|
 | Chains | Solana only | EVM (6 chains) + Solana |
 | Output | Single token swap | DeFi yield positions |

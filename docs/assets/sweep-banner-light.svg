@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" viewBox="0 0 800 200">
+  <defs>
+    <linearGradient id="bg-gradient-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f3ff"/>
+      <stop offset="50%" style="stop-color:#ede9fe"/>
+      <stop offset="100%" style="stop-color:#ddd6fe"/>
+    </linearGradient>
+    <linearGradient id="text-gradient-light" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5b21b6"/>
+      <stop offset="50%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#5b21b6"/>
+    </linearGradient>
+    <filter id="glow-light">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="200" fill="url(#bg-gradient-light)" rx="16"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="700" cy="40" r="80" fill="#c4b5fd" opacity="0.4"/>
+  <circle cx="750" cy="160" r="60" fill="#a78bfa" opacity="0.3"/>
+  <circle cx="50" cy="180" r="100" fill="#c4b5fd" opacity="0.3"/>
+  
+  <!-- Broom/Sweep icon -->
+  <g transform="translate(60, 60)">
+    <text font-size="72" fill="#7c3aed" filter="url(#glow-light)">🧹</text>
+  </g>
+  
+  <!-- Main title -->
+  <text x="170" y="105" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="64" font-weight="800" fill="url(#text-gradient-light)" filter="url(#glow-light)">Sweep</text>
+  
+  <!-- Tagline -->
+  <text x="170" y="145" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#6b21a8" opacity="0.9">Multi-chain dust sweeper → DeFi yield</text>
+  
+  <!-- Feature badges -->
+  <g transform="translate(170, 160)">
+    <rect x="0" y="0" width="85" height="24" rx="12" fill="#f59e0b" opacity="0.2"/>
+    <text x="42" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#b45309" text-anchor="middle" font-weight="600">⚡ Gasless</text>
+    
+    <rect x="95" y="0" width="95" height="24" rx="12" fill="#10b981" opacity="0.2"/>
+    <text x="142" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#047857" text-anchor="middle" font-weight="600">🔗 8 Chains</text>
+    
+    <rect x="200" y="0" width="110" height="24" rx="12" fill="#3b82f6" opacity="0.2"/>
+    <text x="255" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#1d4ed8" text-anchor="middle" font-weight="600">📈 DeFi Yield</text>
+    
+    <rect x="320" y="0" width="115" height="24" rx="12" fill="#ec4899" opacity="0.2"/>
+    <text x="377" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#be185d" text-anchor="middle" font-weight="600">🛡️ MEV Protected</text>
+  </g>
+  
+  <!-- Chain icons representation -->
+  <g transform="translate(620, 70)">
+    <circle cx="0" cy="0" r="20" fill="#627eea"/>
+    <text x="0" y="6" font-size="16" text-anchor="middle" fill="white">Ξ</text>
+    
+    <circle cx="45" cy="0" r="20" fill="#0052ff"/>
+    <text x="45" y="5" font-size="12" text-anchor="middle" fill="white" font-weight="bold">B</text>
+    
+    <circle cx="90" cy="0" r="20" fill="#28a0f0"/>
+    <text x="90" y="5" font-size="12" text-anchor="middle" fill="white" font-weight="bold">A</text>
+    
+    <circle cx="135" cy="0" r="20" fill="#8247e5"/>
+    <text x="135" y="5" font-size="12" text-anchor="middle" fill="white" font-weight="bold">P</text>
+  </g>
+  <g transform="translate(642, 120)">
+    <circle cx="0" cy="0" r="16" fill="#f0b90b"/>
+    <text x="0" y="5" font-size="10" text-anchor="middle" fill="white" font-weight="bold">BSC</text>
+    
+    <circle cx="38" cy="0" r="16" fill="#ff0420"/>
+    <text x="38" y="5" font-size="10" text-anchor="middle" fill="white" font-weight="bold">OP</text>
+    
+    <circle cx="76" cy="0" r="16" fill="#14f195"/>
+    <text x="76" y="5" font-size="10" text-anchor="middle" fill="black" font-weight="bold">SOL</text>
+  </g>
+</svg>

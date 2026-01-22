@@ -100,8 +100,8 @@ jobs:
       - name: Update image tags in manifests
         run: |
           VERSION=${{ needs.build-and-push.outputs.version }}
-          sed -i "s|image:.*piggy-bank-api.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${VERSION}|g" k8s/api-deployment.yaml
-          sed -i "s|image:.*piggy-bank-workers.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-workers:${VERSION}|g" k8s/workers-deployment.yaml
+          sed -i "s|image:.*sweep-api.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${VERSION}|g" k8s/api-deployment.yaml
+          sed -i "s|image:.*sweep-workers.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-workers:${VERSION}|g" k8s/workers-deployment.yaml
 
       - name: Deploy to Kubernetes
         run: |
@@ -118,13 +118,13 @@ jobs:
 
       - name: Wait for rollout
         run: |
-          kubectl rollout status deployment/piggybank-api -n piggybank --timeout=300s
-          kubectl rollout status deployment/piggybank-workers -n piggybank --timeout=300s
+          kubectl rollout status deployment/sweep-api -n sweep --timeout=300s
+          kubectl rollout status deployment/sweep-workers -n sweep --timeout=300s
 
       - name: Verify deployment
         run: |
-          kubectl get pods -n piggybank
-          kubectl get services -n piggybank
+          kubectl get pods -n sweep
+          kubectl get services -n sweep
 
   notify:
     name: Notify

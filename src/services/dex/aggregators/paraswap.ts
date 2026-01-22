@@ -202,7 +202,7 @@ export class ParaSwapAggregator implements IDexAggregator {
       priceRoute,
       userAddress,
       receiver: receiver || userAddress,
-      partner: "piggybank",
+      partner: "sweep",
       srcDecimals: priceRoute.srcDecimals,
       destDecimals: priceRoute.destDecimals,
     };

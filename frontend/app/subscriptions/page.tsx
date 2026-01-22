@@ -240,7 +240,7 @@ function SubscriptionCard({
       <div className="flex items-start justify-between mb-4">
         <button onClick={onSelect} className="flex items-center gap-3 text-left">
           <div className="w-12 h-12 bg-piggy/20 rounded-full flex items-center justify-center">
-            <span className="text-2xl">🐷</span>
+            <span className="text-2xl">🧹</span>
           </div>
           <div>
             <h3 className="font-semibold">
@@ -679,7 +679,7 @@ function CreateSubscriptionModal({ onClose }: CreateSubscriptionModalProps) {
                   <div>
                     <p className="font-medium">Spend Permission Required</p>
                     <p className="text-sm text-muted-foreground">
-                      You'll sign a message to allow Piggy Bank to execute sweeps on your behalf.
+                      You'll sign a message to allow Sweep to execute sweeps on your behalf.
                       This can be revoked at any time.
                     </p>
                   </div>

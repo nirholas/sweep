@@ -82,7 +82,7 @@ export interface SubscriptionSweep {
  */
 export interface SpendPermission {
   account: Address;                     // Smart wallet address
-  spender: Address;                     // Piggy Bank contract/executor
+  spender: Address;                     // Sweep contract/executor
   token: Address;                       // Token to spend (or ETH_ADDRESS)
   allowance: bigint;                    // Max amount per period
   period: number;                       // Period in seconds (e.g., 86400 for daily)
@@ -300,5 +300,5 @@ export const SPEND_PERMISSION_MANAGER: Record<number, Address> = {
 // Native token address for spend permissions
 export const NATIVE_TOKEN_ADDRESS: Address = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
-// Piggy Bank executor address (the spender in spend permissions)
+// Sweep executor address (the spender in spend permissions)
 export const PIGGY_EXECUTOR_ADDRESS: Address = "0x1234567890123456789012345678901234567890" as Address;

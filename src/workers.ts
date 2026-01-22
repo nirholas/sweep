@@ -1,5 +1,5 @@
 /**
- * Piggy Bank Queue Workers
+ * Sweep Queue Workers
  * 
  * This file starts the BullMQ workers for processing sweep jobs
  * and other background tasks.
@@ -228,7 +228,7 @@ process.on('SIGINT', shutdown);
 // ============================================
 // Startup
 // ============================================
-console.log('🐷 Piggy Bank Workers starting...');
+console.log('🧹 Sweep Workers starting...');
 console.log(`Connected to Redis at ${REDIS_URL}`);
 console.log('Workers ready:');
 console.log(`  - Sweep worker (concurrency: ${process.env.QUEUE_CONCURRENCY || 5})`);

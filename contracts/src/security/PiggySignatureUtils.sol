@@ -2,8 +2,8 @@
 pragma solidity ^0.8.24;
 
 /// @title PiggySignatureVerifier
-/// @author Piggy Bank Team
-/// @notice Signature verification utilities for Piggy Bank contracts
+/// @author Sweep Team
+/// @notice Signature verification utilities for Sweep contracts
 /// @dev Provides EIP-712 and ECDSA signature verification
 library PiggySignatureVerifier {
     // ============================================================
@@ -102,7 +102,7 @@ library PiggySignatureVerifier {
 }
 
 /// @title PiggyEIP712
-/// @notice EIP-712 typed data hashing for Piggy Bank
+/// @notice EIP-712 typed data hashing for Sweep
 library PiggyEIP712 {
     /// @notice EIP-712 type hash for domain separator
     bytes32 internal constant TYPE_HASH =

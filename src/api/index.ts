@@ -238,7 +238,7 @@ app.notFound((c) => {
 // ============================================================
 app.get("/", (c) => {
   return c.json({
-    name: "Piggy Bank API",
+    name: "Sweep API",
     version: process.env.npm_package_version || "0.1.0",
     description: "Multi-chain dust sweeper API",
     endpoints: {
@@ -341,7 +341,7 @@ process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
 // Start server
-console.log(`🐷 Piggy Bank API starting on ${host}:${port}...`);
+console.log(`🧹 Sweep API starting on ${host}:${port}...`);
 
 // Start workers in background
 startWorkers();

@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Playwright configuration for Piggy Bank frontend E2E tests
+ * Playwright configuration for Sweep frontend E2E tests
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({

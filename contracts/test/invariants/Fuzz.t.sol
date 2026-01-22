@@ -8,7 +8,7 @@ import {PiggyVaultRouter} from "../../src/PiggyVaultRouter.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title PiggyFuzzTest
-/// @notice Comprehensive fuzz tests for Piggy Bank contracts
+/// @notice Comprehensive fuzz tests for Sweep contracts
 contract PiggyFuzzTest is Test {
     // ============================================================
     // CONSTANTS

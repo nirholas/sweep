@@ -1,6 +1,6 @@
 # Cross-Chain Bridging Infrastructure - Technical Documentation
 
-> **Purpose**: Cross-chain bridging research for Piggy Bank dust sweeper
+> **Purpose**: Cross-chain bridging research for Sweep dust sweeper
 > **Target Scale**: 600,000 users across Ethereum, Base, Arbitrum, BNB Chain, Polygon, Linea, and Solana
 > **Last Updated**: January 2026
 
@@ -85,7 +85,7 @@ const SUPPORTED_CHAINS = {
 // Initialize SDK once at app startup
 const initializeLiFi = (getWalletClient: () => Promise<WalletClient>) => {
   createConfig({
-    integrator: 'piggy-bank-dust-sweeper', // Required - your app name
+    integrator: 'sweep-dust-sweeper', // Required - your app name
     apiKey: process.env.LIFI_API_KEY,      // Optional but recommended for higher limits
     
     // Custom RPC URLs for reliability at scale
@@ -611,7 +611,7 @@ async function getMultiHopRoute(
 }
 ```
 
-### Socket Supported Chains (for Piggy Bank)
+### Socket Supported Chains (for Sweep)
 
 | Chain | Chain ID | Bridge Support |
 |-------|----------|----------------|
@@ -2004,4 +2004,4 @@ const ALERTS = {
 
 ---
 
-*Document compiled for Piggy Bank cross-chain bridging infrastructure. January 2026.*
+*Document compiled for Sweep cross-chain bridging infrastructure. January 2026.*

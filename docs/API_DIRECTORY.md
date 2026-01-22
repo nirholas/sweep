@@ -1,4 +1,4 @@
-# 🔌 Piggy Bank - Complete API Directory
+# 🔌 Sweep - Complete API Directory
 
 > **Purpose**: Master list of all APIs for dust sweeping, DeFi routing, and blockchain infrastructure
 > **Last Updated**: January 2026

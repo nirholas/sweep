@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Piggy Bank API
+  title: Sweep API
   description: |
     Multi-chain dust sweeper API that consolidates small token balances across EVM chains and Solana into DeFi yield positions.
     
@@ -18,8 +18,8 @@ info:
     the API returns HTTP 402 with payment instructions.
   version: 1.0.0
   contact:
-    name: Piggy Bank Team
-    url: https://github.com/nirholas/piggy-bank
+    name: Sweep Team
+    url: https://github.com/nirholas/sweep
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -69,7 +69,7 @@ paths:
                     example: 1705924800000
                   service:
                     type: string
-                    example: piggy-bank-api
+                    example: sweep-api
                   version:
                     type: string
                     example: 1.0.0

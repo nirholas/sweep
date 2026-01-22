@@ -10,7 +10,7 @@ import {IPermit2} from "./interfaces/IPermit2.sol";
 import {PiggyBatchSwap} from "./PiggyBatchSwap.sol";
 
 /// @title PiggyPermit2Batcher
-/// @author Piggy Bank Team
+/// @author Sweep Team
 /// @notice Batch Permit2 transfers and swaps with a single signature
 /// @dev Integrates with PiggyBatchSwap for executing swaps after transfers
 contract PiggyPermit2Batcher is Ownable, ReentrancyGuard {

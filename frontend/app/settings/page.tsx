@@ -80,7 +80,7 @@ export default function SettingsPage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Settings</h1>
             <p className="text-muted-foreground">
-              Customize your Piggy Bank experience
+              Customize your Sweep experience
             </p>
           </div>
 

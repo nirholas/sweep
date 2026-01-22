@@ -1,4 +1,4 @@
-# DeFi Protocol Integration - Piggy Bank Yield Destinations
+# DeFi Protocol Integration - Sweep Yield Destinations
 
 > **Purpose**: After users sweep their dust into a single token, route it into yield-bearing DeFi positions across EVM chains and Solana for 600,000 users.
 
@@ -850,7 +850,7 @@ async function stakeETHWithLido(
 | **Exchange Rate** | 1 stETH ≈ 1 ETH | 1 wstETH ≈ 1.15+ ETH (increases) |
 | **Tracking** | Complex (balance changes) | Simple (balance constant) |
 
-**Recommendation**: Use wstETH for Piggy Bank positions - easier to track.
+**Recommendation**: Use wstETH for Sweep positions - easier to track.
 
 #### Current APY
 - **Lido stETH APY**: ~3.5-4.5% (variable based on Ethereum staking rewards)

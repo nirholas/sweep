@@ -6,7 +6,7 @@ import {PiggyBatchSwap} from "../src/PiggyBatchSwap.sol";
 import {PiggyPermit2Batcher} from "../src/PiggyPermit2Batcher.sol";
 
 /// @title Deploy
-/// @notice Deployment script for Piggy Bank contracts
+/// @notice Deployment script for Sweep contracts
 contract Deploy is Script {
     // ============================================================
     // DEPLOYMENT ADDRESSES (per chain)

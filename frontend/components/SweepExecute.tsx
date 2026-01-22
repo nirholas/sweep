@@ -33,7 +33,7 @@ export function SweepExecute({ quote, onComplete, onBack }: SweepExecuteProps) {
       const siweMessage = new SiweMessage({
         domain: window.location.host,
         address,
-        statement: `Sign this message to authorize Piggy Bank to sweep ${quote.inputTokens.length} tokens.`,
+        statement: `Sign this message to authorize Sweep to sweep ${quote.inputTokens.length} tokens.`,
         uri: window.location.origin,
         version: "1",
         chainId: chain.id,

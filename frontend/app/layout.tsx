@@ -8,7 +8,7 @@ import { MobileBottomNav, FloatingActionButton } from "@/components/MobileNav";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Piggy Bank | Multi-Chain Dust Sweeper",
+  title: "Sweep | Multi-Chain Dust Sweeper",
   description: "Sweep your dust tokens across multiple chains and convert them into DeFi positions",
   icons: {
     icon: "/piggy.svg",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Piggy Bank",
+    title: "Sweep",
   },
 };
 

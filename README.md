@@ -1,11 +1,33 @@
-# 🐷 Piggy Bank
+<p align="center">
+  <img src="docs/assets/sweep-banner.svg" alt="Sweep - Multi-chain dust sweeper" width="800"/>
+</p>
 
-> Multi-chain dust sweeper that consolidates small token balances into DeFi yield positions — without needing native gas tokens.
+<p align="center">
+  <strong>Multi-chain dust sweeper that consolidates small token balances into DeFi yield positions — without needing native gas tokens.</strong>
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636.svg)](https://docs.soliditylang.org/)
-[![Foundry](https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg)](https://getfoundry.sh/)
+<p align="center">
+  <a href="https://github.com/nirholas/sweep/stargazers"><img src="https://img.shields.io/github/stars/nirholas/sweep?style=for-the-badge&logo=github&color=yellow" alt="GitHub Stars"></a>
+  <a href="https://github.com/nirholas/sweep/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nirholas/sweep?style=for-the-badge&color=blue" alt="License"></a>
+  <a href="https://github.com/nirholas/sweep"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge" alt="PRs Welcome"></a>
+</p>
+
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-features">Features</a> •
+  <a href="docs/">Documentation</a> •
+  <a href="#-contributing">Contributing</a>
+</p>
+
+---
+
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Solidity-0.8.24-363636?style=flat-square&logo=solidity&logoColor=white" alt="Solidity">
+  <img src="https://img.shields.io/badge/Foundry-FFDB1C?style=flat-square&logo=foundry&logoColor=black" alt="Foundry">
+  <img src="https://img.shields.io/badge/Next.js-14-000000?style=flat-square&logo=next.js&logoColor=white" alt="Next.js">
+  <img src="https://img.shields.io/badge/Hono-E36002?style=flat-square&logo=hono&logoColor=white" alt="Hono">
+</p>
 
 ## 🎯 Problem
 
@@ -23,7 +45,7 @@ Total trapped value: ~$20+ that user cannot access
 
 ## ✨ Solution
 
-Piggy Bank sweeps dust across multiple chains, pays gas with tokens you already have, and routes everything into yield-generating DeFi positions.
+Sweep consolidates dust across multiple chains, pays gas with tokens you already have, and routes everything into yield-generating DeFi positions.
 
 ### Key Features
 
@@ -36,12 +58,10 @@ Piggy Bank sweeps dust across multiple chains, pays gas with tokens you already 
 ## 📦 Project Structure
 
 ```
-piggy-bank/
+sweep/
 ├── contracts/           # Solidity smart contracts (Foundry)
 ├── src/                 # Backend API (Hono + Node.js)
 ├── frontend/            # Next.js 14 frontend
-├── k8s/                 # Kubernetes manifests
-├── monitoring/          # Prometheus + Grafana
 ├── docs/                # Documentation
 └── tests/               # Integration & E2E tests
 ```
@@ -58,8 +78,8 @@ piggy-bank/
 
 ```bash
 # Clone the repo
-git clone https://github.com/nirholas/piggy-bank.git
-cd piggy-bank
+git clone https://github.com/nirholas/sweep.git
+cd sweep
 
 # Copy environment variables
 cp .env.example .env
@@ -139,11 +159,19 @@ See [SECURITY.md](./docs/SECURITY.md) for:
 | Backend | Node.js, Hono, BullMQ, Drizzle ORM |
 | Frontend | Next.js 14, wagmi, viem, TailwindCSS |
 | Database | PostgreSQL, Redis |
-| Infra | Docker, Kubernetes, Prometheus, Grafana |
+| Hosting | Vercel (frontend), Railway (backend) |
 | Account Abstraction | ERC-4337, Pimlico, Coinbase Smart Wallet |
 | DEX | 1inch, Jupiter, Li.Fi, CoW Protocol |
 | DeFi | Aave V3, Yearn V3, Beefy, Lido, Jito |
 | Bridges | Across, Stargate, Hop |
+
+## 🚀 Deploy
+
+See [DEPLOY.md](./DEPLOY.md) for deployment instructions.
+
+**Quick deploy:**
+- Frontend → [Vercel](https://vercel.com) (free)
+- Backend → [Railway](https://railway.app) (~$15/mo with DB)
 
 ## 🤝 Contributing
 
@@ -159,4 +187,4 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ---
 
-Built with 🐷 by the Piggy Bank team
+Built with 🧹 by the Sweep team

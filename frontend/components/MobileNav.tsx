@@ -64,7 +64,7 @@ export function FloatingActionButton() {
       href="/"
       className="md:hidden fixed bottom-20 right-4 z-40 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center text-2xl hover:scale-105 active:scale-95 transition-transform"
     >
-      🐷
+      🧹
     </Link>
   );
 }

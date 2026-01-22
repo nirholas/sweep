@@ -2,7 +2,7 @@
 
 ## Overview
 
-Aave V3 is a decentralized lending and borrowing protocol that allows users to supply assets to earn yield and borrow against their collateral. For Piggy Bank's "dust destination" integration, users can supply small token amounts to Aave to earn interest over time.
+Aave V3 is a decentralized lending and borrowing protocol that allows users to supply assets to earn yield and borrow against their collateral. For Sweep's "dust destination" integration, users can supply small token amounts to Aave to earn interest over time.
 
 ---
 
@@ -761,7 +761,7 @@ async function supplyDustToAave(
 
 ---
 
-## Key Considerations for Piggy Bank Integration
+## Key Considerations for Sweep Integration
 
 1. **Minimum Amounts**: No minimum deposit, but gas costs may exceed value for very small amounts
 2. **Supported Assets**: Only whitelisted assets can be supplied (check `getReservesList()`)

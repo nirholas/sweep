@@ -53,7 +53,7 @@ export function FeeBreakdown({
       items.push({
         label: "Protocol Fee",
         value: sweepFees.protocol,
-        description: "Fee charged by Piggy Bank for the sweep service",
+        description: "Fee charged by Sweep for the sweep service",
       });
       items.push({
         label: "Gas Fee",
@@ -83,7 +83,7 @@ export function FeeBreakdown({
       items.push({
         label: "Protocol Fee",
         value: consolidationFees.protocolFees,
-        description: "Fee charged by Piggy Bank",
+        description: "Fee charged by Sweep",
       });
     }
 

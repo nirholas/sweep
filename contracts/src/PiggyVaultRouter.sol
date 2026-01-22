@@ -9,7 +9,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {IAaveV3Pool, IYearnVault, IBeefyVault, ILido, IWstETH, IWETH} from "./interfaces/IDefiProtocols.sol";
 
 /// @title PiggyVaultRouter
-/// @author Piggy Bank Team
+/// @author Sweep Team
 /// @notice Routes dust to DeFi vaults (Aave, Yearn, Beefy, Lido)
 /// @dev Supports slippage protection, deadlines, and multi-hop routing
 contract PiggyVaultRouter is Ownable2Step, ReentrancyGuard {

@@ -1,5 +1,5 @@
 {
-  "name": "piggy-bank",
+  "name": "sweep",
   "version": "0.1.0",
   "description": "Multi-chain dust sweeper with DeFi routing",
   "type": "module",

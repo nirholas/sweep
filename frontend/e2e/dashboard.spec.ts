@@ -11,7 +11,7 @@ test.describe("Dashboard", () => {
     await expect(page.getByText("Connect your wallet to scan for dust tokens")).toBeVisible();
     
     // Should show the piggy emoji
-    await expect(page.getByText("🐷")).toBeVisible();
+    await expect(page.getByText("🧹")).toBeVisible();
   });
 
   test("shows main navigation header", async ({ page }) => {

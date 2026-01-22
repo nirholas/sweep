@@ -2,7 +2,7 @@
 
 ## Reporting Vulnerabilities
 
-If you discover a security vulnerability in Piggy Bank, please report it responsibly:
+If you discover a security vulnerability in Sweep, please report it responsibly:
 
 1. **DO NOT** open a public GitHub issue
 2. Email security concerns to: security@piggy.bank (or create a private security advisory)
@@ -133,4 +133,4 @@ In case of a security incident:
 
 - Security: security@piggy.bank
 - General: team@piggy.bank
-- Discord: [Piggy Bank Community]
+- Discord: [Sweep Community]

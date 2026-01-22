@@ -637,7 +637,7 @@ export const sweepPaymentMiddleware = (receiverAddress: string) =>
   x402Middleware({
     amountCents: 10, // $0.10
     receiverAddress,
-    description: "Piggy Bank sweep execution fee",
+    description: "Sweep sweep execution fee",
     endpoint: "POST /sweep",
   });
 
@@ -652,7 +652,7 @@ export const quotePaymentMiddleware = (
     amountCents: 5, // $0.05
     receiverAddress,
     enabled,
-    description: "Piggy Bank quote fee",
+    description: "Sweep quote fee",
     endpoint: "POST /quote",
   });
 
@@ -663,7 +663,7 @@ export const defiDepositMiddleware = (receiverAddress: string) =>
   x402Middleware({
     amountCents: 15, // $0.15
     receiverAddress,
-    description: "Piggy Bank DeFi deposit fee",
+    description: "Sweep DeFi deposit fee",
     endpoint: "POST /defi/deposit",
   });
 
@@ -674,7 +674,7 @@ export const consolidateExecuteMiddleware = (receiverAddress: string) =>
   x402Middleware({
     amountCents: 25, // $0.25
     receiverAddress,
-    description: "Piggy Bank consolidate execution fee",
+    description: "Sweep consolidate execution fee",
     endpoint: "POST /consolidate/execute",
   });
 
@@ -685,7 +685,7 @@ export const defiPositionsMiddleware = (receiverAddress: string) =>
   x402Middleware({
     amountCents: 5, // $0.05
     receiverAddress,
-    description: "Piggy Bank DeFi positions query fee",
+    description: "Sweep DeFi positions query fee",
     endpoint: "GET /defi/positions",
   });
 

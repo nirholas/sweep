@@ -13,9 +13,9 @@ import {PiggyVaultRouter} from "./PiggyVaultRouter.sol";
 import {PiggyFeeCollector} from "./PiggyFeeCollector.sol";
 
 /// @title PiggyDustSweeper
-/// @author Piggy Bank Team
+/// @author Sweep Team
 /// @notice Main entry point for dust sweeping: Permit2 approvals → Swaps → DeFi routing → Fee collection
-/// @dev Combines all Piggy Bank contracts into a single transaction
+/// @dev Combines all Sweep contracts into a single transaction
 contract PiggyDustSweeper is Ownable2Step, ReentrancyGuard {
     using SafeERC20 for IERC20;
 

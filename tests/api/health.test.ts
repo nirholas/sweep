@@ -10,7 +10,7 @@ function createTestApp() {
     return c.json({
       status: "ok",
       timestamp: Date.now(),
-      service: "piggy-bank-api",
+      service: "sweep-api",
       version: "0.1.0",
     });
   });
@@ -82,7 +82,7 @@ describe("Health API", () => {
       
       const body = await res.json();
       expect(body.status).toBe("ok");
-      expect(body.service).toBe("piggy-bank-api");
+      expect(body.service).toBe("sweep-api");
       expect(body.version).toBeDefined();
       expect(body.timestamp).toBeDefined();
       expect(typeof body.timestamp).toBe("number");

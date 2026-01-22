@@ -3,7 +3,7 @@
 ## Agent 5: Frontend Completion & Production Polish
 
 ### Context
-You are working on **Piggy Bank**, a multi-chain dust sweeper with a Next.js 14 frontend at `frontend/`. The basic UI exists but needs completion and production polish.
+You are working on **Sweep**, a multi-chain dust sweeper with a Next.js 14 frontend at `frontend/`. The basic UI exists but needs completion and production polish.
 
 ### Your Task
 Complete the **frontend application** with all features, improve UX, and prepare for production deployment.

@@ -5,7 +5,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
 
 /// @title PiggyPausable
-/// @author Piggy Bank Team
+/// @author Sweep Team
 /// @notice Enhanced pausable functionality with granular control
 /// @dev Extends OpenZeppelin's pausable pattern with multi-level pause
 abstract contract PiggyPausable is Ownable2Step {

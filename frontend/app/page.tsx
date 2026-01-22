@@ -7,8 +7,8 @@ export default function Home() {
       {/* Header */}
       <header className="container mx-auto px-4 py-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-4xl">🐷</span>
-          <span className="text-2xl font-bold text-primary">Piggy Bank</span>
+          <span className="text-4xl">🧹</span>
+          <span className="text-2xl font-bold text-primary">Sweep</span>
         </div>
         <WalletConnect />
       </header>
@@ -16,9 +16,9 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="mb-8">
-          <span className="text-8xl animate-bounce-gentle inline-block">🐷</span>
+          <span className="text-8xl animate-bounce-gentle inline-block">🧹</span>
         </div>
-        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-piggy-pink to-piggy-dark bg-clip-text text-transparent">
+        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
           Sweep Your Dust
         </h1>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -33,7 +33,7 @@ export default function Home() {
             Launch App
           </Link>
           <a
-            href="https://github.com/nirholas/piggy-bank"
+            href="https://github.com/nirholas/sweep"
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-4 bg-secondary text-secondary-foreground rounded-lg font-semibold hover:bg-secondary/80 transition-colors"
@@ -93,8 +93,8 @@ export default function Home() {
       <footer className="container mx-auto px-4 py-8 border-t">
         <div className="flex items-center justify-between text-muted-foreground">
           <div className="flex items-center gap-2">
-            <span>🐷</span>
-            <span>Piggy Bank © 2026</span>
+            <span>🧹</span>
+            <span>Sweep © 2026</span>
           </div>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground transition-colors">

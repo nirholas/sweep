@@ -1,8 +1,8 @@
-# Coinbase Infrastructure Stack for Piggy Bank
+# Coinbase Infrastructure Stack for Sweep
 
 ## Overview
 
-After exploring Coinbase's GitHub repositories, here are the most relevant tools for building Piggy Bank - a multi-chain dust sweeper with gas abstraction and DeFi routing.
+After exploring Coinbase's GitHub repositories, here are the most relevant tools for building Sweep - a multi-chain dust sweeper with gas abstraction and DeFi routing.
 
 ---
 
@@ -18,7 +18,7 @@ After exploring Coinbase's GitHub repositories, here are the most relevant tools
 - Zero facilitator fees
 - Native machine-to-machine payment rails
 
-**Use Case for Piggy Bank:**
+**Use Case for Sweep:**
 - Charge per-sweep API calls
 - Monetize the backend service
 - Enable AI agents to pay for sweep services
@@ -40,7 +40,7 @@ User → Sweep API → x402 Payment → Execute Sweep
 - Cross-chain replayability
 - Deployed on Base at `0xBA5ED110eFDBa3D005bfC882d75358ACBbB85842`
 
-**Use Case for Piggy Bank:**
+**Use Case for Sweep:**
 - Create smart accounts for users who want automated sweeping
 - Enable passkey authentication (no seed phrase needed!)
 - Foundation for gas abstraction via paymasters
@@ -74,7 +74,7 @@ struct PaymasterData {
 }
 ```
 
-**Use Case for Piggy Bank:**
+**Use Case for Sweep:**
 - **THIS IS THE CORE GAS ABSTRACTION** - Users pay gas in USDT/USDC
 - Take dust tokens as gas payment
 - Set custom exchange rates for profit margin
@@ -96,7 +96,7 @@ struct PaymasterData {
 ```solidity
 struct SpendPermission {
     address account;     // User's smart wallet
-    address spender;     // Piggy Bank service
+    address spender;     // Sweep service
     address token;       // Token to sweep
     uint160 allowance;   // Max per period
     uint48 period;       // Reset duration
@@ -107,9 +107,9 @@ struct SpendPermission {
 }
 ```
 
-**Use Case for Piggy Bank:**
+**Use Case for Sweep:**
 - Enable "auto-sweep" subscriptions
-- User grants Piggy Bank permission to sweep up to X per day/week/month
+- User grants Sweep permission to sweep up to X per day/week/month
 - Recurring DCA into DeFi positions
 - "Set and forget" dust collection
 
@@ -146,7 +146,7 @@ const { userOpHash } = await smartAccount.sendUserOperation({
 });
 ```
 
-**Use Case for Piggy Bank:**
+**Use Case for Sweep:**
 - Manage user wallets on backend
 - Execute swaps across chains
 - Integrate with smart accounts
@@ -163,7 +163,7 @@ const { userOpHash } = await smartAccount.sendUserOperation({
 - Built-in wallet management
 - Action toolkit for common operations
 
-**Use Case for Piggy Bank:**
+**Use Case for Sweep:**
 - Build AI-powered sweep assistant
 - Natural language sweep commands
 - Intelligent DeFi routing recommendations
@@ -286,7 +286,7 @@ const { userOpHash } = await smartAccount.sendUserOperation({
 
 ## Summary
 
-The Coinbase stack provides everything needed for Piggy Bank:
+The Coinbase stack provides everything needed for Sweep:
 - ✅ Gas abstraction (verifying-paymaster)
 - ✅ Smart accounts (smart-wallet)
 - ✅ Multi-chain support (cdp-sdk - EVM + Solana)

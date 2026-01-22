@@ -335,7 +335,7 @@ describe("E2E: API Endpoints", () => {
       const message = `piggy.bank wants you to sign in with your Ethereum account:
 ${address}
 
-Sign in to Piggy Bank
+Sign in to Sweep
 
 URI: https://piggy.bank
 Nonce: ${nonceData.nonce}

@@ -42,7 +42,7 @@ sweep.post(
       const middleware = x402Middleware({
         amountCents: 10,
         receiverAddress: getX402ReceiverAddress(),
-        description: "Piggy Bank sweep execution fee ($0.10)",
+        description: "Sweep sweep execution fee ($0.10)",
       });
       return middleware(c, next);
     }
@@ -128,7 +128,7 @@ sweep.post(
           outputAmount: String(quote.summary?.estimatedOutputAmount || quote.outputAmount || "0"),
           estimatedGas: String(quote.summary?.estimatedGasUsd || quote.estimatedGasUsd || "0"),
           netValueUsd: Number(quote.summary?.netValueUsd || quote.netValueUsd || 0),
-          aggregator: String(quote.route?.aggregator || quote.aggregator || "piggy-bank"),
+          aggregator: String(quote.route?.aggregator || quote.aggregator || "sweep"),
           expiresAt: Number(quote.expiresAt || 0),
         },
         outputToken: String(quote.destination?.token || quote.outputToken || ""),

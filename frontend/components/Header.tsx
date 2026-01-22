@@ -23,9 +23,9 @@ export function Header() {
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-3xl">🐷</span>
+          <span className="text-3xl">🧹</span>
           <span className="text-xl font-bold text-primary hidden sm:inline">
-            Piggy Bank
+            Sweep
           </span>
         </Link>
 

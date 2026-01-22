@@ -116,7 +116,7 @@ contract BatchSwapHandler is Test {
 }
 
 /// @title PiggyInvariantTest
-/// @notice Invariant tests for Piggy Bank contracts
+/// @notice Invariant tests for Sweep contracts
 contract PiggyInvariantTest is StdInvariant, Test {
     PiggyBatchSwap public batchSwap;
     PiggyFeeCollector public feeCollector;

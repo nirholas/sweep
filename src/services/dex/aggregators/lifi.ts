@@ -219,7 +219,7 @@ export class LiFiAggregator implements IDexAggregator {
       fromAddress: params.fromAddress,
       toAddress: params.toAddress,
       slippage: (params.slippage / 100).toString(), // Li.Fi expects decimal (0.005 = 0.5%)
-      integrator: "piggybank",
+      integrator: "sweep",
       order: "RECOMMENDED", // or FASTEST, CHEAPEST
       allowBridges: "across,stargate,hop,cbridge,hyphen",
     });
@@ -326,7 +326,7 @@ export class LiFiAggregator implements IDexAggregator {
       toAddress: params.toAddress,
       options: JSON.stringify({
         slippage: 0.005,
-        integrator: "piggybank",
+        integrator: "sweep",
         order: "RECOMMENDED",
       }),
     });
