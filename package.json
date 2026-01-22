@@ -36,11 +36,11 @@
   "dependencies": {
     "@hono/node-server": "^1.13.0",
     "@hono/zod-validator": "^0.4.0",
-    "@solana/spl-token": "^0.4.0",
+    "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.98.4",
     "bullmq": "^5.20.0",
     "dotenv": "^16.4.0",
-    "drizzle-orm": "^0.34.1",
+    "drizzle-orm": "^0.33.0",
     "ethers": "^6.16.0",
     "hono": "^4.6.0",
     "ioredis": "^5.4.0",

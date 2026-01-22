@@ -348,7 +348,18 @@ export async function validateSweep(
       let honeypotCheck: HoneypotCheck | undefined;
       
       try {
-        honeypotCheck = await detectHoneypot(tokenAddress, chain);
+        const honeypotResult = await detectHoneypot(tokenAddress, chain);
+        
+        // Map HoneypotCheckResult to HoneypotCheck
+        honeypotCheck = {
+          isHoneypot: honeypotResult.analysis.isHoneypot,
+          buyTax: honeypotResult.analysis.buyTax,
+          sellTax: honeypotResult.analysis.sellTax,
+          isOpenSource: !honeypotResult.analysis.flags.includes("not_open_source"),
+          hasProxyContract: honeypotResult.analysis.flags.includes("proxy_contract"),
+          isMintable: honeypotResult.analysis.flags.includes("mintable"),
+          canTakeOwnership: honeypotResult.analysis.flags.includes("ownership_takeover"),
+        };
         
         if (honeypotCheck.isHoneypot) {
           canSweep = false;

@@ -38,7 +38,10 @@ subscriptionsRoute.post(
 
     try {
       const subscriptionService = getSubscriptionService();
-      const subscription = await subscriptionService.createSubscription(userId, body);
+      const subscription = await subscriptionService.createSubscription(
+        userId, 
+        body as import("../../services/subscriptions/types.js").CreateSubscriptionRequest
+      );
 
       return c.json(
         {

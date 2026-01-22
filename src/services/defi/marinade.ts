@@ -71,7 +71,7 @@ async function fetchMarinadeStats(): Promise<MarinadeStatsResponse> {
     if (!response.ok) {
       throw new Error(`Marinade API error: ${response.status}`);
     }
-    return response.json();
+    return (await response.json()) as MarinadeStatsResponse;
   } catch (error) {
     console.error("Error fetching Marinade stats:", error);
     // Return fallback data

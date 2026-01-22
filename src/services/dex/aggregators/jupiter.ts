@@ -191,7 +191,7 @@ export class JupiterAggregator implements IDexAggregator {
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("Jupiter quote API error:\", error);
+      console.error("Jupiter quote API error:", error);
       return null;
     }
 
