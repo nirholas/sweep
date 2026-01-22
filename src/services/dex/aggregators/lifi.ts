@@ -236,7 +236,7 @@ export class LiFiAggregator implements IDexAggregator {
       return null;
     }
 
-    const data: LiFiQuoteResponse = await response.json();
+    const data = (await response.json()) as LiFiQuoteResponse;
 
     // Calculate total gas cost in USD
     const totalGasUsd = data.estimate.gasCosts.reduce(
@@ -343,7 +343,7 @@ export class LiFiAggregator implements IDexAggregator {
       return [];
     }
 
-    const data: LiFiRoutesResponse = await response.json();
+    const data = (await response.json()) as LiFiRoutesResponse;
     return data.routes;
   }
 
@@ -372,7 +372,14 @@ export class LiFiAggregator implements IDexAggregator {
       return { status: "NOT_FOUND" };
     }
 
-    return response.json();
+    return (await response.json()) as {
+      status: "PENDING" | "DONE" | "FAILED" | "NOT_FOUND";
+      substatus?: string;
+      receiving?: {
+        txHash?: string;
+        amount?: string;
+      };
+    };
   }
 
   async buildCalldata(quote: DexQuote): Promise<string> {

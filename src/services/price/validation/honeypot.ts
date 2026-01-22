@@ -3,7 +3,7 @@
  * Detects scam tokens, honeypots, and high-tax tokens using honeypot.is API
  */
 
-import { redis } from '../../../utils/redis.js';
+import { getRedis } from '../../../utils/redis.js';
 
 export interface HoneypotAnalysis {
   isHoneypot: boolean;
@@ -70,7 +70,7 @@ export async function checkHoneypot(
   const cacheKey = `honeypot:${chain}:${tokenAddress.toLowerCase()}`;
   
   // Check cache first
-  const cached = await redis.get(cacheKey);
+  const cached = await getRedis().get(cacheKey);
   if (cached) {
     const analysis = JSON.parse(cached) as HoneypotAnalysis;
     return evaluateAnalysis(analysis);
@@ -106,7 +106,7 @@ export async function checkHoneypot(
     const analysis = parseHoneypotResponse(data);
     
     // Cache the result
-    await redis.setex(cacheKey, HONEYPOT_CACHE_TTL, JSON.stringify(analysis));
+    await getRedis().setex(cacheKey, HONEYPOT_CACHE_TTL, JSON.stringify(analysis));
     
     return evaluateAnalysis(analysis);
   } catch (error) {
@@ -159,7 +159,7 @@ async function checkGoPlusSecurity(
     
     // Cache the result
     const cacheKey = `honeypot:${chain}:${tokenAddress.toLowerCase()}`;
-    await redis.setex(cacheKey, HONEYPOT_CACHE_TTL, JSON.stringify(analysis));
+    await getRedis().setex(cacheKey, HONEYPOT_CACHE_TTL, JSON.stringify(analysis));
     
     return evaluateAnalysis(analysis);
   } catch (error) {

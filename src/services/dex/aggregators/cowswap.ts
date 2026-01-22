@@ -146,7 +146,7 @@ export class CowSwapAggregator implements IDexAggregator {
         return null;
       }
 
-      const data: CowQuoteResponse = await response.json();
+      const data = (await response.json()) as CowQuoteResponse;
 
       // Calculate effective output after fee
       const sellAmountAfterFee =
@@ -267,7 +267,11 @@ export class CowSwapAggregator implements IDexAggregator {
       return null;
     }
 
-    const order = await response.json();
+    const order = (await response.json()) as {
+      status: string;
+      executedSellAmount?: string;
+      txHash?: string;
+    };
 
     let status: "pending" | "fulfilled" | "cancelled" | "expired" = "pending";
     if (order.status === "fulfilled") {

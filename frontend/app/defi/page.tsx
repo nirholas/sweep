@@ -6,9 +6,8 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { WalletConnect } from "@/components/WalletConnect";
 import { APYComparisonTable, DeFiVaultCard } from "@/components/DeFiVaultCard";
-import { useDefiPositions, type DefiPosition } from "@/hooks/useDefiPositions";
+import { useDefiPositions, type DefiPosition, type DefiVault } from "@/hooks/useDefiPositions";
 import { SUPPORTED_CHAINS } from "@/lib/chains";
-import type { DefiVault } from "@/lib/types";
 
 export default function DeFiPage() {
   const { isConnected } = useAccount();
@@ -219,9 +218,9 @@ export default function DeFiPage() {
     </main>
   );
 
-  function handleVaultSelect(vault: DefiVault) {
+  function handleVaultSelect(vaultId: string) {
     // Navigate to dashboard with vault as destination
-    router.push(`/?destination=${vault.id}`);
+    router.push(`/?destination=${vaultId}`);
   }
 }
 

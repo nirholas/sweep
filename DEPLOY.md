@@ -40,7 +40,7 @@
 
 2. **Deploy from GitHub**
    - Click "New Project" → "Deploy from GitHub repo"
-   - Select `nirholas/sweep` (or your fork)
+   - Select `nirholas/piggy-bank` (or your fork)
    - Railway auto-detects the Node.js project
 
 3. **Add PostgreSQL**
@@ -51,21 +51,66 @@
    - Click "New" → "Database" → "Redis"
    - Railway automatically sets `REDIS_URL`
 
-5. **Set Environment Variables** (Settings → Variables)
+5. **Configure Shared Variables** (Project Settings → Shared Variables)
+   
+   Railway detected these variables from your source code. Configure them as **Shared Variables** to sync across all services (API + Workers):
+
    ```bash
-   # Required
+   # ═══════════════════════════════════════════════════════════════════════════
+   # REQUIRED - Core Configuration
+   # ═══════════════════════════════════════════════════════════════════════════
    NODE_ENV=production
-   PORT=3000
    
-   # API Keys (get from each provider)
-   ALCHEMY_API_KEY=your_key
-   COINGECKO_API_KEY=your_key
+   # ═══════════════════════════════════════════════════════════════════════════
+   # REQUIRED - Primary API Keys
+   # ═══════════════════════════════════════════════════════════════════════════
+   ALCHEMY_API_KEY=your_alchemy_key          # Get from: https://alchemy.com
+   COINGECKO_API_KEY=your_coingecko_key      # Get from: https://coingecko.com/api
    
-   # Optional (for full features)
-   ONEINCH_API_KEY=your_key
-   LIFI_API_KEY=your_key
-   PIMLICO_API_KEY=your_key
-   HELIUS_API_KEY=your_key
+   # ═══════════════════════════════════════════════════════════════════════════
+   # RPC ENDPOINTS - Use Alchemy key or custom endpoints
+   # ═══════════════════════════════════════════════════════════════════════════
+   RPC_ETHEREUM=https://eth-mainnet.g.alchemy.com/v2/${{ALCHEMY_API_KEY}}
+   RPC_BASE=https://base-mainnet.g.alchemy.com/v2/${{ALCHEMY_API_KEY}}
+   RPC_ARBITRUM=https://arb-mainnet.g.alchemy.com/v2/${{ALCHEMY_API_KEY}}
+   RPC_POLYGON=https://polygon-mainnet.g.alchemy.com/v2/${{ALCHEMY_API_KEY}}
+   RPC_BSC=https://bsc-dataseed1.binance.org
+   RPC_LINEA=https://linea-mainnet.g.alchemy.com/v2/${{ALCHEMY_API_KEY}}
+   RPC_OPTIMISM=https://opt-mainnet.g.alchemy.com/v2/${{ALCHEMY_API_KEY}}
+   RPC_SOLANA=https://api.mainnet-beta.solana.com
+   
+   # ═══════════════════════════════════════════════════════════════════════════
+   # DEX AGGREGATORS - For swap functionality
+   # ═══════════════════════════════════════════════════════════════════════════
+   ONEINCH_API_KEY=your_key                  # Get from: https://portal.1inch.dev
+   LIFI_API_KEY=your_key                     # Get from: https://li.fi
+   JUPITER_API_KEY=your_key                  # Get from: https://station.jup.ag
+   
+   # ═══════════════════════════════════════════════════════════════════════════
+   # ACCOUNT ABSTRACTION (ERC-4337) - For gasless transactions
+   # ═══════════════════════════════════════════════════════════════════════════
+   PIMLICO_API_KEY=your_key                  # Get from: https://pimlico.io
+   COINBASE_PAYMASTER_URL=your_url           # Get from: https://www.coinbase.com/cloud
+   
+   # ═══════════════════════════════════════════════════════════════════════════
+   # SOLANA - Enhanced Solana support
+   # ═══════════════════════════════════════════════════════════════════════════
+   HELIUS_API_KEY=your_key                   # Get from: https://helius.xyz
+   JITO_TIP_LAMPORTS=10000                   # MEV tip in lamports
+   
+   # ═══════════════════════════════════════════════════════════════════════════
+   # SECURITY & SIMULATION - Transaction safety
+   # ═══════════════════════════════════════════════════════════════════════════
+   TENDERLY_ACCESS_KEY=your_key              # Get from: https://tenderly.co
+   TENDERLY_ACCOUNT=your_account_slug
+   TENDERLY_PROJECT=your_project_slug
+   GOPLUS_API_KEY=your_key                   # Get from: https://gopluslabs.io
+   
+   # ═══════════════════════════════════════════════════════════════════════════
+   # MONITORING - Production observability
+   # ═══════════════════════════════════════════════════════════════════════════
+   SENTRY_DSN=your_sentry_dsn                # Get from: https://sentry.io
+   DATADOG_API_KEY=your_datadog_key          # Get from: https://datadoghq.com
    ```
 
 6. **Generate Domain**
@@ -91,20 +136,47 @@
 
 ## Environment Variables Reference
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DATABASE_URL` | ✅ | PostgreSQL connection string |
-| `REDIS_URL` | ✅ | Redis connection string |
-| `NODE_ENV` | ✅ | `production` |
-| `PORT` | ✅ | `3000` |
-| `ALCHEMY_API_KEY` | ✅ | For RPC calls |
-| `COINGECKO_API_KEY` | ⚠️ | For token prices |
-| `ONEINCH_API_KEY` | ⚠️ | For swap quotes |
-| `LIFI_API_KEY` | ⚠️ | For cross-chain |
-| `PIMLICO_API_KEY` | ⚠️ | For account abstraction |
-| `HELIUS_API_KEY` | ⚠️ | For Solana |
+| Variable | Required | Description | Get From |
+|----------|:--------:|-------------|----------|
+| **Database & Cache** ||||
+| `DATABASE_URL` | ✅ | PostgreSQL connection string | Railway auto-sets |
+| `REDIS_URL` | ✅ | Redis connection string | Railway auto-sets |
+| **Core** ||||
+| `NODE_ENV` | ✅ | `production` | Set manually |
+| `ALCHEMY_API_KEY` | ✅ | Primary RPC provider | [alchemy.com](https://alchemy.com) |
+| **RPC Endpoints** ||||
+| `RPC_ETHEREUM` | ⚠️ | Ethereum mainnet RPC | Use `${{ALCHEMY_API_KEY}}` |
+| `RPC_BASE` | ⚠️ | Base mainnet RPC | Use `${{ALCHEMY_API_KEY}}` |
+| `RPC_ARBITRUM` | ⚠️ | Arbitrum mainnet RPC | Use `${{ALCHEMY_API_KEY}}` |
+| `RPC_POLYGON` | ⚠️ | Polygon mainnet RPC | Use `${{ALCHEMY_API_KEY}}` |
+| `RPC_BSC` | ⚠️ | BSC mainnet RPC | Free public RPC |
+| `RPC_LINEA` | ⚠️ | Linea mainnet RPC | Use `${{ALCHEMY_API_KEY}}` |
+| `RPC_OPTIMISM` | ⚠️ | Optimism mainnet RPC | Use `${{ALCHEMY_API_KEY}}` |
+| `RPC_SOLANA` | ⚠️ | Solana mainnet RPC | Free or [helius.xyz](https://helius.xyz) |
+| **Price & Data** ||||
+| `COINGECKO_API_KEY` | ⚠️ | Token prices | [coingecko.com/api](https://coingecko.com/api) |
+| `DEFILLAMA_API_KEY` | ❌ | DeFi TVL data | [defillama.com](https://defillama.com) |
+| **DEX Aggregators** ||||
+| `ONEINCH_API_KEY` | ⚠️ | Swap quotes | [portal.1inch.dev](https://portal.1inch.dev) |
+| `LIFI_API_KEY` | ⚠️ | Cross-chain | [li.fi](https://li.fi) |
+| `JUPITER_API_KEY` | ⚠️ | Solana swaps | [station.jup.ag](https://station.jup.ag) |
+| **Account Abstraction** ||||
+| `PIMLICO_API_KEY` | ⚠️ | ERC-4337 bundler | [pimlico.io](https://pimlico.io) |
+| `COINBASE_PAYMASTER_URL` | ⚠️ | Gasless txs | [coinbase.com/cloud](https://coinbase.com/cloud) |
+| `PAYMASTER_SIGNER_KEY` | ❌ | Self-hosted paymaster | Generate locally |
+| **Solana** ||||
+| `HELIUS_API_KEY` | ⚠️ | Enhanced Solana RPC | [helius.xyz](https://helius.xyz) |
+| `JITO_TIP_LAMPORTS` | ❌ | MEV tip (default: 10000) | Set manually |
+| **Security** ||||
+| `TENDERLY_ACCESS_KEY` | ⚠️ | Tx simulation | [tenderly.co](https://tenderly.co) |
+| `TENDERLY_ACCOUNT` | ⚠️ | Account slug | [tenderly.co](https://tenderly.co) |
+| `TENDERLY_PROJECT` | ⚠️ | Project slug | [tenderly.co](https://tenderly.co) |
+| `GOPLUS_API_KEY` | ⚠️ | Token security | [gopluslabs.io](https://gopluslabs.io) |
+| **Monitoring** ||||
+| `SENTRY_DSN` | ❌ | Error tracking | [sentry.io](https://sentry.io) |
+| `DATADOG_API_KEY` | ❌ | Metrics & APM | [datadoghq.com](https://datadoghq.com) |
 
-⚠️ = Recommended for full functionality
+**Legend:** ✅ Required | ⚠️ Recommended | ❌ Optional
 
 ---
 

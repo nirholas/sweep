@@ -145,7 +145,7 @@ solanaSweep.post(
       let vacantAccountData;
 
       if (tokens && tokens.length > 0) {
-        dustTokens = tokens;
+        dustTokens = tokens as Array<{ mint: string; amount: string }>;
       } else {
         const scanResult = await extendedSolanaScanner.scanExtended(wallet);
         dustTokens = scanResult.tokens

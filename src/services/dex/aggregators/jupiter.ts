@@ -191,11 +191,11 @@ export class JupiterAggregator implements IDexAggregator {
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("Jupiter quote API error:", error);
+      console.error("Jupiter quote API error:\", error);
       return null;
     }
 
-    return response.json();
+    return (await response.json()) as JupiterQuoteResponse;
   }
 
   private async getSwapTransaction(
@@ -246,7 +246,7 @@ export class JupiterAggregator implements IDexAggregator {
         return null;
       }
 
-      const tokenInfo: JupiterTokenInfo = await response.json();
+      const tokenInfo = (await response.json()) as JupiterTokenInfo;
       this.tokenCache.set(mint, tokenInfo);
       return tokenInfo;
     } catch {
@@ -289,7 +289,7 @@ export class JupiterAggregator implements IDexAggregator {
         return [];
       }
 
-      return response.json();
+      return (await response.json()) as JupiterTokenInfo[];
     } catch {
       return [];
     }
@@ -362,7 +362,7 @@ export class JupiterAggregator implements IDexAggregator {
       return null;
     }
 
-    return response.json();
+    return (await response.json()) as JupiterSwapResponse;
   }
 
   /**
@@ -415,7 +415,7 @@ export class JupiterAggregator implements IDexAggregator {
       return null;
     }
 
-    return response.json();
+    return (await response.json()) as JupiterSwapInstructionsResponse;
   }
 
   /**

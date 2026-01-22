@@ -179,7 +179,7 @@ export class ParaSwapAggregator implements IDexAggregator {
       return null;
     }
 
-    return response.json();
+    return (await response.json()) as ParaSwapPriceResponse;
   }
 
   private async buildTransaction(
@@ -225,7 +225,7 @@ export class ParaSwapAggregator implements IDexAggregator {
       return null;
     }
 
-    return response.json();
+    return (await response.json()) as ParaSwapTransactionResponse;
   }
 
   async buildCalldata(quote: DexQuote): Promise<string> {

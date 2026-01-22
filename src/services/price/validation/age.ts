@@ -62,7 +62,10 @@ async function getContractCreationInfo(
       throw new Error(`Explorer API error: ${response.status}`);
     }
     
-    const data = await response.json();
+    const data = (await response.json()) as {
+      status: string;
+      result?: Array<{ txHash: string }>;
+    };
     
     if (data.status !== "1" || !Array.isArray(data.result) || data.result.length === 0) {
       // Fallback: try to get from first transaction
@@ -76,7 +79,9 @@ async function getContractCreationInfo(
     const txUrl = `${apiBase}?module=proxy&action=eth_getTransactionByHash&txhash=${txHash}&apikey=${apiKey}`;
     
     const txResponse = await fetch(txUrl);
-    const txData = await txResponse.json();
+    const txData = (await txResponse.json()) as {
+      result?: { blockNumber: string };
+    };
     
     if (!txData.result) {
       return await getCreationFromFirstTx(tokenAddress, chain, apiBase, apiKey);
@@ -87,7 +92,9 @@ async function getContractCreationInfo(
     // Get block timestamp
     const blockUrl = `${apiBase}?module=block&action=getblockreward&blockno=${blockNumber}&apikey=${apiKey}`;
     const blockResponse = await fetch(blockUrl);
-    const blockData = await blockResponse.json();
+    const blockData = (await blockResponse.json()) as {
+      result?: { timeStamp: string };
+    };
     
     const timestamp = parseInt(blockData.result?.timeStamp || "0");
     

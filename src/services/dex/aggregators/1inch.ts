@@ -149,7 +149,7 @@ export class OneInchAggregator implements IDexAggregator {
       return null;
     }
 
-    const data: OneInchQuoteResponse = await response.json();
+    const data = (await response.json()) as OneInchQuoteResponse;
 
     // Get token info for the response
     const [srcTokenInfo, dstTokenInfo] = await Promise.all([
@@ -219,7 +219,7 @@ export class OneInchAggregator implements IDexAggregator {
       return null;
     }
 
-    const data: OneInchSwapResponse = await response.json();
+    const data = (await response.json()) as OneInchSwapResponse;
 
     // Get token info
     const [srcTokenInfo, dstTokenInfo] = await Promise.all([
@@ -291,7 +291,7 @@ export class OneInchAggregator implements IDexAggregator {
         return null;
       }
 
-      const data: OneInchTokenInfo = await response.json();
+      const data = (await response.json()) as OneInchTokenInfo;
       return {
         address: data.address,
         symbol: data.symbol,

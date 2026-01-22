@@ -181,7 +181,7 @@ export class ZeroXAggregator implements IDexAggregator {
       return null;
     }
 
-    const data: ZeroXPriceResponse = await response.json();
+    const data = (await response.json()) as ZeroXPriceResponse;
 
     return {
       aggregator: "0x",
@@ -239,7 +239,7 @@ export class ZeroXAggregator implements IDexAggregator {
       return null;
     }
 
-    const data: ZeroXQuoteResponse = await response.json();
+    const data = (await response.json()) as ZeroXQuoteResponse;
 
     return {
       aggregator: "0x",

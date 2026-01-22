@@ -7,8 +7,7 @@
  * - Transaction batching
  */
 
-import {
-  Connection,
+import { Connection,
   PublicKey,
   VersionedTransaction,
   TransactionMessage,
@@ -18,7 +17,7 @@ import {
   Keypair,
   Signer,
 } from "@solana/web3.js";
-import { PriorityFeesService, type PriorityLevel } from "./priority-fees.js";
+import { PriorityFeesService, type PriorityLevel } from "../../solana/priority-fees.js";
 
 // ============================================================
 // Types
