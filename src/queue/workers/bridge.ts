@@ -405,8 +405,8 @@ export function createBridgeTrackWorker(): Worker<
               provider,
               sourceChain: sourceChain as any,
               destinationChain: destinationChain as any,
-              sourceToken: receipt.sourceToken?.address || "",
-              destinationToken: receipt.destinationToken?.address || "",
+              sourceToken: "", // Not available in receipt
+              destinationToken: "", // Not available in receipt
               inputAmount: receipt.inputAmount.toString(),
               outputAmount: receipt.outputAmount?.toString(),
               feeUsd: 0, // Would need to calculate

@@ -51,9 +51,9 @@ export interface BuiltTransaction {
   computeUnits: number;
   priorityFeeMicroLamports: number;
   estimatedFee: {
-    priorityFee: number;
+    priorityFeeLamports: number;
     baseFee: number;
-    total: number;
+    totalFee: number;
   };
   lookupTables: AddressLookupTableAccount[];
 }

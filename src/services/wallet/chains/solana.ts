@@ -53,7 +53,7 @@ const TOKEN_ACCOUNT_RENT_LAMPORTS = 2039280n;
 export class SolanaScanner implements ChainScanner {
   chain: SupportedChain = "solana";
 
-  private getHeliusUrl(): string {
+  protected getHeliusUrl(): string {
     const apiKey = process.env.HELIUS_API_KEY;
     if (!apiKey) {
       throw new Error("HELIUS_API_KEY not configured");
@@ -442,17 +442,6 @@ export class ExtendedSolanaScanner extends SolanaScanner {
       // Add recoverable rent to dust value
       dustValueUsd: basicScan.dustValueUsd + recoverableRentUsd,
     };
-  }
-
-  /**
-   * Make getHeliusUrl accessible to extended methods
-   */
-  getHeliusUrl(): string {
-    const apiKey = process.env.HELIUS_API_KEY;
-    if (!apiKey) {
-      throw new Error("HELIUS_API_KEY not configured");
-    }
-    return `https://mainnet.helius-rpc.com/?api-key=${apiKey}`;
   }
 
   /**
