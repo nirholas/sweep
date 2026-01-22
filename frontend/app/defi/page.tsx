@@ -182,7 +182,7 @@ export default function DeFiPage() {
                     <DeFiVaultCard
                       key={vault.id}
                       vault={vault}
-                      variant="full"
+                      showDepositButton
                       onDeposit={() => handleVaultSelect(vault)}
                     />
                   ))}
@@ -200,7 +200,8 @@ export default function DeFiPage() {
                 <DeFiVaultCard
                   key={vault.id}
                   vault={vault}
-                  variant="compact"
+                  compact
+                  showDepositButton
                   onDeposit={() => handleVaultSelect(vault)}
                 />
               ))}
