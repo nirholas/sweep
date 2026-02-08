@@ -4,7 +4,7 @@
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/sweep-banner-light.svg">
     <img src="docs/assets/sweep-banner.svg" alt="Sweep" width="800"/>
   </picture>
-</p>
+</p> 
 
 <p align="center">
   <strong>Multi-chain dust sweeper that consolidates small token balances into DeFi yield positions.</strong>
