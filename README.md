@@ -301,3 +301,76 @@ North America agent, South America agent, Europe agent, Asia agent, Africa agent
 *Total Keywords: 3500+*
 *Last Updated: January 29, 2026*
 </details>
+
+
+---
+
+## 🌐 Live HTTP Deployment
+
+**Sweep DeFi** is deployed and accessible over HTTP via [MCP Streamable HTTP](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) transport — no local installation required.
+
+**Endpoint:**
+```
+https://modelcontextprotocol.name/mcp/sweep-defi
+```
+
+### Connect from any MCP Client
+
+Add to your MCP client configuration (Claude Desktop, Cursor, SperaxOS, etc.):
+
+```json
+{
+  "mcpServers": {
+    "sweep-defi": {
+      "type": "http",
+      "url": "https://modelcontextprotocol.name/mcp/sweep-defi"
+    }
+  }
+}
+```
+
+### Available Tools (3)
+
+| Tool | Description |
+|------|-------------|
+| `get_dust_threshold` | Minimum sweep threshold |
+| `find_yield_for_token` | Yield for idle token |
+| `get_price` | Get crypto prices |
+
+### Example Requests
+
+**Minimum sweep threshold:**
+```bash
+curl -X POST https://modelcontextprotocol.name/mcp/sweep-defi \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_dust_threshold","arguments":{"chain":"ethereum"}}}'
+```
+
+**Yield for idle token:**
+```bash
+curl -X POST https://modelcontextprotocol.name/mcp/sweep-defi \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"find_yield_for_token","arguments":{"symbol":"USDC"}}}'
+```
+
+**Get crypto prices:**
+```bash
+curl -X POST https://modelcontextprotocol.name/mcp/sweep-defi \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_price","arguments":{"ids":"ethereum","vs_currencies":"usd"}}}'
+```
+
+### List All Tools
+
+```bash
+curl -X POST https://modelcontextprotocol.name/mcp/sweep-defi \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+### Also Available On
+
+- **[SperaxOS](https://speraxos.vercel.app)** — Browse and install from the [MCP marketplace](https://speraxos.vercel.app/community/mcp)
+- **All 27 MCP servers** — See the full catalog at [modelcontextprotocol.name](https://modelcontextprotocol.name)
+
+> Powered by [modelcontextprotocol.name](https://modelcontextprotocol.name) — the open MCP HTTP gateway
