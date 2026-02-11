@@ -501,3 +501,7 @@ Contributors are recognized in:
 - Project documentation
 
 Thank you for contributing to Sweep! 🐷
+
+## Code of Conduct
+
+Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
